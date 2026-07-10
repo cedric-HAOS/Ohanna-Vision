@@ -1,188 +1,301 @@
-# Architecture
+# Architecture d'Ohanna-Vision
 
 ## Objectif
 
-Ohanna-Vision est une application web dont la mission est de rendre l'état de l'infrastructure compréhensible et administrable.
+Ohanna-Vision est l'interface d'observation et d'administration de l'écosystème **Ohanna**.
 
-Contrairement à Ohanna-Agent, Ohanna-Vision n'exécute aucun contrôle technique.
+Sa mission est de transformer les observations produites par **Ohanna-Agent** en une représentation compréhensible, exploitable et durable de l'infrastructure.
 
-Il construit une représentation cohérente de l'infrastructure à partir des observations produites par Ohanna-Agent.
+Contrairement à un outil de supervision classique, Ohanna-Vision ne collecte aucune donnée directement.
 
-Son architecture est organisée autour de responsabilités clairement séparées afin de permettre une évolution indépendante de chaque composant.
+Il reconstruit l'état de l'infrastructure exclusivement à partir des observations qui lui sont fournies.
+
+---
+
+# Principes d'architecture
+
+L'architecture repose sur quatre principes fondamentaux :
+
+* les observations constituent la source de vérité ;
+* chaque moteur possède une responsabilité unique ;
+* les objets métier sont immuables ;
+* les couches supérieures ne modifient jamais les couches inférieures.
+
+Cette séparation garantit une architecture simple, testable et évolutive.
 
 ---
 
 # Vue d'ensemble
 
 ```text
-                    Utilisateur
-                         │
-                Interface Web (Frontend)
-                         │
-                         ▼
-                 Backend Ohanna-Vision
-            ┌────────────┼────────────┐
-            │            │            │
-            ▼            ▼            ▼
-     Etat courant   Historique   Administration
-            │            │            │
-            └────────────┼────────────┘
-                         │
-                  API Ohanna-Agent
-                         │
-                Plugins & Infrastructure
+                    Observations
+                           │
+                           ▼
+                  ObservationStore
+                    │           │
+                    │           │
+                    ▼           ▼
+          ProjectionEngine   TimelineEngine
+                    │           │
+                    ▼           ▼
+       InfrastructureState  InfrastructureTimeline
+                    │
+                    ▼
+               HealthEngine
+                    │
+                    ▼
+                HealthReport
+                    │
+                    ▼
+        Backend REST / Interface Web
 ```
 
----
-
-# Les composants
-
-## Frontend
-
-Le frontend est responsable de la présentation.
-
-Il permet notamment :
-
-* d'afficher le tableau de bord ;
-* de consulter les capacités ;
-* de visualiser les services et les nœuds ;
-* d'explorer l'historique ;
-* de lancer des actions d'administration ;
-* d'afficher les résultats des actions.
-
-Le frontend ne contient aucune logique métier liée à l'infrastructure.
+Chaque composant possède une responsabilité clairement définie.
 
 ---
 
-## Backend
+# ObservationStore
 
-Le backend constitue le cœur de Ohanna-Vision.
+Le `ObservationStore` constitue le point d'entrée du domaine.
 
-Il est responsable de :
+Il conserve les observations dans leur ordre chronologique.
 
-* recevoir les observations ;
-* maintenir l'état courant ;
-* conserver l'historique ;
-* calculer les informations de présentation ;
-* exposer les API consommées par le frontend ;
-* transmettre les demandes d'administration vers Ohanna-Agent.
+Les observations sont considérées comme immuables et ne sont jamais modifiées après leur enregistrement.
 
-Le backend ne réalise jamais directement les opérations sur l'infrastructure.
+Le store permet notamment :
 
----
-
-## État courant
-
-L'état courant représente la meilleure connaissance disponible de chaque capacité.
-
-Il est construit à partir des dernières observations reçues.
-
-Une capacité possède toujours un état courant unique.
+* l'ajout d'observations ;
+* la consultation de l'historique ;
+* le filtrage par nœud, service ou capacité ;
+* l'alimentation des différents moteurs métier.
 
 ---
 
-## Historique
+# Projection Engine
 
-L'historique conserve les observations et les changements d'état.
+Le `ProjectionEngine` reconstruit l'état courant de l'infrastructure.
 
-Il permet de répondre à des questions telles que :
+Il répond à la question :
 
-* Quand un incident est-il apparu ?
-* Combien de temps a-t-il duré ?
-* À quelle fréquence se reproduit-il ?
-* Quelle action a permis son retour à la normale ?
+> Quel est le dernier état connu de l'infrastructure ?
 
----
+Le moteur transforme les observations en objets métier :
 
-## Administration
+* `CapabilityState`
+* `ServiceState`
+* `NodeState`
+* `InfrastructureState`
 
-Le module d'administration permet à l'utilisateur d'interagir avec l'infrastructure.
+La projection représente uniquement les faits connus.
 
-Il ne réalise aucune opération lui-même.
-
-Toutes les demandes sont transmises à Ohanna-Agent.
-
-Exemples :
-
-* consulter les baux DHCP ;
-* créer une réservation DHCP ;
-* installer un plugin ;
-* modifier la configuration d'un plugin ;
-* lancer un diagnostic.
+Elle ne contient aucune logique métier d'interprétation.
 
 ---
 
-# Flux d'observation
+# Health Engine
 
-Le flux d'observation transporte exclusivement des faits.
+Le `HealthEngine` interprète les projections.
+
+Il répond à la question :
+
+> Quelle est la santé de l'infrastructure ?
+
+Contrairement au `ProjectionEngine`, il applique des règles métier telles que :
+
+* la criticité ;
+* l'obsolescence des observations (*stale*) ;
+* la propagation des incidents.
+
+Son résultat est un `HealthReport` indépendant des projections.
+
+Cette séparation permet de faire évoluer les politiques de santé sans modifier les observations ni les projections.
+
+---
+
+# Timeline Engine
+
+Le `TimelineEngine` reconstruit l'évolution temporelle de l'infrastructure.
+
+Il répond à la question :
+
+> Comment l'état a-t-il évolué dans le temps ?
+
+Il transforme les observations successives en périodes d'état.
+
+Exemple :
 
 ```text
-Infrastructure
-      │
-      ▼
-Ohanna-Agent
-      │
-Observations
-      │
-      ▼
-Ohanna-Vision
+Healthy      08:00 → 08:15
+Degraded     08:15 → 08:25
+Healthy      08:25 → maintenant
 ```
 
-Une observation ne doit jamais être modifiée.
+Le moteur produit plusieurs niveaux de timeline :
 
-Elle constitue la source de vérité.
+* `CapabilityTimeline`
+* `ServiceTimeline`
+* `NodeTimeline`
+* `InfrastructureTimeline`
+
+Toutes reposent sur le même objet métier :
+
+* `StatePeriod`
 
 ---
 
-# Flux d'administration
+# Modèle métier
 
-Le flux d'administration transporte des intentions.
+Le domaine s'articule autour de plusieurs objets fondamentaux.
+
+## Observation
+
+Une observation représente un fait technique observé à un instant donné.
+
+Elle constitue la seule source de vérité du système.
+
+---
+
+## Projection
+
+La projection représente le dernier état connu.
+
+Elle est composée de :
+
+* `CapabilityState`
+* `ServiceState`
+* `NodeState`
+* `InfrastructureState`
+
+---
+
+## Santé
+
+La santé représente l'interprétation métier de la projection.
+
+Elle est encapsulée dans un `HealthReport`.
+
+---
+
+## Timeline
+
+La timeline représente l'évolution historique d'une entité.
+
+Elle est composée de plusieurs `StatePeriod`.
+
+---
+
+# Séparation des responsabilités
+
+Les différents moteurs ne partagent pas leurs responsabilités.
+
+## ObservationStore
+
+Responsable du stockage.
+
+---
+
+## ProjectionEngine
+
+Responsable de la reconstruction de l'état.
+
+---
+
+## HealthEngine
+
+Responsable de l'évaluation métier.
+
+---
+
+## TimelineEngine
+
+Responsable de la reconstruction temporelle.
+
+---
+
+# Dépendances
+
+Les dépendances entre moteurs sont strictement unidirectionnelles.
 
 ```text
-Utilisateur
-      │
-      ▼
-Ohanna-Vision
-      │
-Commande
-      │
-      ▼
-Ohanna-Agent
-      │
-Exécution
-      │
-      ▼
-Infrastructure
+ObservationStore
+        │
+        ├──────────────┐
+        │              │
+        ▼              ▼
+ProjectionEngine   TimelineEngine
+        │
+        ▼
+HealthEngine
 ```
 
-L'utilisateur n'interagit jamais directement avec les équipements.
+Le `TimelineEngine` ne dépend pas du `HealthEngine`.
+
+Le `HealthEngine` ne dépend pas du `TimelineEngine`.
+
+Cette indépendance permet de les utiliser séparément selon les besoins.
 
 ---
 
-# Principes d'architecture
+# Backend REST
 
-L'architecture de Ohanna-Vision repose sur les principes suivants :
+La future API REST exposera les objets métier produits par les différents moteurs.
 
-* séparation stricte entre présentation et exécution ;
-* Ohanna-Agent reste le seul composant connecté à l'infrastructure ;
-* toute donnée affichée provient d'observations ou d'informations exposées par Ohanna-Agent ;
-* l'historique est conservé indépendamment de l'état courant ;
-* l'administration est réalisée exclusivement via les API publiques d'Ohanna-Agent ;
-* les composants peuvent évoluer indépendamment tant que les contrats restent compatibles.
+Elle ne contiendra aucune logique métier.
+
+Son rôle sera uniquement de publier :
+
+* les projections ;
+* les rapports de santé ;
+* les timelines ;
+* les fonctions d'administration.
 
 ---
 
-# Évolutions prévues
+# Interface Web
 
-Cette architecture permet d'ajouter progressivement :
+L'interface web consommera exclusivement l'API REST.
 
-* des tableaux de bord personnalisés ;
-* une authentification multi-utilisateurs ;
-* des notifications ;
-* des statistiques ;
-* des rapports ;
-* des vues multi-sites ;
-* des tableaux de bord spécialisés ;
-* de nouveaux modules d'administration.
+Elle proposera notamment :
 
-Aucune de ces évolutions ne doit remettre en cause la séparation entre Ohanna-Agent et Ohanna-Vision.
+* un tableau de bord temps réel ;
+* l'historique des capacités ;
+* la visualisation des services ;
+* la santé globale ;
+* l'administration de l'infrastructure ;
+* la gestion des plugins ;
+* la gestion des baux DHCP ;
+* la configuration des politiques de santé.
+
+La logique métier restera entièrement dans le backend.
+
+---
+
+# Relation avec Ohanna-Agent
+
+Ohanna-Agent et Ohanna-Vision sont volontairement découplés.
+
+Le premier produit des observations.
+
+Le second les interprète.
+
+Cette séparation permet :
+
+* de faire évoluer les deux projets indépendamment ;
+* de connecter plusieurs agents à une même instance de Vision ;
+* de préserver une architecture modulaire.
+
+---
+
+# État actuel de l'architecture
+
+À l'issue de la Phase 1, le cœur métier est entièrement opérationnel.
+
+Les composants disponibles sont :
+
+* Domain Model ;
+* Observation Store ;
+* Projection Engine ;
+* Health Engine ;
+* Timeline Engine.
+
+Le projet dispose actuellement de **119 tests unitaires**, tous validés, garantissant la cohérence du modèle métier avant le développement du backend et de l'interface web.
