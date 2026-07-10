@@ -1,3 +1,5 @@
+fastapi
+uvicorn
 
 [dev]
 pytest>=9.0

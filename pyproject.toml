@@ -12,7 +12,17 @@ license = { text = "MIT" }
 authors = [
     { name = "Cédric Harnois" }
 ]
-dependencies = []
+dependencies = [
+    "fastapi",
+    "uvicorn",
+]
+
+[dependency-groups]
+dev = [
+    "httpx",
+    "pytest",
+    "ruff",
+]
 
 [project.optional-dependencies]
 dev = [

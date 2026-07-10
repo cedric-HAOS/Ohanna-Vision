@@ -40,7 +40,6 @@ Cette version pose les fondations architecturales du projet en introduisant les 
 Création des principaux objets métier :
 
 * Observation
-* ObservationStatus
 * Health
 * HealthStatus
 * CapabilityState
