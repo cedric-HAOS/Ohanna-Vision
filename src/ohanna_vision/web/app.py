@@ -5,6 +5,9 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from ohanna_vision.web.api.topology_router import (
+    router as topology_router,
+)
 from ohanna_vision.web.application_context import ApplicationContext
 from ohanna_vision.web.routers import (
     api_router,
@@ -47,5 +50,7 @@ def create_app(
         ),
         name="ui",
     )
+
+    app.include_router(topology_router)
 
     return app

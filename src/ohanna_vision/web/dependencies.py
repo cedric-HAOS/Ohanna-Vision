@@ -9,8 +9,19 @@ from fastapi import Depends, HTTPException, Request, WebSocket, status
 from ohanna_vision.domain.observation_store import ObservationStore
 from ohanna_vision.runtime import BackendRuntime, ObservationProcessor
 from ohanna_vision.timeline import TimelineEngine
+from ohanna_vision.topology import Topology
 from ohanna_vision.web.application_context import ApplicationContext
 from ohanna_vision.web.websocket_hub import WebSocketHub
+
+"""FastAPI dependencies used by Ohanna-Vision."""
+
+
+def get_topology() -> Topology:
+    """Return the configured infrastructure topology."""
+    return Topology(
+        topology_id="ohanna-house",
+        label="Ohanna-House",
+    )
 
 
 def get_application_context(request: Request) -> ApplicationContext:
