@@ -30,6 +30,13 @@ dev = [
     "ruff>=0.12",
 ]
 
+[tool.setuptools.package-data]
+ohanna_vision = [
+    "web/static/*.html",
+    "web/static/*.css",
+    "web/static/*.js",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

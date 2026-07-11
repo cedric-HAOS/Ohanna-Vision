@@ -1,0 +1,88 @@
+"""FastAPI dependencies for Ohanna-Vision."""
+
+from typing import Annotated, cast
+
+from fastapi import Depends, HTTPException, Request, WebSocket, status
+
+from ohanna_vision.domain.observation_store import ObservationStore
+from ohanna_vision.runtime import BackendRuntime
+from ohanna_vision.timeline import TimelineEngine
+from ohanna_vision.web.application_context import ApplicationContext
+from ohanna_vision.web.websocket_hub import WebSocketHub
+
+
+def get_application_context(request: Request) -> ApplicationContext:
+    """Return the application context attached to FastAPI."""
+    context = getattr(request.app.state, "context", None)
+
+    if context is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Application context is not configured",
+        )
+
+    return cast(ApplicationContext, context)
+
+
+ApplicationContextDependency = Annotated[
+    ApplicationContext,
+    Depends(get_application_context),
+]
+
+
+def get_runtime(
+    context: ApplicationContextDependency,
+) -> BackendRuntime:
+    """Return the backend runtime from the application context."""
+    return context.runtime
+
+
+def get_observation_store(
+    context: ApplicationContextDependency,
+) -> ObservationStore:
+    """Return the observation store from the application context."""
+    return context.observation_store
+
+
+def get_timeline_engine(
+    context: ApplicationContextDependency,
+) -> TimelineEngine:
+    """Return the timeline engine from the application context."""
+    return context.timeline_engine
+
+
+RuntimeDependency = Annotated[
+    BackendRuntime,
+    Depends(get_runtime),
+]
+
+ObservationStoreDependency = Annotated[
+    ObservationStore,
+    Depends(get_observation_store),
+]
+
+TimelineEngineDependency = Annotated[
+    TimelineEngine,
+    Depends(get_timeline_engine),
+]
+
+def get_websocket_hub(
+    websocket: WebSocket,
+) -> WebSocketHub:
+    """Return the WebSocket hub attached to FastAPI."""
+    hub = getattr(
+        websocket.app.state,
+        "websocket_hub",
+        None,
+    )
+
+    if hub is None:
+        raise RuntimeError("WebSocket hub is not configured.")
+
+    return hub
+
+
+WebSocketHubDependency = Annotated[
+    WebSocketHub,
+    Depends(get_websocket_hub),
+]

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+    <meta
+        name="description"
+        content="Tableau de bord Ohanna-Vision"
+    >
+
+    <title>Ohanna Vision</title>
+
+    <link
+        rel="stylesheet"
+        href="/ui/styles.css"
+    >
+</head>
+
+<body>
+    <header class="application-header">
+        <div>
+            <p class="application-kicker">Ohanna</p>
+            <h1>Vision</h1>
+            <p class="application-description">
+                État courant et historique des capacités de l’infrastructure.
+            </p>
+        </div>
+
+        <div
+            id="websocket-status"
+            class="connection-status connection-status--offline"
+            aria-live="polite"
+        >
+            <span class="connection-status__indicator"></span>
+            <span id="websocket-status-label">
+                Temps réel déconnecté
+            </span>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section
+            class="dashboard-section"
+            aria-labelledby="runtime-heading"
+        >
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">Backend</p>
+                    <h2 id="runtime-heading">Runtime</h2>
+                </div>
+
+                <button
+                    id="refresh-button"
+                    class="button"
+                    type="button"
+                >
+                    Actualiser
+                </button>
+            </div>
+
+            <div
+                id="runtime-error"
+                class="alert alert--error hidden"
+                role="alert"
+            ></div>
+
+            <div
+                id="runtime-cards"
+                class="metric-grid"
+                aria-live="polite"
+            >
+                <article class="metric-card">
+                    <span class="metric-card__label">État</span>
+                    <strong
+                        id="runtime-state"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">
+                        Observations stockées
+                    </span>
+                    <strong
+                        id="observations-stored"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">
+                        Timelines services
+                    </span>
+                    <strong
+                        id="service-timelines"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">
+                        Timelines nœuds
+                    </span>
+                    <strong
+                        id="node-timelines"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+            </div>
+        </section>
+
+        <section
+            class="dashboard-section"
+            aria-labelledby="statistics-heading"
+        >
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">Traitement</p>
+                    <h2 id="statistics-heading">Statistiques</h2>
+                </div>
+            </div>
+
+            <div class="metric-grid">
+                <article class="metric-card">
+                    <span class="metric-card__label">Reçues</span>
+                    <strong
+                        id="observations-received"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">Acceptées</span>
+                    <strong
+                        id="observations-accepted"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">Rejetées</span>
+                    <strong
+                        id="observations-rejected"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+
+                <article class="metric-card">
+                    <span class="metric-card__label">Erreurs</span>
+                    <strong
+                        id="runtime-errors"
+                        class="metric-card__value"
+                    >
+                        —
+                    </strong>
+                </article>
+            </div>
+        </section>
+
+        <section
+            class="dashboard-section"
+            aria-labelledby="infrastructure-heading"
+        >
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">Infrastructure</p>
+                    <h2 id="infrastructure-heading">
+                        Timeline
+                    </h2>
+                </div>
+
+                <span
+                    id="timeline-generated-at"
+                    class="section-meta"
+                >
+                    —
+                </span>
+            </div>
+
+            <div
+                id="timeline-error"
+                class="alert alert--error hidden"
+                role="alert"
+            ></div>
+
+            <div
+                id="timeline-content"
+                class="timeline-grid"
+                aria-live="polite"
+            >
+                <p class="empty-state">
+                    Chargement de la timeline…
+                </p>
+            </div>
+        </section>
+
+        <section
+            class="dashboard-section"
+            aria-labelledby="observations-heading"
+        >
+            <div class="section-heading">
+                <div>
+                    <p class="section-kicker">Historique</p>
+                    <h2 id="observations-heading">
+                        Observations récentes
+                    </h2>
+                </div>
+
+                <span
+                    id="observation-count"
+                    class="section-meta"
+                >
+                    0 observation
+                </span>
+            </div>
+
+            <div
+                id="observations-error"
+                class="alert alert--error hidden"
+                role="alert"
+            ></div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Nœud</th>
+                            <th scope="col">Service</th>
+                            <th scope="col">Capacité</th>
+                            <th scope="col">État</th>
+                            <th scope="col">Latence</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="observations-body">
+                        <tr>
+                            <td
+                                class="empty-table"
+                                colspan="6"
+                            >
+                                Chargement des observations…
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="application-footer">
+        <span>Ohanna-Vision</span>
+        <span id="last-refresh">Dernière actualisation : —</span>
+    </footer>
+
+    <script
+        src="/ui/app.js"
+        defer
+    ></script>
+</body>
+</html>

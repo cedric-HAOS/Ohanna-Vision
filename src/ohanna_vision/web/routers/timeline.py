@@ -1,0 +1,129 @@
+"""Timeline API routes for Ohanna-Vision."""
+
+from datetime import datetime
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Query, status
+
+from ohanna_vision.timeline import (
+    InfrastructureTimeline,
+    NodeTimeline,
+    ServiceTimeline,
+)
+from ohanna_vision.web.dependencies import (
+    ObservationStoreDependency,
+    TimelineEngineDependency,
+)
+
+router = APIRouter(
+    prefix="/timeline",
+    tags=["timeline"],
+)
+
+OptionalDatetimeQuery = Annotated[datetime | None, Query()]
+
+
+def build_infrastructure_timeline(
+    observation_store: ObservationStoreDependency,
+    timeline_engine: TimelineEngineDependency,
+    *,
+    until: datetime | None,
+) -> InfrastructureTimeline:
+    """Build the infrastructure timeline from stored observations."""
+    try:
+        observations = observation_store.history(until=until)
+
+        return timeline_engine.build_infrastructure(
+            observations,
+            until=until,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail=str(error),
+        ) from error
+
+
+@router.get(
+    "",
+    summary="Infrastructure timeline",
+)
+def get_infrastructure_timeline(
+    observation_store: ObservationStoreDependency,
+    timeline_engine: TimelineEngineDependency,
+    until: OptionalDatetimeQuery = None,
+) -> InfrastructureTimeline:
+    """Return the complete infrastructure timeline hierarchy."""
+    return build_infrastructure_timeline(
+        observation_store,
+        timeline_engine,
+        until=until,
+    )
+
+
+@router.get(
+    "/nodes/{node_id}",
+    summary="Node timeline",
+)
+def get_node_timeline(
+    node_id: str,
+    observation_store: ObservationStoreDependency,
+    timeline_engine: TimelineEngineDependency,
+    until: OptionalDatetimeQuery = None,
+) -> NodeTimeline:
+    """Return the timeline of one node."""
+    infrastructure = build_infrastructure_timeline(
+        observation_store,
+        timeline_engine,
+        until=until,
+    )
+
+    node = infrastructure.node(node_id)
+
+    if node is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Node timeline '{node_id}' was not found.",
+        )
+
+    return node
+
+
+@router.get(
+    "/nodes/{node_id}/services/{service_id}",
+    summary="Service timeline",
+)
+def get_service_timeline(
+    node_id: str,
+    service_id: str,
+    observation_store: ObservationStoreDependency,
+    timeline_engine: TimelineEngineDependency,
+    until: OptionalDatetimeQuery = None,
+) -> ServiceTimeline:
+    """Return the timeline of one service on one node."""
+    infrastructure = build_infrastructure_timeline(
+        observation_store,
+        timeline_engine,
+        until=until,
+    )
+
+    node = infrastructure.node(node_id)
+
+    if node is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Node timeline '{node_id}' was not found.",
+        )
+
+    service = node.service(service_id)
+
+    if service is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=(
+                f"Service timeline '{service_id}' was not found "
+                f"on node '{node_id}'."
+            ),
+        )
+
+    return service

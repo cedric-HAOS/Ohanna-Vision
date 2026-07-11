@@ -43,3 +43,6 @@ src/ohanna_vision/timeline/timeline_engine.py
 src/ohanna_vision/timeline/timeline_validation.py
 src/ohanna_vision/web/__init__.py
 src/ohanna_vision/web/app.py
+src/ohanna_vision/web/routers/__init__.py
+src/ohanna_vision/web/routers/api.py
+src/ohanna_vision/web/routers/root.py
