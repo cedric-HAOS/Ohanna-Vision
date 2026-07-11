@@ -2,159 +2,158 @@
 
 Toutes les évolutions importantes du projet **Ohanna-Vision** sont documentées dans ce fichier.
 
-Le projet suit les principes de *Keep a Changelog* et du *Semantic Versioning*.
+Le projet suit les principes de **Keep a Changelog** et du **Semantic Versioning**.
 
 ---
 
-# [0.1.0] - 2026-07-10
+# [0.1.0] - 2026-07-11
 
-Première version du cœur métier de **Ohanna-Vision**.
+Première version fonctionnelle d'Ohanna-Vision.
 
-Cette version pose les fondations architecturales du projet en introduisant les modèles métier, les moteurs de projection, d'évaluation et de reconstruction temporelle de l'infrastructure.
+Cette version établit l'ensemble des fondations du projet : modèle de domaine, moteurs de calcul, backend Web, API REST, WebSocket et première interface utilisateur.
 
----
+## Added
 
-## Ajouté
+### Domaine
 
-### Documentation
-
-* Création de la vision du projet.
-* Définition de l'architecture générale.
-* Documentation du modèle des observations.
-* Documentation du modèle de santé.
-* Création de la feuille de route.
-* Rédaction du README.
-
-### Architecture
-
-* ADR-0000 — Vision d'Architecture.
-* ADR-0001 — Projection Engine.
-* ADR-0002 — Health Engine.
-
----
-
-## Phase 1 — Domaine métier
-
-### Domain Model
-
-Création des principaux objets métier :
-
-* Observation
-* Health
-* HealthStatus
-* CapabilityState
-* ServiceState
-* NodeState
-* InfrastructureState
-* Criticality
-
----
+* Modèle immuable `Observation`
+* États de santé (`HealthStatus`)
+* Validation des observations
+* Identifiants d'observations
+* Métadonnées extensibles
 
 ### Observation Store
 
-Ajout du stockage immuable des observations.
+* Stockage immuable des observations
+* Détection des doublons
+* Historique chronologique
+* Filtres :
 
-Fonctionnalités :
-
-* ajout d'observations ;
-* conservation chronologique ;
-* consultation de l'historique ;
-* filtrage par infrastructure.
-
----
+  * nœud
+  * service
+  * capacité
+  * période
 
 ### Projection Engine
 
-Ajout du moteur de projection permettant de reconstruire automatiquement :
-
-* l'état des capacités ;
-* l'état des services ;
-* l'état des nœuds ;
-* l'état global de l'infrastructure.
-
-Le moteur fonctionne exclusivement à partir des observations stockées.
-
----
+* Projection des observations
+* Calcul de l'état courant
+* Agrégation des capacités
 
 ### Health Engine
 
-Ajout du moteur d'évaluation métier.
-
-Fonctionnalités :
-
-* interprétation indépendante des projections ;
-* prise en compte de la criticité ;
-* gestion des observations obsolètes (*stale*) ;
-* propagation des états vers les services, les nœuds et l'infrastructure ;
-* production d'un `HealthReport`.
-
----
+* Calcul de l'état des services
+* Calcul de l'état des nœuds
+* Calcul de l'état global
+* Projection déterministe
 
 ### Timeline Engine
 
-Ajout du moteur de reconstruction temporelle.
+* Gestion des périodes d'état
+* `StatePeriod`
+* `CapabilityTimeline`
+* `ServiceTimeline`
+* `NodeTimeline`
+* `InfrastructureTimeline`
+* Reconstruction complète à partir des observations
 
-Nouveaux objets métier :
+### Runtime
 
-* StatePeriod
-* CapabilityTimeline
-* ServiceTimeline
-* NodeTimeline
-* InfrastructureTimeline
+* `BackendRuntime`
+* États du runtime
+* Statistiques
+* Snapshots
+* Horloge injectable
+* `ObservationProcessor`
+* Résultats de traitement
 
-Fonctionnalités :
+### Backend Web
 
-* fusion des observations successives ;
-* reconstruction des périodes d'état ;
-* génération des timelines hiérarchiques ;
-* interrogation de l'état à un instant donné ;
-* calcul de la durée de la période courante ;
-* gestion des transitions d'état.
+* Application FastAPI
+* Point de composition (`bootstrap.py`)
+* `ApplicationContext`
+* Injection de dépendances
+* Documentation OpenAPI
 
----
+### API REST
 
-## Qualité
+Ajout des endpoints :
 
-* Développement intégral en Test-Driven Development (TDD).
-* Validation systématique avec Ruff.
-* Typage Python complet.
-* Documentation des principaux composants.
+* `GET /`
+* `GET /api/`
+* `GET /api/runtime`
+* `GET /api/observations`
+* `GET /api/timeline`
+* `GET /api/timeline/nodes/{node_id}`
+* `GET /api/timeline/nodes/{node_id}/services/{service_id}`
 
----
+### WebSocket
 
-## Tests
+* Endpoint `/ws`
+* Gestionnaire `WebSocketHub`
+* Gestion des connexions
+* Broadcast multi-clients
+* Heartbeat `ping` / `pong`
 
-État actuel de la couverture fonctionnelle :
+### Interface Web
 
-```text
-119 tests
-100 % réussis
+* Tableau de bord HTML statique
+* CSS intégré
+* JavaScript natif
+* Rafraîchissement manuel
+* Connexion WebSocket
+* Affichage :
+
+  * Runtime
+  * Statistiques
+  * Timeline
+  * Observations
+
+### Tests
+
+Ajout d'une couverture complète pour :
+
+* domaine
+* moteurs
+* runtime
+* API REST
+* WebSocket
+* interface Web
+* bootstrap
+
+## Changed
+
+* Séparation stricte entre le domaine métier et la couche Web.
+* Le `BackendRuntime` reste totalement indépendant de FastAPI.
+* Le `TimelineEngine` reconstruit les timelines exclusivement à partir des observations.
+* L'interface Web consomme uniquement les API REST et le WebSocket.
+* Le point d'entrée officiel devient :
+
+```powershell
+python -m uvicorn ohanna_vision.web.bootstrap:app --reload
 ```
 
+## Quality
+
+* 270 tests unitaires
+* Ruff sans erreur
+* Documentation OpenAPI générée automatiquement
+* Architecture entièrement injectée
+* Bootstrap de production opérationnel
+
 ---
 
-## Architecture obtenue
+# Historique
 
-```text
-                    Observations
-                           │
-                           ▼
-                  ObservationStore
-                    │           │
-                    │           │
-                    ▼           ▼
-          ProjectionEngine   TimelineEngine
-                    │           │
-                    ▼           ▼
-       InfrastructureState  InfrastructureTimeline
-                    │
-                    ▼
-               HealthEngine
-                    │
-                    ▼
-                HealthReport
-```
+## Pré-version
 
-Cette version constitue le socle métier d'Ohanna-Vision.
+Les travaux ayant conduit à cette première version comprennent :
 
-Les prochaines versions se concentreront sur le modèle d'administration, le backend REST et l'interface web.
+* définition de la vision d'architecture ;
+* conception du modèle d'observation ;
+* implémentation des moteurs métier ;
+* construction du runtime ;
+* développement de l'API Web ;
+* création de l'interface utilisateur.
+
+Cette version marque la fin de la **Phase 1** du projet.

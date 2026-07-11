@@ -1,240 +1,230 @@
-# Roadmap
+# ROADMAP
 
 ## Vision
 
 Une infrastructure fiable n'est pas uniquement une infrastructure qui fonctionne.
 
-C'est une infrastructure dont les capacités sont connues, comprises et administrables dans le temps.
+C'est une infrastructure dont les capacités sont garanties dans le temps.
 
-Ohanna-Agent produit des observations.
+Ohanna-Vision ne supervise pas les équipements.
 
-Ohanna-Vision les transforme en une représentation complète de l'infrastructure, de sa santé et de son évolution.
+Il présente l'état réel des capacités observées par Ohanna-Agent afin de permettre une compréhension immédiate de la santé de l'infrastructure et de son évolution.
 
-À terme, Ohanna-Vision deviendra également l'interface d'administration de l'ensemble de l'écosystème Ohanna.
+Le projet poursuit un objectif unique :
 
----
-
-# État du projet
-
-| Phase                                |   Statut   |
-| ------------------------------------ | :--------: |
-| Phase 0 — Architecture               | ✅ Terminée |
-| Phase 1 — Domaine métier             | ✅ Terminée |
-| Phase 2 — Backend                    | 🚧 À venir |
-| Phase 3 — Interface Web              |  📅 Prévue |
-| Phase 4 — Intégration Home Assistant |  📅 Prévue |
+> Transformer des observations techniques en une vision claire, historique et temps réel des capacités de l'infrastructure.
 
 ---
 
-# Phase 0 — Architecture
+# Phase 1 — Domaine, moteurs et backend Web
 
-## Objectif
+**Statut : Terminée ✅**
 
-Définir les fondations fonctionnelles et techniques du projet.
+Cette première phase a permis de construire l'ensemble des fondations d'Ohanna-Vision.
 
-### Réalisé
+## Domaine
 
-* Vision du projet
-* Architecture générale
-* Modèle des observations
-* Modèle de santé
-* Documentation
-* ADR-0000 — Vision d'Architecture
+* [x] 1.1 Domain Model
+* [x] Observation
+* [x] HealthStatus
+* [x] Validation métier
 
-**Statut : terminé**
+## Stockage
 
----
+* [x] 1.2 Observation Store
+* [x] Historique
+* [x] Filtres
+* [x] Détection des doublons
 
-# Phase 1 — Domaine métier
+## Moteurs
 
-## Objectif
+* [x] 1.3 Projection Engine
+* [x] 1.4 Health Engine
+* [x] 1.5 Timeline Engine
+* [x] StatePeriod
+* [x] CapabilityTimeline
+* [x] ServiceTimeline
+* [x] NodeTimeline
+* [x] InfrastructureTimeline
 
-Construire l'ensemble du modèle métier indépendamment de toute interface utilisateur.
+## Runtime
 
-### 1.1 Domain Model
+* [x] BackendRuntime
+* [x] RuntimeStatistics
+* [x] RuntimeSnapshot
+* [x] ObservationProcessor
 
-* Observation
-* Health
-* CapabilityState
-* ServiceState
-* NodeState
-* InfrastructureState
-* Criticality
+## Backend Web
 
-### 1.2 Observation Store
+* [x] FastAPI
+* [x] API REST
+* [x] Runtime API
+* [x] Observation API
+* [x] Timeline API
+* [x] WebSocket
+* [x] Application Context
+* [x] Bootstrap de production
 
-* stockage immuable
-* historique
-* filtrage
-* consultation
+## Interface Web
 
-### 1.3 Projection Engine
-
-* reconstruction automatique de l'état courant
-* agrégation des capacités
-* projection des services
-* projection des nœuds
-* projection globale
-
-ADR-0001 — Projection Engine
-
-### 1.4 Health Engine
-
-* interprétation métier
-* criticité
-* obsolescence
-* propagation des états
-* HealthReport
-
-ADR-0002 — Health Engine
-
-### 1.5 Timeline Engine
-
-* StatePeriod
-* CapabilityTimeline
-* ServiceTimeline
-* NodeTimeline
-* InfrastructureTimeline
-* TimelineEngine
-
-**Statut : terminé**
+* [x] Tableau de bord HTML
+* [x] CSS
+* [x] JavaScript natif
+* [x] Connexion WebSocket
 
 ---
 
-# Phase 2 — Backend
+# Phase 2 — Intégration avec Ohanna-Agent
 
-## Objectif
+**Objectif**
 
-Construire le backend de Ohanna-Vision et exposer le domaine métier via une API REST.
+Recevoir les observations produites par Ohanna-Agent en temps réel.
 
-### 2.1 Administration Model
+## 2.1 Connecteur Agent
 
-Création des modèles d'administration :
+* [ ] Client de réception des observations
+* [ ] Validation des messages
+* [ ] Gestion des erreurs
 
-* Plugin
-* PluginRepository
-* PluginPackage
-* InfrastructureConfiguration
-* DHCPReservation
-* DHCPLease
-* HealthPolicy
-* AdministrationCommand
+## 2.2 Ingestion
 
-### 2.2 Backend Runtime
+* [ ] Injection automatique dans l'Observation Store
+* [ ] Mise à jour du Projection Engine
+* [ ] Mise à jour du Health Engine
+* [ ] Mise à jour du Timeline Engine
 
-* cycle de vie de l'application
-* configuration
-* injection des moteurs métier
-* services internes
-* gestion des erreurs
+## 2.3 Temps réel
 
-### 2.3 API REST
-
-Première version de l'API.
-
-Exposition de :
-
-* observations
-* projections
-* santé
-* timelines
-* administration
-
-### 2.4 Démonstration console
-
-Application minimale permettant de :
-
-* charger des observations ;
-* reconstruire l'infrastructure ;
-* afficher la santé ;
-* afficher les timelines.
-
-### 2.5 Audit & Release
-
-* audit de cohérence
-* documentation
-* tests
-* première version du backend
+* [ ] Diffusion automatique via WebSocket
+* [ ] Mise à jour immédiate du tableau de bord
+* [ ] Synchronisation sans rechargement de page
 
 ---
 
-# Phase 3 — Interface Web
+# Phase 3 — Dashboard
 
-## Objectif
+**Objectif**
 
-Créer une interface moderne permettant d'observer et d'administrer l'infrastructure.
+Construire une interface de supervision exploitable au quotidien.
 
-### Tableau de bord
+## Vue Infrastructure
 
-* santé globale
-* capacités
-* services
-* nœuds
-* infrastructure
+* [ ] Santé globale
+* [ ] Historique des changements
+* [ ] Derniers événements
 
-### Historique
+## Vue Nœuds
 
-* timelines
-* transitions
-* durée des états
-* incidents
+* [ ] Santé par machine
+* [ ] Services actifs
+* [ ] Capacités
 
-### Administration
+## Vue Services
 
-* configuration
-* plugins
-* politiques de santé
-* réservations DHCP
-* baux DHCP
-* services disponibles
+* [ ] Historique
+* [ ] Latence
+* [ ] Disponibilité
 
-### Temps réel
+## Timeline
 
-* mise à jour automatique
-* notifications
-* événements
+* [ ] Navigation temporelle
+* [ ] Zoom
+* [ ] Filtres
+* [ ] Recherche
 
 ---
 
-# Phase 4 — Intégration Home Assistant
+# Phase 4 — Administration
 
-## Objectif
+**Objectif**
 
-Intégrer Ohanna-Vision dans l'écosystème Home Assistant.
+Administrer l'infrastructure directement depuis Ohanna-Vision.
 
-### Fonctionnalités
+## Configuration
 
-* entités Home Assistant
-* tableaux de bord
-* événements
-* services
-* navigation entre Vision et Home Assistant
+* [ ] Gestion des nœuds
+* [ ] Gestion des services
+* [ ] Capacités
 
----
+## Administration
 
-# Principes d'évolution
+* [ ] Déploiement de configuration
+* [ ] Validation
+* [ ] Rechargement
 
-Toutes les évolutions respecteront les principes suivants :
+## Supervision
 
-* les observations restent la source de vérité ;
-* les objets métier sont immuables ;
-* chaque moteur possède une responsabilité unique ;
-* les interfaces ne contiennent aucune logique métier ;
-* les fonctionnalités d'administration restent découplées du moteur d'observation.
+* [ ] Gestion des agents connectés
+* [ ] Informations système
+* [ ] Diagnostics
 
 ---
 
-# Vision à long terme
+# Phase 5 — Historique
 
-À terme, Ohanna-Vision deviendra le point d'entrée unique de l'écosystème Ohanna.
+**Objectif**
 
-Il permettra :
+Conserver les observations sur le long terme.
 
-* d'observer l'infrastructure en temps réel ;
-* de comprendre son évolution ;
-* d'évaluer sa santé ;
-* d'administrer les services ;
-* de gérer les plugins ;
-* de piloter les capacités de l'infrastructure depuis une interface web unique.
+* [ ] Persistance
+* [ ] Archivage
+* [ ] Recherche historique
+* [ ] Statistiques
+* [ ] Tendances
+* [ ] Rapports
 
-Le cœur métier restera indépendant de toute technologie d'interface afin de garantir la pérennité du projet.
+---
+
+# Phase 6 — Visualisation avancée
+
+**Objectif**
+
+Transformer les données en véritable outil d'analyse.
+
+* [ ] Graphiques temporels
+* [ ] Heatmaps
+* [ ] Disponibilité
+* [ ] Évolution des capacités
+* [ ] Analyse des incidents
+* [ ] Corrélations
+
+---
+
+# Phase 7 — Écosystème Ohanna
+
+**Objectif**
+
+Faire d'Ohanna-Vision le centre de visualisation de l'écosystème.
+
+* [ ] Intégration complète avec Ohanna-Agent
+* [ ] API publique
+* [ ] Notifications
+* [ ] Export des données
+* [ ] Authentification
+* [ ] Gestion des utilisateurs
+
+---
+
+# Objectif de la prochaine release
+
+## v0.2.0
+
+Connexion temps réel avec Ohanna-Agent :
+
+* réception automatique des observations ;
+* mise à jour immédiate des moteurs ;
+* diffusion WebSocket des événements ;
+* tableau de bord réellement vivant.
+
+---
+
+# État actuel
+
+* Version : **v0.1.0**
+* Phase 1 : **Terminée**
+* Couverture : **270 tests unitaires**
+* Qualité : **Ruff sans erreur**
+* Interface Web : **Opérationnelle**
+* API REST : **Opérationnelle**
+* WebSocket : **Opérationnel**
+* Bootstrap : **Opérationnel**

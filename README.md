@@ -1,249 +1,310 @@
 # Ohanna-Vision
 
-> Transformer des observations techniques en une vision compréhensible de l'infrastructure.
-
-## Présentation
-
-Ohanna-Vision est l'interface d'observation et d'administration de l'écosystème **Ohanna**.
-
-Contrairement à un outil de supervision traditionnel, Ohanna-Vision ne collecte pas directement les informations techniques.
-
-Il s'appuie sur les observations produites par **Ohanna-Agent** afin de reconstruire une représentation complète de l'infrastructure, d'évaluer sa santé et de présenter son évolution dans le temps.
-
-L'objectif est de fournir une vue claire, cohérente et durable des capacités de l'infrastructure, indépendamment des équipements qui les réalisent.
-
----
-
-# Philosophie
-
-Une infrastructure fiable n'est pas uniquement une infrastructure qui fonctionne.
-
-C'est une infrastructure dont les capacités sont connues, comprises et suivies dans le temps.
-
-Ohanna-Vision transforme les observations techniques en informations exploitables.
-
-Il distingue volontairement plusieurs niveaux d'abstraction :
-
-* les faits ;
-* l'état courant ;
-* l'interprétation métier ;
-* l'évolution temporelle.
-
-Cette séparation permet de faire évoluer l'interface sans modifier les modèles métier.
-
----
-
-# Architecture
-
-```text
-                    Observations
-                           │
-                           ▼
-                  ObservationStore
-                    │           │
-                    │           │
-                    ▼           ▼
-          ProjectionEngine   TimelineEngine
-                    │           │
-                    ▼           ▼
-       InfrastructureState  InfrastructureTimeline
-                    │
-                    ▼
-               HealthEngine
-                    │
-                    ▼
-                HealthReport
-```
-
-Chaque moteur possède une responsabilité unique.
-
-* **ObservationStore** conserve les observations.
-* **ProjectionEngine** reconstruit l'état courant.
-* **HealthEngine** interprète cet état.
-* **TimelineEngine** reconstruit son évolution.
-
----
-
-# Fonctionnalités
-
-## Observation Store
-
-* stockage immuable des observations ;
-* consultation chronologique ;
-* base de tous les traitements.
-
-## Projection Engine
-
-Reconstruit automatiquement :
-
-* les capacités ;
-* les services ;
-* les nœuds ;
-* l'infrastructure complète.
-
-## Health Engine
-
-Évalue :
-
-* la santé des capacités ;
-* la criticité ;
-* l'obsolescence des observations ;
-* la propagation des incidents.
-
-## Timeline Engine
-
-Construit l'historique temporel sous forme de périodes d'état :
-
-```text
-Healthy      08:00 → 08:15
-Degraded     08:15 → 08:25
-Healthy      08:25 → maintenant
-```
-
----
-
-# Interface d'administration
-
-À terme, Ohanna-Vision ne sera pas uniquement un tableau de bord.
-
-Il constituera également une interface d'administration de l'écosystème Ohanna.
-
-Les fonctionnalités envisagées comprennent notamment :
-
-* gestion des plugins Ohanna-Agent ;
-* import et mise à jour de plugins ;
-* consultation et édition de la configuration ;
-* gestion des baux DHCP statiques ;
-* consultation des baux DHCP actifs ;
-* visualisation des capacités disponibles ;
-* supervision des services et des nœuds ;
-* gestion des politiques de santé.
-
----
-
-# Relation avec Ohanna-Agent
-
-Ohanna-Agent produit des observations.
-
-Ohanna-Vision les exploite.
-
-Les deux projets restent volontairement indépendants.
-
-Cette séparation permet :
-
-* de faire évoluer l'interface sans modifier l'agent ;
-* d'utiliser plusieurs agents simultanément ;
-* de conserver une architecture modulaire.
-
----
-
-# État du projet
-
-Version actuelle :
-
-* Domaine métier : ✅
-* Observation Store : ✅
-* Projection Engine : ✅
-* Health Engine : ✅
-* Timeline Engine : ✅
-* Interface d'administration : en préparation
-* Backend REST : à venir
-* Interface Web : à venir
-
----
-
-# Feuille de route
-
-## Phase 0
-
-* Vision
-* Architecture
-* Modèles métier
-* Documentation
-
-**Statut : terminée**
-
-## Phase 1
-
-* Domain Model
-* Observation Store
-* Projection Engine
-* Health Engine
-* Timeline Engine
-
-**Statut : terminée**
-
-## Phase 2
-
-* Administration Model
-* Backend Runtime
-* API REST
-* Démonstration console
-
-## Phase 3
-
-* Interface Web
-* Tableau de bord temps réel
-* Historique
-* Administration
-
-## Phase 4
-
-* Intégration Home Assistant
-
----
-
-# Documentation
-
-La documentation d'architecture est disponible dans le répertoire :
-
-```text
-docs/
-```
-
-Les principales décisions d'architecture sont documentées dans les ADR :
-
-* ADR-0000 — Vision d'Architecture
-* ADR-0001 — Projection Engine
-* ADR-0002 — Health Engine
-
----
-
-# Tests
-
-Le projet est entièrement développé selon une approche **Test-Driven Development (TDD)**.
-
-Chaque composant est accompagné de tests unitaires.
-
-État actuel :
-
-```text
-119 tests
-100 % réussis
-```
-
----
-
-# Licence
-
-Ce projet est distribué sous licence MIT.
-
-Voir le fichier `LICENSE`.
+> Visualiser l'état réel des capacités d'une infrastructure dans le temps.
 
 ---
 
 # Vision
 
-Ohanna-Vision n'est pas un simple tableau de bord.
+Une infrastructure fiable ne se résume pas à des services qui répondent.
 
-C'est la représentation vivante d'une infrastructure.
+Elle doit permettre de comprendre :
 
-Les observations constituent la source de vérité.
+* ce qui fonctionne actuellement ;
+* ce qui s'est produit auparavant ;
+* depuis quand une capacité est disponible ;
+* comment l'état global évolue dans le temps.
 
-Les projections décrivent cette vérité.
+Ohanna-Vision est le composant de visualisation d'Ohanna.
 
-La santé en est l'interprétation métier.
+Il transforme les observations produites par **Ohanna-Agent** en une représentation exploitable de l'état de l'infrastructure.
 
-La timeline raconte son évolution.
+Son rôle est exclusivement de présenter les informations.
 
-L'interface permet enfin de comprendre, d'administrer et de piloter l'ensemble de l'infrastructure Ohanna.
+Il ne réalise aucune supervision réseau et n'exécute aucune vérification.
+
+---
+
+# Architecture
+
+```
+                 Ohanna-Agent
+                       │
+                Observations
+                       │
+                       ▼
+               Observation Store
+                       │
+         ┌─────────────┼─────────────┐
+         ▼             ▼             ▼
+ Projection Engine  Health Engine  Timeline Engine
+         │             │             │
+         └─────────────┼─────────────┘
+                       ▼
+               Backend Runtime
+                       │
+          ┌────────────┴────────────┐
+          ▼                         ▼
+      REST API                 WebSocket
+          │                         │
+          └────────────┬────────────┘
+                       ▼
+                 Static Web UI
+```
+
+---
+
+# Fonctionnalités
+
+## Domaine
+
+* Modèle d'observation immuable
+* États de santé
+* Observation Store
+* Historique filtrable
+
+## Moteurs
+
+* Projection Engine
+* Health Engine
+* Timeline Engine
+
+## Runtime
+
+* Backend Runtime
+* Runtime Snapshot
+* Runtime Statistics
+* Observation Processor
+
+## API REST
+
+* Runtime
+* Observations
+* Timeline
+
+## Temps réel
+
+* WebSocket
+* Broadcast multiclient
+* Heartbeat ping/pong
+
+## Interface Web
+
+* Tableau de bord statique
+* Sans framework JavaScript
+* HTML/CSS/JavaScript natifs
+
+---
+
+# Structure du projet
+
+```
+src/
+└── ohanna_vision/
+    ├── domain/
+    ├── projection/
+    ├── health/
+    ├── timeline/
+    ├── runtime/
+    └── web/
+        ├── routers/
+        ├── static/
+        ├── websocket_hub.py
+        ├── bootstrap.py
+        └── app.py
+
+tests/
+docs/
+```
+
+---
+
+# Installation
+
+Créer un environnement virtuel :
+
+```powershell
+python -m venv .venv
+```
+
+Activer l'environnement :
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Installer le projet :
+
+```powershell
+python -m pip install -e .
+```
+
+---
+
+# Lancer Ohanna-Vision
+
+Le point d'entrée officiel est :
+
+```powershell
+python -m uvicorn ohanna_vision.web.bootstrap:app --reload
+```
+
+L'application est alors disponible sur :
+
+```
+http://127.0.0.1:8000/
+```
+
+Documentation OpenAPI :
+
+```
+http://127.0.0.1:8000/docs
+```
+
+Interface Web :
+
+```
+http://127.0.0.1:8000/ui/
+```
+
+---
+
+# API REST
+
+## Runtime
+
+```
+GET /api/runtime
+```
+
+Retourne :
+
+* état du backend ;
+* statistiques ;
+* snapshot courant.
+
+---
+
+## Observations
+
+```
+GET /api/observations
+```
+
+Filtres disponibles :
+
+* node_id
+* service_id
+* capability_id
+* since
+* until
+
+---
+
+## Timeline
+
+Infrastructure complète :
+
+```
+GET /api/timeline
+```
+
+Timeline d'un nœud :
+
+```
+GET /api/timeline/nodes/{node_id}
+```
+
+Timeline d'un service :
+
+```
+GET /api/timeline/nodes/{node_id}/services/{service_id}
+```
+
+---
+
+# WebSocket
+
+Connexion :
+
+```
+/ws
+```
+
+Messages actuellement supportés :
+
+```
+connected
+ping
+pong
+```
+
+L'architecture permet ensuite de diffuser :
+
+* observation.received
+* runtime.updated
+* timeline.updated
+
+---
+
+# Interface Web
+
+Le tableau de bord affiche :
+
+* état du runtime ;
+* statistiques ;
+* observations récentes ;
+* timeline de l'infrastructure ;
+* état de la connexion WebSocket.
+
+Les données proviennent exclusivement des API REST et du canal WebSocket.
+
+Aucune donnée n'est stockée côté navigateur.
+
+---
+
+# Développement
+
+Vérification Ruff :
+
+```powershell
+python -m ruff check .
+```
+
+Exécution des tests :
+
+```powershell
+python -m pytest
+```
+
+Tous les warnings deviennent des erreurs :
+
+```powershell
+python -m pytest -W error
+```
+
+---
+
+# Qualité
+
+Version actuelle :
+
+* 270 tests unitaires
+* Ruff sans erreur
+* API REST documentée automatiquement
+* Interface Web intégrée
+* WebSocket intégré
+
+---
+
+# Roadmap
+
+La Phase 1 est terminée.
+
+La prochaine étape consiste à connecter Ohanna-Vision à Ohanna-Agent afin de recevoir les observations en temps réel et d'afficher l'évolution de l'infrastructure sans rechargement de la page.
+
+---
+
+# Licence
+
+Projet distribué sous licence MIT.
