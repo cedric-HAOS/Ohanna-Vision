@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, Request, status
 
 from ohanna_vision.domain.observation import Observation
 from ohanna_vision.web.dependencies import (
@@ -59,16 +59,32 @@ def get_observations(
     response_model=ObservationIngestionResponse,
     status_code=status.HTTP_202_ACCEPTED,
 )
-def ingest_observation(
-    request: ObservationRequest,
+async def ingest_observation(
+    request: Request,
+    observation_request: ObservationRequest,
     processor: ObservationProcessorDependency,
 ) -> ObservationIngestionResponse:
-    """Receive and process an observation."""
-    observation = ObservationMapper.to_domain(request)
+    """Receive, process, and broadcast an observation."""
+    observation = ObservationMapper.to_domain(observation_request)
+    result = processor.process(observation)
 
-    processor.process(observation)
+    if result.accepted:
+        await request.app.state.websocket_hub.broadcast(
+            {
+                "type": "observation.accepted",
+                "observation_id": str(observation.observation_id),
+                "capability_id": observation.capability_id,
+                "service_id": observation.service_id,
+                "node_id": observation.node_id,
+                "status": observation.status.value,
+            }
+        )
 
     return ObservationIngestionResponse(
-        accepted=True,
-        message="Observation accepted.",
+        accepted=result.accepted,
+        message=(
+            "Observation accepted."
+            if result.accepted
+            else "Observation rejected."
+        ),
     )

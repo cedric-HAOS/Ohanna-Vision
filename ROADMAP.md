@@ -97,8 +97,8 @@ Recevoir les observations produites par Ohanna-Agent en temps réel.
 
 * [x] GET /api/runtime enrichi
 * [x] Connecter ObservationProcessor à TimelineRuntime
-* [ ] Notification temps réel lors d'une ingestion
-* [ ] Tests d'intégration REST ↔ WebSocket
+* [x] Notification temps réel lors d'une ingestion
+* [x] Tests d'intégration REST ↔ WebSocket
 
 ---
 

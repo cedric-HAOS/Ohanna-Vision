@@ -1,5 +1,6 @@
 """Tests for the Ohanna-Vision observation API router."""
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import cast
 
@@ -16,6 +17,12 @@ from ohanna_vision.web.dependencies import (
 )
 from ohanna_vision.web.routers import observations_router
 
+
+@dataclass(frozen=True)
+class FakeProcessingResult:
+    """Minimal processing result used by endpoint tests."""
+
+    accepted: bool
 
 class FakeObservationStore:
     """Observation store double exposing fixed history results."""
@@ -199,18 +206,47 @@ def test_observations_router_returns_503_without_context() -> None:
 class FakeObservationProcessor:
     """Observation processor recording received observations."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        *,
+        accepted: bool = True,
+    ) -> None:
+        self.accepted = accepted
         self.observations: list[Observation] = []
 
-    def process(self, observation: Observation) -> None:
-        """Record an observation."""
+    def process(
+        self,
+        observation: Observation,
+    ) -> FakeProcessingResult:
+        """Record and process an observation."""
         self.observations.append(observation)
+
+        return FakeProcessingResult(
+            accepted=self.accepted,
+        )
+    
+class FakeWebSocketHub:
+    """WebSocket hub recording broadcast messages."""
+
+    def __init__(self) -> None:
+        self.messages: list[dict[str, object]] = []
+
+    async def broadcast(
+        self,
+        message: dict[str, object],
+    ) -> None:
+        """Record a broadcast message."""
+        self.messages.append(message)
 
 def make_ingestion_client(
     processor: FakeObservationProcessor,
+    websocket_hub: FakeWebSocketHub | None = None,
 ) -> TestClient:
-    """Create an API client with an injected observation processor."""
+    """Create an API client with injected ingestion services."""
     application = FastAPI()
+    application.state.websocket_hub = (
+        websocket_hub or FakeWebSocketHub()
+    )
     application.include_router(
         observations_router,
         prefix="/api",
@@ -311,3 +347,67 @@ def test_post_observation_rejects_invalid_payload() -> None:
 
     assert response.status_code == 422
     assert processor.observations == []
+
+def test_post_observation_broadcasts_after_success() -> None:
+    """An accepted observation must be broadcast to WebSocket clients."""
+    processor = FakeObservationProcessor()
+    websocket_hub = FakeWebSocketHub()
+    client = make_ingestion_client(
+        processor,
+        websocket_hub,
+    )
+
+    response = client.post(
+        "/api/observations",
+        json={
+            "capability_id": "dns.resolve",
+            "service_id": "dns-primary",
+            "node_id": "infra-01",
+            "status": "healthy",
+            "observed_at": "2026-07-11T16:30:00+00:00",
+            "latency_ms": 12.5,
+            "metadata": {},
+        },
+    )
+
+    assert response.status_code == 202
+    assert len(websocket_hub.messages) == 1
+
+    message = websocket_hub.messages[0]
+
+    assert message["type"] == "observation.accepted"
+    assert message["capability_id"] == "dns.resolve"
+    assert message["service_id"] == "dns-primary"
+    assert message["node_id"] == "infra-01"
+    assert message["status"] == "healthy"
+
+def test_post_observation_does_not_broadcast_after_rejection() -> None:
+    """A rejected observation must not be broadcast."""
+    processor = FakeObservationProcessor(
+        accepted=False,
+    )
+    websocket_hub = FakeWebSocketHub()
+    client = make_ingestion_client(
+        processor,
+        websocket_hub,
+    )
+
+    response = client.post(
+        "/api/observations",
+        json={
+            "capability_id": "dns.resolve",
+            "service_id": "dns-primary",
+            "node_id": "infra-01",
+            "status": "healthy",
+            "observed_at": "2026-07-11T16:30:00+00:00",
+            "latency_ms": 12.5,
+            "metadata": {},
+        },
+    )
+
+    assert response.status_code == 202
+    assert response.json() == {
+        "accepted": False,
+        "message": "Observation rejected.",
+    }
+    assert websocket_hub.messages == []
