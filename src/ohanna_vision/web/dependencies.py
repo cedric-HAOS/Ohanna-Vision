@@ -1,11 +1,13 @@
 """FastAPI dependencies for Ohanna-Vision."""
 
+from collections.abc import Callable
+from datetime import UTC, datetime
 from typing import Annotated, cast
 
 from fastapi import Depends, HTTPException, Request, WebSocket, status
 
 from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
+from ohanna_vision.runtime import BackendRuntime, ObservationProcessor
 from ohanna_vision.timeline import TimelineEngine
 from ohanna_vision.web.application_context import ApplicationContext
 from ohanna_vision.web.websocket_hub import WebSocketHub
@@ -85,4 +87,47 @@ def get_websocket_hub(
 WebSocketHubDependency = Annotated[
     WebSocketHub,
     Depends(get_websocket_hub),
+]
+
+Timer = Callable[[], datetime]
+
+
+def get_timer() -> Timer:
+    """Return the timer used by observation processing."""
+    return lambda: datetime.now(UTC)
+
+
+TimerDependency = Annotated[
+    Timer,
+    Depends(get_timer),
+]
+
+
+def get_observation_processor(
+    runtime: Annotated[
+        BackendRuntime,
+        Depends(get_runtime),
+    ],
+    observation_store: Annotated[
+        ObservationStore,
+        Depends(get_observation_store),
+    ],
+    timeline_engine: Annotated[
+        TimelineEngine,
+        Depends(get_timeline_engine),
+    ],
+    timer: TimerDependency,
+) -> ObservationProcessor:
+    """Build an observation processor from application dependencies."""
+    return ObservationProcessor(
+        runtime=runtime,
+        observation_store=observation_store,
+        timeline_engine=timeline_engine,
+        timer=timer,
+    )
+
+
+ObservationProcessorDependency = Annotated[
+    ObservationProcessor,
+    Depends(get_observation_processor),
 ]

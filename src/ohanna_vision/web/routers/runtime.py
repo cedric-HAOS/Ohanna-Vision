@@ -3,7 +3,9 @@
 from fastapi import APIRouter
 
 from ohanna_vision.runtime import RuntimeSnapshot
-from ohanna_vision.web.dependencies import RuntimeDependency
+from ohanna_vision.web.dependencies import (
+    RuntimeDependency,
+)
 
 router = APIRouter(
     prefix="/runtime",

@@ -366,3 +366,45 @@ def test_negative_timer_difference_is_clamped_to_zero() -> None:
     result = processor.process(make_observation())
 
     assert result.duration_ms == 0.0
+
+class FakeTimelineRuntime:
+    """Timeline runtime double for processor tests."""
+
+    def __init__(self) -> None:
+        self.timeline = InfrastructureTimeline()
+        self.built_with: list[tuple[Observation, ...]] = []
+        self.retained: list[InfrastructureTimeline] = []
+
+    @property
+    def service_count(self) -> int:
+        return sum(
+            len(node.services)
+            for node in self.timeline.nodes
+        )
+
+    @property
+    def node_count(self) -> int:
+        return len(self.timeline.nodes)
+
+    @property
+    def infrastructure_count(self) -> int:
+        return int(
+            bool(
+                self.timeline.nodes
+                or self.timeline.periods
+            )
+        )
+
+    def build(
+        self,
+        observations: tuple[Observation, ...],
+    ) -> InfrastructureTimeline:
+        self.built_with.append(observations)
+        return InfrastructureTimeline()
+
+    def retain(
+        self,
+        timeline: InfrastructureTimeline,
+    ) -> None:
+        self.retained.append(timeline)
+        self.timeline = timeline

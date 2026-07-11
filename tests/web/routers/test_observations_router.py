@@ -9,7 +9,11 @@ from fastapi.testclient import TestClient
 from ohanna_vision.domain.health import HealthStatus
 from ohanna_vision.domain.observation import Observation
 from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.web.dependencies import get_observation_store
+from ohanna_vision.runtime import ObservationProcessor
+from ohanna_vision.web.dependencies import (
+    get_observation_processor,
+    get_observation_store,
+)
 from ohanna_vision.web.routers import observations_router
 
 
@@ -191,3 +195,119 @@ def test_observations_router_returns_503_without_context() -> None:
     assert response.json() == {
         "detail": "Application context is not configured",
     }
+
+class FakeObservationProcessor:
+    """Observation processor recording received observations."""
+
+    def __init__(self) -> None:
+        self.observations: list[Observation] = []
+
+    def process(self, observation: Observation) -> None:
+        """Record an observation."""
+        self.observations.append(observation)
+
+def make_ingestion_client(
+    processor: FakeObservationProcessor,
+) -> TestClient:
+    """Create an API client with an injected observation processor."""
+    application = FastAPI()
+    application.include_router(
+        observations_router,
+        prefix="/api",
+    )
+    application.dependency_overrides[
+        get_observation_processor
+    ] = lambda: cast(
+        ObservationProcessor,
+        processor,
+    )
+
+    return TestClient(application)
+
+def test_post_observation_returns_accepted_response() -> None:
+    """The endpoint must accept a valid observation."""
+    processor = FakeObservationProcessor()
+    client = make_ingestion_client(processor)
+
+    response = client.post(
+        "/api/observations",
+        json={
+            "capability_id": "dns.resolve",
+            "service_id": "dns-primary",
+            "node_id": "infra-01",
+            "status": "healthy",
+            "observed_at": datetime(
+                2026,
+                7,
+                11,
+                16,
+                30,
+                tzinfo=UTC,
+            ).isoformat(),
+            "latency_ms": 12.5,
+            "metadata": {
+                "hostname": "example.com",
+                "server": "192.168.1.11",
+            },
+        },
+    )
+
+    assert response.status_code == 202
+    assert response.json() == {
+        "accepted": True,
+        "message": "Observation accepted.",
+    }
+
+def test_post_observation_forwards_domain_observation() -> None:
+    """The endpoint must forward a domain observation to the processor."""
+    processor = FakeObservationProcessor()
+    client = make_ingestion_client(processor)
+
+    response = client.post(
+        "/api/observations",
+        json={
+            "capability_id": "dns.resolve",
+            "service_id": "dns-primary",
+            "node_id": "infra-01",
+            "status": "healthy",
+            "observed_at": "2026-07-11T16:30:00+00:00",
+            "latency_ms": 12.5,
+            "metadata": {
+                "hostname": "example.com",
+            },
+        },
+    )
+
+    assert response.status_code == 202
+    assert len(processor.observations) == 1
+
+    observation = processor.observations[0]
+
+    assert isinstance(observation, Observation)
+    assert observation.capability_id == "dns.resolve"
+    assert observation.service_id == "dns-primary"
+    assert observation.node_id == "infra-01"
+    assert observation.latency_ms == 12.5
+    assert observation.metadata == {
+        "hostname": "example.com",
+    }
+
+def test_post_observation_rejects_invalid_payload() -> None:
+    """The endpoint must reject an invalid observation request."""
+    processor = FakeObservationProcessor()
+    client = make_ingestion_client(processor)
+
+    response = client.post(
+        "/api/observations",
+        json={
+            "capability_id": "dns.resolve",
+            "service_id": "dns-primary",
+            "node_id": "infra-01",
+            "status": "healthy",
+            "observed_at": "2026-07-11T16:30:00+00:00",
+            "latency_ms": -1,
+        },
+    )
+
+    assert response.status_code == 422
+    assert processor.observations == []

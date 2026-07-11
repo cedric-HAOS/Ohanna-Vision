@@ -6,7 +6,15 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query, status
 
 from ohanna_vision.domain.observation import Observation
-from ohanna_vision.web.dependencies import ObservationStoreDependency
+from ohanna_vision.web.dependencies import (
+    ObservationProcessorDependency,
+    ObservationStoreDependency,
+)
+from ohanna_vision.web.observation_ingestion_response import (
+    ObservationIngestionResponse,
+)
+from ohanna_vision.web.observation_mapper import ObservationMapper
+from ohanna_vision.web.observation_request import ObservationRequest
 
 router = APIRouter(
     prefix="/observations",
@@ -45,3 +53,22 @@ def get_observations(
         ) from error
 
     return list(observations)
+
+@router.post(
+    "",
+    response_model=ObservationIngestionResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+def ingest_observation(
+    request: ObservationRequest,
+    processor: ObservationProcessorDependency,
+) -> ObservationIngestionResponse:
+    """Receive and process an observation."""
+    observation = ObservationMapper.to_domain(request)
+
+    processor.process(observation)
+
+    return ObservationIngestionResponse(
+        accepted=True,
+        message="Observation accepted.",
+    )

@@ -1,12 +1,16 @@
 """Tests for Ohanna-Vision FastAPI dependencies."""
 
+from datetime import UTC, datetime
 from typing import cast
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
+from ohanna_vision.runtime import (
+    BackendRuntime,
+    ObservationProcessor,
+)
 from ohanna_vision.timeline import TimelineEngine
 from ohanna_vision.web import (
     ApplicationContext,
@@ -15,6 +19,11 @@ from ohanna_vision.web import (
     RuntimeDependency,
     TimelineEngineDependency,
     get_application_context,
+)
+from ohanna_vision.web.dependencies import (
+    ObservationProcessorDependency,
+    get_observation_processor,
+    get_timer,
 )
 
 
@@ -164,4 +173,63 @@ def test_application_context_dependency_can_be_overridden() -> None:
     assert response.status_code == 200
     assert response.json() == {
         "overridden": True,
+    }
+
+def test_timer_dependency_returns_timezone_aware_datetime() -> None:
+    """The timer dependency must return an aware UTC datetime."""
+    timer = get_timer()
+
+    now = timer()
+
+    assert now.tzinfo is UTC
+
+def test_observation_processor_dependency_builds_processor() -> None:
+    """The dependency must build an observation processor."""
+    runtime = BackendRuntime()
+    observation_store = ObservationStore()
+    timeline_engine = TimelineEngine()
+    observed_at = datetime(
+        2026,
+        7,
+        11,
+        16,
+        0,
+        tzinfo=UTC,
+    )
+
+    processor = get_observation_processor(
+        runtime=runtime,
+        observation_store=observation_store,
+        timeline_engine=timeline_engine,
+        timer=lambda: observed_at.timestamp(),
+    )
+
+    assert isinstance(processor, ObservationProcessor)
+
+def test_observation_processor_dependency_can_be_overridden() -> None:
+    """FastAPI must support overriding the processor dependency."""
+    expected_processor = cast(
+        ObservationProcessor,
+        object(),
+    )
+
+    application = FastAPI()
+
+    @application.get("/processor")
+    def read_processor(
+        processor: ObservationProcessorDependency,
+    ) -> dict[str, bool]:
+        return {
+            "injected": processor is expected_processor,
+        }
+
+    application.dependency_overrides[
+        get_observation_processor
+    ] = lambda: expected_processor
+
+    response = TestClient(application).get("/processor")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "injected": True,
     }

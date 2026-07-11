@@ -6,28 +6,74 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from ohanna_vision.domain import ObservationStore
 from ohanna_vision.runtime import (
     BackendRuntime,
     BackendRuntimeState,
     RuntimeSnapshot,
     RuntimeStatistics,
 )
-from ohanna_vision.web.dependencies import get_runtime
+from ohanna_vision.timeline import TimelineEngine
+from ohanna_vision.web.dependencies import (
+    get_observation_store,
+    get_runtime,
+    get_timeline_engine,
+)
 from ohanna_vision.web.routers import runtime_router
 
 
 class FakeBackendRuntime:
-    """Backend runtime double exposing a fixed snapshot."""
+    """Backend runtime double recording snapshot counters."""
 
     def __init__(self, snapshot: RuntimeSnapshot) -> None:
         self._snapshot = snapshot
         self.snapshot_calls = 0
+        self.snapshot_arguments: dict[str, int] = {}
 
-    def snapshot(self) -> RuntimeSnapshot:
+    def snapshot(
+        self,
+        *,
+        observations_stored: int = 0,
+        service_timelines: int = 0,
+        node_timelines: int = 0,
+        infrastructure_timelines: int = 0,
+    ) -> RuntimeSnapshot:
         """Return the configured runtime snapshot."""
         self.snapshot_calls += 1
+        self.snapshot_arguments = {
+            "observations_stored": observations_stored,
+            "service_timelines": service_timelines,
+            "node_timelines": node_timelines,
+            "infrastructure_timelines": infrastructure_timelines,
+        }
         return self._snapshot
 
+class FakeObservationStore:
+    """Observation store double exposing stored observations."""
+
+    def __init__(self, observation_count: int = 0) -> None:
+        self._observations = [object()] * observation_count
+
+    def history(self) -> tuple[object, ...]:
+        """Return all stored observations."""
+        return tuple(self._observations)
+
+
+class FakeTimelineEngine:
+    """Timeline engine double exposing timeline collections."""
+
+    def __init__(
+        self,
+        *,
+        service_timelines: int = 0,
+        node_timelines: int = 0,
+        infrastructure_timelines: int = 0,
+    ) -> None:
+        self.service_timelines = [object()] * service_timelines
+        self.node_timelines = [object()] * node_timelines
+        self.infrastructure_timelines = (
+            [object()] * infrastructure_timelines
+        )
 
 def make_snapshot(
     *,
@@ -58,14 +104,34 @@ def make_snapshot(
 
 def make_client(
     runtime: FakeBackendRuntime,
+    *,
+    observation_count: int = 0,
+    service_timelines: int = 0,
+    node_timelines: int = 0,
+    infrastructure_timelines: int = 0,
 ) -> TestClient:
-    """Create a test client with an overridden runtime."""
+    """Create a test client with overridden runtime services."""
     app = FastAPI()
     app.include_router(runtime_router)
+
+    observation_store = FakeObservationStore(observation_count)
+    timeline_engine = FakeTimelineEngine(
+        service_timelines=service_timelines,
+        node_timelines=node_timelines,
+        infrastructure_timelines=infrastructure_timelines,
+    )
 
     app.dependency_overrides[get_runtime] = lambda: cast(
         BackendRuntime,
         runtime,
+    )
+    app.dependency_overrides[get_observation_store] = lambda: cast(
+        ObservationStore,
+        observation_store,
+    )
+    app.dependency_overrides[get_timeline_engine] = lambda: cast(
+        TimelineEngine,
+        timeline_engine,
     )
 
     return TestClient(app)

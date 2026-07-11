@@ -4,15 +4,21 @@ from ohanna_vision.web.app import create_app
 from ohanna_vision.web.application_context import ApplicationContext
 from ohanna_vision.web.dependencies import (
     ApplicationContextDependency,
+    ObservationProcessorDependency,
     ObservationStoreDependency,
     RuntimeDependency,
     TimelineEngineDependency,
     WebSocketHubDependency,
     get_application_context,
+    get_observation_processor,
     get_observation_store,
     get_runtime,
     get_timeline_engine,
+    get_timer,
     get_websocket_hub,
+)
+from ohanna_vision.web.observation_ingestion_response import (
+    ObservationIngestionResponse,
 )
 from ohanna_vision.web.observation_mapper import ObservationMapper
 from ohanna_vision.web.observation_request import ObservationRequest
@@ -34,4 +40,8 @@ __all__ = [
     "get_websocket_hub",
     "ObservationRequest",
     "ObservationMapper",
+    "ObservationProcessorDependency",
+    "get_observation_processor",
+    "get_timer",
+    "ObservationIngestionResponse",
 ]

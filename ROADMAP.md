@@ -88,16 +88,17 @@ Recevoir les observations produites par Ohanna-Agent en temps réel.
 
 ## 2.2 Ingestion
 
-* [ ] Injection automatique dans l'Observation Store
-* [ ] Mise à jour du Projection Engine
-* [ ] Mise à jour du Health Engine
-* [ ] Mise à jour du Timeline Engine
+* [x] Injection automatique dans l'Observation Store
+* [x] Mise à jour du Projection Engine
+* [x] Mise à jour du Health Engine
+* [x] Mise à jour du Timeline Engine
 
 ## 2.3 Temps réel
 
-* [ ] Diffusion automatique via WebSocket
-* [ ] Mise à jour immédiate du tableau de bord
-* [ ] Synchronisation sans rechargement de page
+* [x] GET /api/runtime enrichi
+* [x] Connecter ObservationProcessor à TimelineRuntime
+* [ ] Notification temps réel lors d'une ingestion
+* [ ] Tests d'intégration REST ↔ WebSocket
 
 ---
 

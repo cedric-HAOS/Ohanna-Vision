@@ -13,6 +13,7 @@ from ohanna_vision.runtime.observation_processor import (
 from ohanna_vision.runtime.processing_result import ProcessingResult
 from ohanna_vision.runtime.runtime_snapshot import RuntimeSnapshot
 from ohanna_vision.runtime.runtime_statistics import RuntimeStatistics
+from ohanna_vision.runtime.timeline_runtime import TimelineRuntime
 
 __all__ = [
     "BackendRuntime",
@@ -23,5 +24,6 @@ __all__ = [
     "ProcessingResult",
     "RuntimeSnapshot",
     "RuntimeStatistics",
+    "TimelineRuntime",
     "TimelineEngineProtocol",
 ]

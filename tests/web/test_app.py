@@ -177,3 +177,10 @@ def test_application_mounts_static_ui() -> None:
     response = client.get("/ui/")
 
     assert response.status_code == 200
+
+def test_observation_ingestion_is_exposed_in_openapi() -> None:
+    """The ingestion endpoint must appear in the OpenAPI schema."""
+    response = TestClient(create_app()).get("/openapi.json")
+
+    assert response.status_code == 200
+    assert "post" in response.json()["paths"]["/api/observations"]

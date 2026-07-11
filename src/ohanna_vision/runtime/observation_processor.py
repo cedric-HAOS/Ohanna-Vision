@@ -57,7 +57,6 @@ class ObservationProcessor:
 
     def process(self, observation: Observation) -> ProcessingResult:
         """Process an observation through the backend pipeline."""
-
         started = self.timer()
 
         if not self.runtime.running:
@@ -115,7 +114,6 @@ class ObservationProcessor:
         record_received: bool,
     ) -> ProcessingResult:
         """Create a rejected processing result."""
-
         if record_received:
             self.runtime.record_rejected()
 
@@ -128,7 +126,6 @@ class ObservationProcessor:
 
     def _snapshot(self) -> RuntimeSnapshot:
         """Create a snapshot from the current pipeline state."""
-
         service_timelines = sum(
             len(node.services)
             for node in self.infrastructure_timeline.nodes
@@ -156,7 +153,6 @@ class ObservationProcessor:
 
     def _duration_since(self, started: float) -> timedelta:
         """Return the elapsed processing duration."""
-
         elapsed = self.timer() - started
 
         return timedelta(seconds=max(elapsed, 0.0))
