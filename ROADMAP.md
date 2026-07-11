@@ -82,9 +82,9 @@ Recevoir les observations produites par Ohanna-Agent en temps réel.
 
 ## 2.1 Connecteur Agent
 
-* [ ] Client de réception des observations
-* [ ] Validation des messages
-* [ ] Gestion des erreurs
+* [x] Client de réception des observations
+* [x] Validation des messages
+* [x] Gestion des erreurs
 
 ## 2.2 Ingestion
 

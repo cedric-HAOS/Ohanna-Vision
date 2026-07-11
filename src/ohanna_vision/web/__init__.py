@@ -14,6 +14,8 @@ from ohanna_vision.web.dependencies import (
     get_timeline_engine,
     get_websocket_hub,
 )
+from ohanna_vision.web.observation_mapper import ObservationMapper
+from ohanna_vision.web.observation_request import ObservationRequest
 from ohanna_vision.web.websocket_hub import WebSocketHub
 
 __all__ = [
@@ -30,4 +32,6 @@ __all__ = [
     "WebSocketHub",
     "WebSocketHubDependency",
     "get_websocket_hub",
+    "ObservationRequest",
+    "ObservationMapper",
 ]

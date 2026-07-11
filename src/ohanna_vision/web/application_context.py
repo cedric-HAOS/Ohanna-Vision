@@ -1,15 +1,15 @@
-"""Application service composition for Ohanna-Vision."""
+"""Application services exposed to the web layer."""
 
 from dataclasses import dataclass
 
-from ohanna_vision.domain.observation_store import ObservationStore
+from ohanna_vision.domain import ObservationStore
 from ohanna_vision.runtime import BackendRuntime
 from ohanna_vision.timeline import TimelineEngine
 
 
 @dataclass(frozen=True, slots=True)
 class ApplicationContext:
-    """Services exposed to the Ohanna-Vision web application."""
+    """Services required by the Ohanna-Vision web application."""
 
     runtime: BackendRuntime
     observation_store: ObservationStore
