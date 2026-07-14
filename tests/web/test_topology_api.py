@@ -217,3 +217,4 @@ def test_topology_api_is_documented_in_openapi() -> None:
 
     assert response.status_code == 200
     assert "/api/topology" in response.json()["paths"]
+

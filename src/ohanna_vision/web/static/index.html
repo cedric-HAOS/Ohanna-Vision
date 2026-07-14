@@ -20,255 +20,873 @@
 </head>
 
 <body>
-    <header class="application-header">
-        <div>
-            <p class="application-kicker">Ohanna</p>
-            <h1>Vision</h1>
-            <p class="application-description">
-                État courant et historique des capacités de l’infrastructure.
-            </p>
-        </div>
-
-        <div
-            id="websocket-status"
-            class="connection-status connection-status--offline"
-            aria-live="polite"
+    <div class="application-shell">
+        <aside
+            class="application-sidebar"
+            aria-label="Navigation principale"
         >
-            <span class="connection-status__indicator"></span>
-            <span id="websocket-status-label">
-                Temps réel déconnecté
-            </span>
-        </div>
-    </header>
-
-    <main class="dashboard">
-        <section
-            class="dashboard-section"
-            aria-labelledby="runtime-heading"
-        >
-            <div class="section-heading">
-                <div>
-                    <p class="section-kicker">Backend</p>
-                    <h2 id="runtime-heading">Runtime</h2>
+            <header class="sidebar-brand">
+                <div
+                    class="sidebar-brand__icon"
+                    aria-hidden="true"
+                >
+                    <svg viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="13"></circle>
+                        <path
+                            d="M5 20c4-7 9-10 15-10
+                           s11 3 15 10c-4 7-9 10-15 10
+                           S9 27 5 20z"
+                        ></path>
+                        <circle cx="20" cy="20" r="4"></circle>
+                    </svg>
                 </div>
 
-                <button
-                    id="refresh-button"
-                    class="button"
-                    type="button"
+                <div>
+                    <strong>Ohanna-Vision</strong>
+                    <span>Ohanna-House</span>
+                </div>
+            </header>
+
+            <nav class="sidebar-navigation">
+                <a
+                    class="sidebar-navigation__item
+                        sidebar-navigation__item--active"
+                    href="#overview"
+                    aria-current="page"
                 >
-                    Actualiser
-                </button>
+                    <span aria-hidden="true">⌂</span>
+                    Vue d’ensemble
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#infrastructure"
+                >
+                    <span aria-hidden="true">◇</span>
+                    Infrastructure
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#services"
+                >
+                    <span aria-hidden="true">⚙</span>
+                    Services
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#timeline"
+                >
+                    <span aria-hidden="true">⌁</span>
+                    Timeline
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#observations"
+                >
+                    <span aria-hidden="true">●</span>
+                    Observations
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#alerts"
+                >
+                    <span aria-hidden="true">△</span>
+                    Alertes
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#reports"
+                >
+                    <span aria-hidden="true">▤</span>
+                    Rapports
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#system"
+                >
+                    <span aria-hidden="true">⚙</span>
+                    Système
+                </a>
+
+                <a
+                    class="sidebar-navigation__item"
+                    href="#settings"
+                >
+                    <span aria-hidden="true">◉</span>
+                    Paramètres
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <section
+                    class="sidebar-connection"
+                    aria-labelledby="connection-title"
+                >
+                    <p id="connection-title">
+                        Connexion temps réel
+                    </p>
+
+                    <div
+                        id="websocket-status"
+                        class="connection-status
+                            connection-status--offline"
+                        aria-live="polite"
+                    >
+                        <span
+                            class="connection-status__indicator"
+                        ></span>
+
+                        <span id="websocket-status-label">
+                            Temps réel déconnecté
+                        </span>
+                    </div>
+
+                    <span class="sidebar-connection__protocol">
+                        WebSocket
+                    </span>
+                </section>
+
+                <div class="sidebar-version">
+                    <span>Ohanna-Vision</span>
+                    <span>v0.1.0</span>
+                </div>
             </div>
+        </aside>
 
-            <div
-                id="runtime-error"
-                class="alert alert--error hidden"
-                role="alert"
-            ></div>
-
-            <div
-                id="runtime-cards"
-                class="metric-grid"
-                aria-live="polite"
+        <div class="application-content">
+            <header
+                id="overview"
+                class="dashboard-header"
             >
-                <article class="metric-card">
-                    <span class="metric-card__label">État</span>
-                    <strong
-                        id="runtime-state"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">
-                        Observations stockées
-                    </span>
-                    <strong
-                        id="observations-stored"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">
-                        Timelines services
-                    </span>
-                    <strong
-                        id="service-timelines"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">
-                        Timelines nœuds
-                    </span>
-                    <strong
-                        id="node-timelines"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-            </div>
-        </section>
-
-        <section
-            class="dashboard-section"
-            aria-labelledby="statistics-heading"
-        >
-            <div class="section-heading">
                 <div>
-                    <p class="section-kicker">Traitement</p>
-                    <h2 id="statistics-heading">Statistiques</h2>
-                </div>
-            </div>
+                    <p class="dashboard-header__kicker">
+                        Supervision
+                    </p>
 
-            <div class="metric-grid">
-                <article class="metric-card">
-                    <span class="metric-card__label">Reçues</span>
-                    <strong
-                        id="observations-received"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">Acceptées</span>
-                    <strong
-                        id="observations-accepted"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">Rejetées</span>
-                    <strong
-                        id="observations-rejected"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-
-                <article class="metric-card">
-                    <span class="metric-card__label">Erreurs</span>
-                    <strong
-                        id="runtime-errors"
-                        class="metric-card__value"
-                    >
-                        —
-                    </strong>
-                </article>
-            </div>
-        </section>
-
-        <section
-            class="dashboard-section"
-            aria-labelledby="infrastructure-heading"
-        >
-            <div class="section-heading">
-                <div>
-                    <p class="section-kicker">Infrastructure</p>
-                    <h2 id="infrastructure-heading">
-                        Timeline
-                    </h2>
+                    <h1>Ohanna-House</h1>
                 </div>
 
-                <span
-                    id="timeline-generated-at"
-                    class="section-meta"
+                <div class="dashboard-header__actions">
+                    <span
+                        id="last-refresh"
+                        class="dashboard-header__refresh"
+                    >
+                        Dernière actualisation : —
+                    </span>
+
+                    <button
+                        id="refresh-button"
+                        class="button button--compact"
+                        type="button"
+                    >
+                        Actualiser
+                    </button>
+                </div>
+            </header>
+
+            <main class="dashboard-layout">
+                <section
+                    class="dashboard-kpis"
+                    aria-label="Indicateurs principaux"
                 >
-                    —
-                </span>
-            </div>
+                    <article
+                        class="dashboard-kpi dashboard-kpi--availability"
+                    >
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                ◉
+                            </span>
 
-            <div
-                id="timeline-error"
-                class="alert alert--error hidden"
-                role="alert"
-            ></div>
-
-            <div
-                id="timeline-content"
-                class="timeline-grid"
-                aria-live="polite"
-            >
-                <p class="empty-state">
-                    Chargement de la timeline…
-                </p>
-            </div>
-        </section>
-
-        <section
-            class="dashboard-section"
-            aria-labelledby="observations-heading"
-        >
-            <div class="section-heading">
-                <div>
-                    <p class="section-kicker">Historique</p>
-                    <h2 id="observations-heading">
-                        Observations récentes
-                    </h2>
-                </div>
-
-                <span
-                    id="observation-count"
-                    class="section-meta"
-                >
-                    0 observation
-                </span>
-            </div>
-
-            <div
-                id="observations-error"
-                class="alert alert--error hidden"
-                role="alert"
-            ></div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Nœud</th>
-                            <th scope="col">Service</th>
-                            <th scope="col">Capacité</th>
-                            <th scope="col">État</th>
-                            <th scope="col">Latence</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="observations-body">
-                        <tr>
-                            <td
-                                class="empty-table"
-                                colspan="6"
+                            <span
+                                id="availability-trend"
+                                class="dashboard-kpi__trend"
                             >
-                                Chargement des observations…
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+                                Temps réel
+                            </span>
+                        </div>
 
-    <footer class="application-footer">
-        <span>Ohanna-Vision</span>
-        <span id="last-refresh">Dernière actualisation : —</span>
-    </footer>
+                        <strong
+                            id="availability-value"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Disponibilité
+                        </span>
+
+                        <div
+                            class="dashboard-kpi__progress"
+                            aria-hidden="true"
+                        >
+                            <span id="availability-progress"></span>
+                        </div>
+                    </article>
+
+                    <article class="dashboard-kpi">
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                ◇
+                            </span>
+
+                            <span
+                                id="healthy-devices-count"
+                                class="dashboard-kpi__hint"
+                            >
+                                — sain
+                            </span>
+                        </div>
+
+                        <strong
+                            id="devices-count"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Équipements
+                        </span>
+                    </article>
+
+                    <article class="dashboard-kpi">
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                ⚙
+                            </span>
+
+                            <span class="dashboard-kpi__hint">
+                                Déclarés
+                            </span>
+                        </div>
+
+                        <strong
+                            id="services-count"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Services
+                        </span>
+                    </article>
+
+                    <article class="dashboard-kpi">
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                ⬡
+                            </span>
+
+                            <span class="dashboard-kpi__hint">
+                                Observées
+                            </span>
+                        </div>
+
+                        <strong
+                            id="capabilities-count"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Capacités
+                        </span>
+                    </article>
+
+                    <article
+                        id="alerts-kpi"
+                        class="dashboard-kpi dashboard-kpi--alerts"
+                    >
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                △
+                            </span>
+
+                            <span
+                                id="alerts-kpi-status"
+                                class="dashboard-kpi__hint"
+                            >
+                                Aucun incident
+                            </span>
+                        </div>
+
+                        <strong
+                            id="alerts-count"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Alertes actives
+                        </span>
+                    </article>
+
+                    <article class="dashboard-kpi">
+                        <div class="dashboard-kpi__header">
+                            <span class="dashboard-kpi__icon" aria-hidden="true">
+                                ↗
+                            </span>
+
+                            <span class="dashboard-kpi__hint">
+                                Depuis le démarrage
+                            </span>
+                        </div>
+
+                        <strong
+                            id="activity-count"
+                            class="dashboard-kpi__value"
+                        >
+                            —
+                        </strong>
+
+                        <span class="dashboard-kpi__label">
+                            Observations reçues
+                        </span>
+                    </article>
+                </section>
+
+                <div
+                    id="runtime-error"
+                    class="alert alert--error hidden"
+                    role="alert"
+                ></div>
+
+                <section
+                    id="infrastructure"
+                    class="dashboard-primary dashboard-primary--topology"
+                    aria-labelledby="topology-heading"
+                >
+                    <div class="panel-heading">
+                        <div>
+                            <p class="panel-heading__kicker">
+                                Infrastructure temps réel
+                            </p>
+
+                            <h2 id="topology-heading">
+                                Topologie Ohanna-House
+                            </h2>
+
+                            <p class="panel-heading__description">
+                                Vue physique des équipements, de leurs connexions
+                                et de leur état courant.
+                            </p>
+                        </div>
+
+                        <div class="topology-heading-status">
+                            <span
+                                id="topology-health-indicator"
+                                class="topology-heading-status__indicator"
+                            ></span>
+
+                            <div>
+                                <strong id="topology-health-label">
+                                    État inconnu
+                                </strong>
+
+                                <span
+                                    id="topology-layout-label"
+                                    class="panel-heading__meta"
+                                >
+                                    —
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        id="topology-error"
+                        class="alert alert--error hidden"
+                        role="alert"
+                    ></div>
+
+                    <div class="topology-workspace">
+                        <div
+                            class="topology-controls"
+                            aria-label="Contrôles de la carte"
+                        >
+                            <button
+                                id="topology-zoom-in"
+                                class="topology-control"
+                                type="button"
+                                aria-label="Agrandir la carte"
+                                title="Zoom avant"
+                            >
+                                +
+                            </button>
+
+                            <button
+                                id="topology-zoom-out"
+                                class="topology-control"
+                                type="button"
+                                aria-label="Réduire la carte"
+                                title="Zoom arrière"
+                            >
+                                −
+                            </button>
+
+                            <button
+                                id="topology-reset-view"
+                                class="topology-control
+                                    topology-control--reset"
+                                type="button"
+                                aria-label="Recentrer la carte"
+                                title="Recentrer"
+                            >
+                                Recentrer
+                            </button>
+                        </div>
+
+                        <div
+                            id="topology-container"
+                            class="topology-container"
+                            aria-live="polite"
+                        >
+                            <p class="empty-state">
+                                Chargement de la topologie…
+                            </p>
+                        </div>
+
+                        <aside
+                            id="device-details"
+                            class="device-details hidden"
+                            aria-labelledby="device-details-title"
+                            aria-hidden="true"
+                        >
+                            <div class="device-details__hero">
+                                <div
+                                    id="device-details-icon"
+                                    class="device-details__icon"
+                                    aria-hidden="true"
+                                ></div>
+
+                                <div class="device-details__identity">
+                                    <p
+                                        id="device-details-kind"
+                                        class="device-details__kind"
+                                    >
+                                        Équipement
+                                    </p>
+
+                                    <h3 id="device-details-title">
+                                        —
+                                    </h3>
+
+                                    <p
+                                        id="device-details-primary"
+                                        class="device-details__primary"
+                                    >
+                                        —
+                                    </p>
+                                </div>
+
+                                <button
+                                    id="device-details-close"
+                                    class="device-details__close"
+                                    type="button"
+                                    aria-label="
+                                        Fermer les détails
+                                        de l’équipement
+                                    "
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <div class="device-details__summary">
+                                <div
+                                    id="device-details-health"
+                                    class="device-details__health"
+                                >
+                                    <span
+                                        class="
+                                            device-details__health-indicator
+                                        "
+                                    ></span>
+
+                                    <span
+                                        id="device-details-health-label"
+                                    >
+                                        Inconnu
+                                    </span>
+                                </div>
+
+                                <span
+                                    id="device-details-supervision"
+                                    class="
+                                        device-details__supervision
+                                    "
+                                >
+                                    Non supervisé
+                                </span>
+                            </div>
+
+                            <section
+                                class="device-details__section"
+                                aria-labelledby="
+                                    device-information-title
+                                "
+                            >
+                                <div
+                                    class="
+                                        device-details__section-heading
+                                    "
+                                >
+                                    <h4 id="device-information-title">
+                                        Informations
+                                    </h4>
+                                </div>
+
+                                <dl
+                                    class="
+                                        device-details__properties
+                                    "
+                                >
+                                    <div>
+                                        <dt>Identifiant</dt>
+                                        <dd id="device-details-id">
+                                            —
+                                        </dd>
+                                    </div>
+
+                                    <div>
+                                        <dt>Nœud</dt>
+                                        <dd id="device-details-node">
+                                            —
+                                        </dd>
+                                    </div>
+
+                                    <div>
+                                        <dt>Adresse</dt>
+                                        <dd id="device-details-address">
+                                            —
+                                        </dd>
+                                    </div>
+
+                                    <div>
+                                        <dt>Rôle</dt>
+                                        <dd id="device-details-role">
+                                            —
+                                        </dd>
+                                    </div>
+
+                                    <div>
+                                        <dt>Constructeur</dt>
+                                        <dd id="device-details-manufacturer">—</dd>
+                                    </div>
+
+                                    <div>
+                                        <dt>Modèle</dt>
+                                        <dd id="device-details-model">
+                                            —
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </section>
+
+                            <section
+                                class="device-details__section"
+                                aria-labelledby="device-links-title"
+                            >
+                                <div
+                                    class="
+                                        device-details__section-heading
+                                    "
+                                >
+                                    <h4 id="device-links-title">
+                                        Connexions
+                                    </h4>
+
+                                    <span id="device-links-count">
+                                        0
+                                    </span>
+                                </div>
+
+                                <ul
+                                    id="device-links-list"
+                                    class="device-details__links"
+                                ></ul>
+                            </section>
+                        </aside>
+                    </div>
+                </section>
+
+                <aside
+                    class="dashboard-right-panel"
+                    aria-label="Informations temps réel"
+                >
+                    <section
+                        id="alerts"
+                        class="side-panel-card side-panel-card--alerts"
+                        aria-labelledby="active-alerts-heading"
+                    >
+                        <div class="side-panel-card__heading">
+                            <div>
+                                <p class="side-panel-card__kicker">
+                                    Santé
+                                </p>
+
+                                <h2 id="active-alerts-heading">
+                                    Alertes actives
+                                </h2>
+                            </div>
+
+                            <span
+                                id="active-alerts-count"
+                                class="side-panel-card__count"
+                            >
+                                0
+                            </span>
+                        </div>
+
+                        <div
+                            id="active-alerts-list"
+                            class="active-alerts"
+                            aria-live="polite"
+                        >
+                            <p class="side-panel-placeholder">
+                                Aucune alerte active.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section
+                        id="observations"
+                        class="side-panel-card side-panel-card--observations"
+                        aria-labelledby="recent-observations-heading"
+                    >
+                        <div class="side-panel-card__heading">
+                            <div>
+                                <p class="side-panel-card__kicker">
+                                    Activité
+                                </p>
+
+                                <h2 id="recent-observations-heading">
+                                    Dernières observations
+                                </h2>
+                            </div>
+
+                            <span
+                                id="observation-count"
+                                class="side-panel-card__count"
+                            >
+                                0
+                            </span>
+                        </div>
+
+                        <div
+                            id="observations-error"
+                            class="alert alert--error hidden"
+                            role="alert"
+                        ></div>
+
+                        <div
+                            id="recent-observations-list"
+                            class="recent-observations"
+                            aria-live="polite"
+                        >
+                            <p class="side-panel-placeholder">
+                                Aucune observation reçue.
+                            </p>
+                        </div>
+
+                        <table class="visually-hidden">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Nœud</th>
+                                    <th>Service</th>
+                                    <th>Capacité</th>
+                                    <th>État</th>
+                                    <th>Latence</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="observations-body">
+                                <tr>
+                                    <td colspan="6">
+                                        Aucune observation.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <section
+                        class="side-panel-card side-panel-card--indicators"
+                        aria-labelledby="processing-indicators-heading"
+                    >
+                        <div class="side-panel-card__heading">
+                            <div>
+                                <p class="side-panel-card__kicker">
+                                    Runtime
+                                </p>
+
+                                <h2 id="processing-indicators-heading">
+                                    Indicateurs
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="processing-indicators">
+                            <article class="processing-indicator">
+                                <span>Reçues</span>
+                                <strong id="observations-received">—</strong>
+                            </article>
+
+                            <article class="processing-indicator">
+                                <span>Acceptées</span>
+                                <strong id="observations-accepted">—</strong>
+                            </article>
+
+                            <article class="processing-indicator">
+                                <span>Rejetées</span>
+                                <strong id="observations-rejected">—</strong>
+                            </article>
+
+                            <article
+                                class="processing-indicator
+                                    processing-indicator--error"
+                            >
+                                <span>Erreurs</span>
+                                <strong id="runtime-errors">—</strong>
+                            </article>
+                        </div>
+
+                        <div class="processing-ratio">
+                            <div class="processing-ratio__heading">
+                                <span>Taux d’acceptation</span>
+
+                                <strong id="acceptance-rate">
+                                    —
+                                </strong>
+                            </div>
+
+                            <div
+                                class="processing-ratio__track"
+                                aria-hidden="true"
+                            >
+                                <span id="acceptance-rate-progress"></span>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+
+                <section
+                    id="timeline"
+                    class="dashboard-timeline"
+                    aria-labelledby="timeline-heading"
+                >
+                    <div class="timeline-header">
+                        <div>
+                            <p class="panel-heading__kicker">
+                                Historique
+                            </p>
+
+                            <h2 id="timeline-heading">
+                                Timeline de l’infrastructure
+                            </h2>
+                        </div>
+
+                        <div
+                            class="timeline-range"
+                            aria-label="Fenêtre temporelle"
+                        >
+                            <button
+                                class="timeline-range__button"
+                                type="button"
+                                data-timeline-hours="1"
+                            >
+                                1 h
+                            </button>
+
+                            <button
+                                class="timeline-range__button
+                                    timeline-range__button--active"
+                                type="button"
+                                data-timeline-hours="6"
+                            >
+                                6 h
+                            </button>
+
+                            <button
+                                class="timeline-range__button"
+                                type="button"
+                                data-timeline-hours="24"
+                            >
+                                24 h
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="timeline-legend">
+                        <span class="timeline-legend__item">
+                            <span
+                                class="timeline-legend__indicator
+                                    timeline-legend__indicator--healthy"
+                            ></span>
+                            Sain
+                        </span>
+
+                        <span class="timeline-legend__item">
+                            <span
+                                class="timeline-legend__indicator
+                                    timeline-legend__indicator--degraded"
+                            ></span>
+                            Dégradé
+                        </span>
+
+                        <span class="timeline-legend__item">
+                            <span
+                                class="timeline-legend__indicator
+                                    timeline-legend__indicator--unhealthy"
+                            ></span>
+                            Indisponible
+                        </span>
+
+                        <span class="timeline-legend__item">
+                            <span
+                                class="timeline-legend__indicator
+                                    timeline-legend__indicator--unknown"
+                            ></span>
+                            Inconnu
+                        </span>
+
+                        <span
+                            id="timeline-event-count"
+                            class="timeline-legend__count"
+                        >
+                            0 événement
+                        </span>
+                    </div>
+
+                    <div
+                        id="timeline-content"
+                        class="infrastructure-timeline"
+                        aria-live="polite"
+                    >
+                        <p class="timeline-empty">
+                            Aucune observation disponible.
+                        </p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script
+        src="/ui/topology_canvas.js"
+        defer
+    ></script>
 
     <script
         src="/ui/app.js"

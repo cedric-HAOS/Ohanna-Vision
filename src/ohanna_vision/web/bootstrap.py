@@ -5,8 +5,12 @@ from fastapi import FastAPI
 from ohanna_vision.domain import ObservationStore
 from ohanna_vision.runtime import BackendRuntime
 from ohanna_vision.timeline import TimelineEngine
+from ohanna_vision.topology import (
+    build_ohanna_house_topology,
+)
 from ohanna_vision.web.app import create_app
 from ohanna_vision.web.application_context import ApplicationContext
+from ohanna_vision.web.dependencies import get_topology
 
 
 def build_application_context() -> ApplicationContext:
@@ -14,6 +18,8 @@ def build_application_context() -> ApplicationContext:
     runtime = BackendRuntime()
     observation_store = ObservationStore()
     timeline_engine = TimelineEngine()
+
+    runtime.start()
 
     return ApplicationContext(
         runtime=runtime,
@@ -23,10 +29,19 @@ def build_application_context() -> ApplicationContext:
 
 
 def build_application() -> FastAPI:
-    """Build the complete Ohanna-Vision web application."""
+    """Build the fully configured Ohanna-Vision application."""
     context = build_application_context()
+    topology = build_ohanna_house_topology()
 
-    return create_app(context=context)
+    application = create_app(
+        context=context,
+    )
+
+    application.dependency_overrides[
+        get_topology
+    ] = lambda: topology
+
+    return application
 
 
 app = build_application()

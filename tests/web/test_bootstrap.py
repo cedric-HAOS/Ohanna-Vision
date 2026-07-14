@@ -77,7 +77,7 @@ def test_bootstrapped_runtime_api_is_available() -> None:
     response = client.get("/api/runtime")
 
     assert response.status_code == 200
-    assert response.json()["state"] == "created"
+    assert response.json()["state"] == "running"
 
 
 def test_bootstrapped_observation_api_is_available() -> None:
@@ -100,4 +100,42 @@ def test_bootstrapped_timeline_api_is_available() -> None:
     assert response.json() == {
         "nodes": [],
         "periods": [],
+    }
+
+def test_bootstrapped_application_exposes_ohanna_house_topology() -> None:
+    """The complete application must expose the real topology."""
+    client = TestClient(build_application())
+
+    response = client.get("/api/topology")
+
+    assert response.status_code == 200
+
+    payload = response.json()
+
+    assert payload["topology_id"] == "ohanna-house"
+    assert len(payload["devices"]) == 9
+    assert len(payload["links"]) == 8
+    assert len(payload["layouts"]) == 1
+
+def test_bootstrapped_topology_contains_current_devices() -> None:
+    """The complete application must expose current house devices."""
+    client = TestClient(build_application())
+
+    response = client.get("/api/topology")
+
+    device_ids = {
+        device["device_id"]
+        for device in response.json()["devices"]
+    }
+
+    assert device_ids == {
+        "internet",
+        "freebox",
+        "sw-01",
+        "sw-02",
+        "sw-03",
+        "ap-01",
+        "rpi-link",
+        "ha-green",
+        "rpi-zwave",
     }

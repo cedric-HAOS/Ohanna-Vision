@@ -1,5 +1,8 @@
 """Infrastructure topology domain model."""
 
+from ohanna_vision.topology.ohanna_house_topology import (
+    build_ohanna_house_topology,
+)
 from ohanna_vision.topology.topology import Topology
 from ohanna_vision.topology.topology_device import TopologyDevice
 from ohanna_vision.topology.topology_device_kind import (
@@ -30,4 +33,5 @@ __all__ = [
     "TopologyLinkDirection",
     "TopologyLinkKind",
     "TopologyPosition",
+    "build_ohanna_house_topology",
 ]

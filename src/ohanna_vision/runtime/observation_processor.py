@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 from time import monotonic
 from typing import Protocol
 
@@ -151,8 +151,19 @@ class ObservationProcessor:
             infrastructure_timelines=infrastructure_timelines,
         )
 
-    def _duration_since(self, started: float) -> timedelta:
-        """Return the elapsed processing duration."""
+    def _duration_since(
+        self,
+        started: float | datetime,
+    ) -> timedelta:
+        """Return the non-negative processing duration."""
         elapsed = self.timer() - started
 
-        return timedelta(seconds=max(elapsed, 0.0))
+        if isinstance(elapsed, timedelta):
+            return max(
+                elapsed,
+                timedelta(),
+            )
+
+        return timedelta(
+            seconds=max(elapsed, 0.0),
+        )

@@ -11,6 +11,10 @@ from ohanna_vision.timeline import TimelineEngine
 from ohanna_vision.web import ApplicationContext, WebSocketHub, create_app
 
 
+def make_client() -> TestClient:
+    """Create an Ohanna-Vision application client."""
+    return TestClient(create_app())
+
 def test_create_app_returns_fastapi_application() -> None:
     """The application factory must return a FastAPI instance."""
     app = create_app()
@@ -184,3 +188,90 @@ def test_observation_ingestion_is_exposed_in_openapi() -> None:
 
     assert response.status_code == 200
     assert "post" in response.json()["paths"]["/api/observations"]
+
+def test_dashboard_connects_topology_controls() -> None:
+    """The dashboard must connect topology navigation buttons."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "topologyZoomIn" in response.text
+    assert "topologyZoomOut" in response.text
+    assert "topologyResetView" in response.text
+    assert "topologyCanvas.zoomIn()" in response.text
+    assert "topologyCanvas.zoomOut()" in response.text
+    assert "topologyCanvas.resetView()" in response.text
+   
+def test_dashboard_calculates_kpis() -> None:
+    """The dashboard must calculate its main indicators."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "renderDashboardKpis(" in response.text
+    assert "deviceHealthStatistics(" in response.text
+    assert "availabilityPercentage(" in response.text
+    assert "capabilitiesCount" in response.text
+    assert "alertsCount" in response.text
+
+def test_dashboard_renders_global_topology_health() -> None:
+    """The dashboard must render a global topology status."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "globalTopologyHealth(" in response.text
+    assert "formatGlobalTopologyHealth(" in response.text
+    assert "topologyHealthIndicator" in response.text
+    assert "topologyHealthLabel" in response.text
+
+def test_dashboard_renders_realtime_side_panel() -> None:
+    """The dashboard must render alerts and recent activity."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "renderActiveAlerts(" in response.text
+    assert "renderRecentObservations(" in response.text
+    assert "renderAcceptanceRate(" in response.text
+    assert "activeAlertsList" in response.text
+    assert "recentObservationsList" in response.text
+
+def test_dashboard_renders_graphical_timeline() -> None:
+    """The dashboard must render observation history graphically."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "renderInfrastructureTimeline(" in response.text
+    assert "renderTimelineRow(" in response.text
+    assert "renderTimelineAxis(" in response.text
+    assert "groupObservationsByNode(" in response.text
+    assert "timelinePosition(" in response.text
+
+def test_dashboard_connects_timeline_to_topology() -> None:
+    """Timeline nodes must select their topology devices."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "selectTopologyDeviceByNode(" in response.text
+    assert "attachTimelineInteractions(" in response.text
+    assert "data-timeline-node" in response.text
+
+def test_dashboard_animates_kpi_updates() -> None:
+    """The dashboard must animate changed KPI values."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "animateKpi(" in response.text
+    assert "updateAnimatedText(" in response.text
+    assert "dashboard-kpi--updating" in response.text
