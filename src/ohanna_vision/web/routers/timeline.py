@@ -14,6 +14,13 @@ from ohanna_vision.web.dependencies import (
     ObservationStoreDependency,
     TimelineEngineDependency,
 )
+from ohanna_vision.web.api.timeline_mapper import (
+    map_infrastructure_timeline,
+)
+
+from ohanna_vision.web.api.timeline_schemas import (
+    InfrastructureTimelineResponse,
+)
 
 router = APIRouter(
     prefix="/timeline",
@@ -127,3 +134,4 @@ def get_service_timeline(
         )
 
     return service
+    
