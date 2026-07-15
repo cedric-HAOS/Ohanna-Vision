@@ -10,7 +10,7 @@ License-File: LICENSE
 Requires-Dist: fastapi
 Requires-Dist: pydantic
 Requires-Dist: PyYAML
-Requires-Dist: uvicorn
+Requires-Dist: uvicorn[standard]
 Provides-Extra: dev
 Requires-Dist: build; extra == "dev"
 Requires-Dist: httpx; extra == "dev"

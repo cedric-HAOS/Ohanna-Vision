@@ -1,7 +1,7 @@
 fastapi
 pydantic
 PyYAML
-uvicorn
+uvicorn[standard]
 
 [dev]
 build

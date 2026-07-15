@@ -16,7 +16,7 @@ dependencies = [
     "fastapi",
     "pydantic",
     "PyYAML",
-    "uvicorn",
+    "uvicorn[standard]",
 ]
 
 [project.scripts]
@@ -43,6 +43,7 @@ ohanna_vision = [
     "web/static/*.html",
     "web/static/*.css",
     "web/static/*.js",
+    "web/static/styles/*.css",
 ]
 
 [tool.setuptools.packages.find]

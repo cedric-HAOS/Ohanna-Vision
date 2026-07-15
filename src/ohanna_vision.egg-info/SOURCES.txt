@@ -109,4 +109,15 @@ src/ohanna_vision/web/static/topology.js
 src/ohanna_vision/web/static/topology_canvas.js
 src/ohanna_vision/web/static/utils.js
 src/ohanna_vision/web/static/websocket.js
+src/ohanna_vision/web/static/styles/components.css
+src/ohanna_vision/web/static/styles/dashboard.css
+src/ohanna_vision/web/static/styles/device-details.css
+src/ohanna_vision/web/static/styles/foundations.css
+src/ohanna_vision/web/static/styles/layout.css
+src/ohanna_vision/web/static/styles/navigation.css
+src/ohanna_vision/web/static/styles/observations.css
+src/ohanna_vision/web/static/styles/responsive.css
+src/ohanna_vision/web/static/styles/timeline.css
+src/ohanna_vision/web/static/styles/topology.css
 tests/test_main.py
+tests/test_packaging.py

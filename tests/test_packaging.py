@@ -1,0 +1,42 @@
+"""Tests for the Ohanna-Vision package configuration."""
+
+from pathlib import Path
+
+
+def test_pyproject_declares_console_entry_point() -> None:
+    """The package must install the ohanna-vision command."""
+    pyproject = Path("pyproject.toml").read_text(
+        encoding="utf-8",
+    )
+
+    assert "[project.scripts]" in pyproject
+    assert 'ohanna-vision = "ohanna_vision.main:main"' in pyproject
+
+
+def test_pyproject_packages_root_static_resources() -> None:
+    """Root frontend resources must be included in the package."""
+    pyproject = Path("pyproject.toml").read_text(
+        encoding="utf-8",
+    )
+
+    assert '"web/static/*.html"' in pyproject
+    assert '"web/static/*.css"' in pyproject
+    assert '"web/static/*.js"' in pyproject
+
+
+def test_pyproject_packages_modular_stylesheets() -> None:
+    """Modular frontend stylesheets must be included."""
+    pyproject = Path("pyproject.toml").read_text(
+        encoding="utf-8",
+    )
+
+    assert '"web/static/styles/*.css"' in pyproject
+
+
+def test_package_installs_websocket_support() -> None:
+    """The production server must include WebSocket support."""
+    pyproject = Path("pyproject.toml").read_text(
+        encoding="utf-8",
+    )
+
+    assert '"uvicorn[standard]"' in pyproject
