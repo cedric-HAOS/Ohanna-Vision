@@ -28,13 +28,9 @@ def build_ohanna_house_topology() -> Topology:
         label="Ohanna-House",
         devices=_build_devices(),
         links=_build_links(),
-        layouts=(
-            _build_physical_layout(),
-        ),
+        layouts=(_build_physical_layout(),),
         metadata={
-            "description": (
-                "Physical infrastructure topology of Ohanna-House."
-            ),
+            "description": ("Physical infrastructure topology of Ohanna-House."),
             "version": 1,
         },
     )
@@ -278,8 +274,6 @@ def _build_physical_layout() -> TopologyLayout:
             ),
         },
         metadata={
-            "description": (
-                "Primary physical infrastructure map."
-            ),
+            "description": ("Primary physical infrastructure map."),
         },
     )

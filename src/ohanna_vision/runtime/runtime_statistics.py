@@ -51,9 +51,7 @@ class RuntimeStatistics:
         """Return statistics including one accepted observation."""
 
         if self.observations_processed >= self.observations_received:
-            raise ValueError(
-                "Cannot accept an observation that has not been received"
-            )
+            raise ValueError("Cannot accept an observation that has not been received")
 
         return replace(
             self,
@@ -64,9 +62,7 @@ class RuntimeStatistics:
         """Return statistics including one rejected observation."""
 
         if self.observations_processed >= self.observations_received:
-            raise ValueError(
-                "Cannot reject an observation that has not been received"
-            )
+            raise ValueError("Cannot reject an observation that has not been received")
 
         return replace(
             self,

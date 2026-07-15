@@ -132,8 +132,7 @@ def get_service_timeline(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=(
-                f"Service timeline '{service_id}' was not found "
-                f"on node '{node_id}'."
+                f"Service timeline '{service_id}' was not found on node '{node_id}'."
             ),
         )
 

@@ -352,10 +352,7 @@ def test_topology_layout_copies_metadata() -> None:
 
     metadata["description"] = "Changed"
 
-    assert (
-        layout.metadata["description"]
-        == "Main infrastructure map"
-    )
+    assert layout.metadata["description"] == "Main infrastructure map"
 
 
 def test_topology_layout_metadata_is_immutable() -> None:
@@ -383,6 +380,7 @@ def test_topology_layout_is_immutable() -> None:
 
     with pytest.raises(AttributeError):
         layout.label = "Other layout"  # type: ignore[misc]
+
 
 def test_topology_layout_metadata_is_deeply_immutable() -> None:
     """Nested topology layout metadata must remain immutable."""

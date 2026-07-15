@@ -55,9 +55,7 @@ def test_duration_at_calculates_open_period_duration() -> None:
         started_at=started_at,
     )
 
-    duration = period.duration_at(
-        started_at + timedelta(minutes=15)
-    )
+    duration = period.duration_at(started_at + timedelta(minutes=15))
 
     assert duration == timedelta(minutes=15)
 
@@ -71,9 +69,7 @@ def test_duration_at_returns_fixed_closed_duration() -> None:
         ended_at=started_at + timedelta(minutes=15),
     )
 
-    duration = period.duration_at(
-        started_at + timedelta(hours=1)
-    )
+    duration = period.duration_at(started_at + timedelta(hours=1))
 
     assert duration == timedelta(minutes=15)
 
@@ -111,9 +107,7 @@ def test_open_period_contains_later_date() -> None:
         started_at=started_at,
     )
 
-    assert period.contains(
-        started_at + timedelta(days=1)
-    ) is True
+    assert period.contains(started_at + timedelta(days=1)) is True
 
 
 def test_close_returns_new_closed_period() -> None:
@@ -214,6 +208,4 @@ def test_duration_at_rejects_instant_before_start() -> None:
         ValueError,
         match="instant must not be before started_at",
     ):
-        period.duration_at(
-            started_at - timedelta(minutes=1)
-        )
+        period.duration_at(started_at - timedelta(minutes=1))

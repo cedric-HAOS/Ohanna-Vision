@@ -33,14 +33,10 @@ class ProjectionEngine:
     ) -> None:
         """Initialize the engine with optional reducer dependencies."""
 
-        self._capability_reducer = (
-            capability_reducer or CapabilityReducer()
-        )
+        self._capability_reducer = capability_reducer or CapabilityReducer()
         self._service_reducer = service_reducer or ServiceReducer()
         self._node_reducer = node_reducer or NodeReducer()
-        self._infrastructure_reducer = (
-            infrastructure_reducer or InfrastructureReducer()
-        )
+        self._infrastructure_reducer = infrastructure_reducer or InfrastructureReducer()
 
     def project(
         self,
@@ -88,8 +84,7 @@ class ProjectionEngine:
             grouped[key].append(observation)
 
         return tuple(
-            self._capability_reducer.reduce(grouped[key])
-            for key in sorted(grouped)
+            self._capability_reducer.reduce(grouped[key]) for key in sorted(grouped)
         )
 
     def _project_services(
@@ -111,8 +106,7 @@ class ProjectionEngine:
             grouped[key].append(capability)
 
         return tuple(
-            self._service_reducer.reduce(grouped[key])
-            for key in sorted(grouped)
+            self._service_reducer.reduce(grouped[key]) for key in sorted(grouped)
         )
 
     def _project_nodes(
@@ -127,8 +121,7 @@ class ProjectionEngine:
             grouped[service.node_id].append(service)
 
         return tuple(
-            self._node_reducer.reduce(grouped[node_id])
-            for node_id in sorted(grouped)
+            self._node_reducer.reduce(grouped[node_id]) for node_id in sorted(grouped)
         )
 
     @staticmethod

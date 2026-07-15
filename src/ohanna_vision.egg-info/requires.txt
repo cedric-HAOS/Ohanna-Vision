@@ -1,6 +1,10 @@
 fastapi
+pydantic
+PyYAML
 uvicorn
 
 [dev]
+build
+httpx
 pytest>=9.0
 ruff>=0.12

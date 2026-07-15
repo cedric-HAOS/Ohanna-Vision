@@ -128,9 +128,7 @@ def test_agent_connector_returns_failure_result() -> None:
     result = connector.receive(make_observation())
 
     assert result.success is False
-    assert result.message == (
-        "Observation processing failed: processor unavailable"
-    )
+    assert result.message == ("Observation processing failed: processor unavailable")
 
 
 def test_agent_connector_records_failure() -> None:
@@ -170,6 +168,7 @@ def test_agent_connector_can_be_reinitialized_after_failure() -> None:
 
     assert connector.runtime.state is ConnectorState.READY
     assert connector.runtime.has_error is False
+
 
 def test_agent_connector_records_each_success() -> None:
     connector = AgentConnector(processor=FakeObservationProcessor())

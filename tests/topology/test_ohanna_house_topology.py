@@ -20,10 +20,7 @@ def test_ohanna_house_topology_contains_expected_devices() -> None:
     """The topology must contain current Ohanna-House devices."""
     topology = build_ohanna_house_topology()
 
-    assert tuple(
-        device.device_id
-        for device in topology.devices
-    ) == (
+    assert tuple(device.device_id for device in topology.devices) == (
         "internet",
         "freebox",
         "sw-01",
@@ -40,10 +37,7 @@ def test_ohanna_house_topology_contains_expected_links() -> None:
     """The topology must contain current physical links."""
     topology = build_ohanna_house_topology()
 
-    assert tuple(
-        link.link_id
-        for link in topology.links
-    ) == (
+    assert tuple(link.link_id for link in topology.links) == (
         "internet-freebox",
         "freebox-sw-01",
         "sw-01-sw-02",
@@ -128,20 +122,14 @@ def test_ohanna_house_layout_positions_every_device() -> None:
 
     assert layout is not None
 
-    assert set(layout.positions) == {
-        device.device_id
-        for device in topology.devices
-    }
+    assert set(layout.positions) == {device.device_id for device in topology.devices}
 
 
 def test_ohanna_house_topology_is_coherent() -> None:
     """Every link and layout position must reference known devices."""
     topology = build_ohanna_house_topology()
 
-    device_ids = {
-        device.device_id
-        for device in topology.devices
-    }
+    device_ids = {device.device_id for device in topology.devices}
 
     for link in topology.links:
         assert link.source_device_id in device_ids

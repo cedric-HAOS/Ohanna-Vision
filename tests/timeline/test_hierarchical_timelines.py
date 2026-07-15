@@ -143,6 +143,6 @@ def test_hierarchical_timeline_returns_status_at_instant() -> None:
         ),
     )
 
-    assert timeline.status_at(
-        started_at + timedelta(minutes=5)
-    ) is HealthStatus.DEGRADED
+    assert (
+        timeline.status_at(started_at + timedelta(minutes=5)) is HealthStatus.DEGRADED
+    )

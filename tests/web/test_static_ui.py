@@ -10,6 +10,7 @@ def make_client() -> TestClient:
     """Create an Ohanna-Vision application client."""
     return TestClient(create_app())
 
+
 def test_static_ui_is_available() -> None:
     """The dashboard entry point must be served."""
     client = make_client()
@@ -19,6 +20,7 @@ def test_static_ui_is_available() -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     assert "<title>Ohanna Vision</title>" in response.text
+
 
 def test_static_ui_contains_dashboard_sections() -> None:
     """The dashboard must expose its main sections."""
@@ -34,6 +36,7 @@ def test_static_ui_contains_dashboard_sections() -> None:
     assert 'id="timeline"' in response.text
     assert 'id="timeline-heading"' in response.text
 
+
 def test_static_styles_are_available() -> None:
     """The dashboard stylesheet must be served."""
     client = make_client()
@@ -43,6 +46,7 @@ def test_static_styles_are_available() -> None:
     assert response.status_code == 200
     assert "text/css" in response.headers["content-type"]
     assert ".dashboard" in response.text
+
 
 def test_static_javascript_is_available() -> None:
     """The frontend JavaScript entry point must be served."""
@@ -56,6 +60,7 @@ def test_static_javascript_is_available() -> None:
     assert "ApplicationController" in response.text
     assert "application.initialize()" in response.text
 
+
 def test_static_ui_references_local_assets() -> None:
     """The entry page must reference locally served assets."""
     client = make_client()
@@ -66,6 +71,7 @@ def test_static_ui_references_local_assets() -> None:
     assert 'href="/ui/styles.css"' in response.text
     assert 'src="/ui/app.js"' in response.text
 
+
 def test_static_ui_unknown_asset_returns_404() -> None:
     """Unknown static resources must return HTTP 404."""
     client = make_client()
@@ -73,6 +79,7 @@ def test_static_ui_unknown_asset_returns_404() -> None:
     response = client.get("/ui/unknown.js")
 
     assert response.status_code == 404
+
 
 def test_static_ui_contains_topology_canvas_container() -> None:
     """The dashboard must expose the topology canvas container."""
@@ -85,6 +92,7 @@ def test_static_ui_contains_topology_canvas_container() -> None:
     assert 'id="topology-layout-label"' in response.text
     assert 'id="topology-error"' in response.text
 
+
 def test_topology_canvas_javascript_is_available() -> None:
     """The topology canvas component must be served."""
     client = make_client()
@@ -95,6 +103,7 @@ def test_topology_canvas_javascript_is_available() -> None:
     assert "javascript" in response.headers["content-type"]
     assert "class TopologyCanvas" in response.text
     assert "window.TopologyCanvas" in response.text
+
 
 def test_static_ui_contains_device_details_panel() -> None:
     """The dashboard must expose the device details panel."""
@@ -108,6 +117,7 @@ def test_static_ui_contains_device_details_panel() -> None:
     assert 'id="device-details-close"' in response.text
     assert 'id="device-links-list"' in response.text
 
+
 def test_static_ui_contains_topology_controls() -> None:
     """The dashboard must expose topology navigation controls."""
     client = make_client()
@@ -118,6 +128,7 @@ def test_static_ui_contains_topology_controls() -> None:
     assert 'id="topology-zoom-in"' in response.text
     assert 'id="topology-zoom-out"' in response.text
     assert 'id="topology-reset-view"' in response.text
+
 
 def test_static_ui_contains_dashboard_grid() -> None:
     """The dashboard must expose its new general layout."""
@@ -134,6 +145,7 @@ def test_static_ui_contains_dashboard_grid() -> None:
     assert 'class="dashboard-right-panel"' in response.text
     assert 'class="dashboard-timeline"' in response.text
 
+
 def test_static_ui_preserves_interactive_components() -> None:
     """The new layout must preserve existing dashboard components."""
     client = make_client()
@@ -146,6 +158,7 @@ def test_static_ui_preserves_interactive_components() -> None:
     assert 'id="device-details"' in response.text
     assert 'id="topology-zoom-in"' in response.text
     assert 'id="recent-observations-list"' in response.text
+
 
 def test_static_ui_contains_dashboard_kpis() -> None:
     """The dashboard must expose its main KPI cards."""
@@ -161,6 +174,7 @@ def test_static_ui_contains_dashboard_kpis() -> None:
     assert 'id="alerts-count"' in response.text
     assert 'id="activity-count"' in response.text
 
+
 def test_static_ui_marks_topology_as_primary_content() -> None:
     """The topology must be the primary dashboard content."""
     client = make_client()
@@ -172,6 +186,7 @@ def test_static_ui_marks_topology_as_primary_content() -> None:
     assert 'id="topology-health-indicator"' in response.text
     assert 'id="topology-health-label"' in response.text
     assert "Topologie Ohanna-House" in response.text
+
 
 def test_static_ui_contains_realtime_side_panel() -> None:
     """The dashboard must expose its realtime side panel."""
@@ -186,6 +201,7 @@ def test_static_ui_contains_realtime_side_panel() -> None:
     assert 'id="acceptance-rate"' in response.text
     assert 'id="acceptance-rate-progress"' in response.text
 
+
 def test_static_styles_support_responsive_dashboard() -> None:
     """The responsive module must expose dashboard breakpoints."""
     client = make_client()
@@ -199,6 +215,7 @@ def test_static_styles_support_responsive_dashboard() -> None:
     assert "@media (max-width: 1000px)" in response.text
     assert "@media (max-width: 720px)" in response.text
 
+
 def test_static_styles_respect_reduced_motion() -> None:
     """The responsive module must preserve reduced motion."""
     client = make_client()
@@ -208,18 +225,10 @@ def test_static_styles_respect_reduced_motion() -> None:
     )
 
     assert response.status_code == 200
-    assert (
-        "@media (prefers-reduced-motion: reduce)"
-        in response.text
-    )
-    assert (
-        "animation-duration: 1ms !important"
-        in response.text
-    )
-    assert (
-        "transition-duration: 1ms !important"
-        in response.text
-    )
+    assert "@media (prefers-reduced-motion: reduce)" in response.text
+    assert "animation-duration: 1ms !important" in response.text
+    assert "transition-duration: 1ms !important" in response.text
+
 
 def test_static_ui_exposes_only_functional_navigation_entries() -> None:
     """The sidebar must expose only implemented application views."""
@@ -233,6 +242,7 @@ def test_static_ui_exposes_only_functional_navigation_entries() -> None:
     assert 'data-navigation-target="infrastructure"' in content
     assert 'data-navigation-target="timeline"' in content
     assert 'data-navigation-target="observations"' in content
+
 
 def test_static_ui_does_not_expose_unimplemented_navigation_entries() -> None:
     """The sidebar must not advertise unavailable application views."""
@@ -248,6 +258,7 @@ def test_static_ui_does_not_expose_unimplemented_navigation_entries() -> None:
     assert 'data-navigation-target="system"' not in content
     assert 'data-navigation-target="settings"' not in content
 
+
 def test_static_ui_declares_all_navigation_views() -> None:
     """Every navigation destination must have a corresponding view."""
     response = make_client().get("/ui/")
@@ -260,6 +271,7 @@ def test_static_ui_declares_all_navigation_views() -> None:
     assert 'data-view="infrastructure"' in content
     assert 'data-view="timeline"' in content
     assert 'data-view="observations"' in content
+
 
 def test_static_ui_loads_navigation_as_javascript_module() -> None:
     """The frontend must load the modular navigation controller."""
@@ -274,6 +286,7 @@ def test_static_ui_loads_navigation_as_javascript_module() -> None:
     assert 'type="module"' in page_response.text
     assert "export class NavigationController" in navigation_response.text
 
+
 def test_static_ui_exposes_navigation_controller() -> None:
     """The UI must expose its navigation controller."""
     client = make_client()
@@ -284,6 +297,7 @@ def test_static_ui_exposes_navigation_controller() -> None:
     assert "export class NavigationController" in response.text
     assert "ohanna:navigation-changed" in response.text
     assert "hashchange" in response.text
+
 
 def test_application_script_connects_navigation() -> None:
     """The application must initialize frontend navigation."""
@@ -296,6 +310,7 @@ def test_application_script_connects_navigation() -> None:
     assert 'from "./navigation.js"' in response.text
     assert '"ohanna:navigation-changed"' in response.text
     assert "this.navigation.initialize()" in response.text
+
 
 def test_static_ui_exposes_frontend_api_module() -> None:
     """The frontend must expose its API client module."""
@@ -310,6 +325,7 @@ def test_static_ui_exposes_frontend_api_module() -> None:
     assert 'topology: "/api/topology"' in response.text
     assert "export async function fetchJson" in response.text
 
+
 def test_static_ui_exposes_frontend_utils_module() -> None:
     """The frontend must expose shared utility functions."""
     response = make_client().get("/ui/utils.js")
@@ -319,6 +335,7 @@ def test_static_ui_exposes_frontend_utils_module() -> None:
     assert "export function formatDate" in response.text
     assert "export function formatLatency" in response.text
     assert "export function normalizeHealthStatus" in response.text
+
 
 def test_static_ui_exposes_shared_application_state() -> None:
     """The frontend must expose a shared application state."""
@@ -330,6 +347,7 @@ def test_static_ui_exposes_shared_application_state() -> None:
     assert "export function applicationState" in response.text
     assert "export function resetApplicationState" in response.text
 
+
 def test_application_uses_frontend_foundation_modules() -> None:
     """The application orchestrator must import shared modules."""
     response = make_client().get("/ui/application.js")
@@ -338,6 +356,7 @@ def test_application_uses_frontend_foundation_modules() -> None:
     assert 'from "./api.js"' in response.text
     assert 'from "./utils.js"' in response.text
     assert 'from "./application_state.js"' in response.text
+
 
 def test_static_ui_exposes_observations_module() -> None:
     """The frontend must expose its observations module."""
@@ -351,6 +370,7 @@ def test_static_ui_exposes_observations_module() -> None:
     assert "renderRecent(" in response.text
     assert "renderCount(" in response.text
 
+
 def test_application_uses_observations_controller() -> None:
     """The application must delegate observation rendering."""
     response = make_client().get("/ui/application.js")
@@ -360,6 +380,7 @@ def test_application_uses_observations_controller() -> None:
     assert 'from "./observations.js"' in response.text
     assert "this.observations.render(" in response.text
     assert "this.observations.showError(" in response.text
+
 
 def test_application_uses_timeline_controller() -> None:
     """The application must delegate timeline rendering."""
@@ -371,6 +392,7 @@ def test_application_uses_timeline_controller() -> None:
     assert "this.timeline.initialize()" in response.text
     assert "this.timeline.render()" in response.text
 
+
 def test_timeline_module_uses_shared_application_state() -> None:
     """The timeline must use periods from shared state."""
     response = make_client().get(
@@ -379,6 +401,7 @@ def test_timeline_module_uses_shared_application_state() -> None:
 
     assert response.status_code == 200
     assert "this.state.timeline?.nodes" in response.text
+
 
 def test_timeline_delegates_node_selection() -> None:
     """Timeline interactions must delegate node selection."""
@@ -390,6 +413,8 @@ def test_timeline_delegates_node_selection() -> None:
     assert "onNodeSelected" in response.text
     assert "button.dataset.timelineNode" in response.text
     assert "button.dataset.nodeId" in response.text
+
+
 def test_static_ui_exposes_topology_module() -> None:
     """The frontend must expose its topology module."""
     response = make_client().get(
@@ -403,6 +428,7 @@ def test_static_ui_exposes_topology_module() -> None:
     assert "buildDeviceHealth" in response.text
     assert "selectDeviceByNode" in response.text
 
+
 def test_topology_module_loads_backend_resources() -> None:
     """The topology controller must load topology and timeline data."""
     response = make_client().get(
@@ -414,6 +440,7 @@ def test_topology_module_loads_backend_resources() -> None:
     assert "fetchJson(API.topology)" in response.text
     assert "fetchJson(API.timeline)" in response.text
     assert "Promise.all" in response.text
+
 
 def test_topology_module_controls_canvas() -> None:
     """The topology controller must expose canvas controls."""
@@ -427,6 +454,7 @@ def test_topology_module_controls_canvas() -> None:
     assert "this.canvas.resetView()" in response.text
     assert "this.canvas.setSelectedDevice" in response.text
 
+
 def test_application_uses_topology_controller() -> None:
     """The application must delegate topology management."""
     response = make_client().get("/ui/application.js")
@@ -438,6 +466,7 @@ def test_application_uses_topology_controller() -> None:
     assert "this.topology.initialize()" in response.text
     assert "this.topology.reflow()" in response.text
 
+
 def test_static_ui_exposes_device_details_module() -> None:
     """The frontend must expose its device-details module."""
     response = make_client().get(
@@ -446,14 +475,12 @@ def test_static_ui_exposes_device_details_module() -> None:
 
     assert response.status_code == 200
     assert "javascript" in response.headers["content-type"]
-    assert (
-        "export class DeviceDetailsController"
-        in response.text
-    )
+    assert "export class DeviceDetailsController" in response.text
     assert "select(deviceId)" in response.text
     assert "render(device)" in response.text
     assert "renderLinks(device)" in response.text
     assert "close()" in response.text
+
 
 def test_device_details_module_uses_shared_state() -> None:
     """Device details must use topology state."""
@@ -465,6 +492,7 @@ def test_device_details_module_uses_shared_state() -> None:
     assert "this.state.topology" in response.text
     assert "this.state.deviceHealth" in response.text
     assert "this.state.selectedDeviceId" in response.text
+
 
 def test_device_details_module_renders_connections() -> None:
     """Device details must render infrastructure links."""
@@ -479,6 +507,7 @@ def test_device_details_module_renders_connections() -> None:
     assert "source_device_id" in response.text
     assert "target_device_id" in response.text
 
+
 def test_application_uses_device_details_controller() -> None:
     """The application must delegate device selection."""
     response = make_client().get(
@@ -492,6 +521,7 @@ def test_application_uses_device_details_controller() -> None:
     assert "this.deviceDetails" in response.text
     assert ".select(" in response.text
     assert ".refresh()" in response.text
+
 
 def test_static_ui_exposes_dashboard_module() -> None:
     """The frontend must expose its dashboard module."""
@@ -533,6 +563,7 @@ def test_dashboard_module_renders_runtime_statistics() -> None:
     assert "observations_rejected" in response.text
     assert "renderAcceptanceRate(" in response.text
 
+
 def test_dashboard_module_delegates_alert_selection() -> None:
     """Active alerts must delegate device selection."""
     response = make_client().get(
@@ -543,6 +574,7 @@ def test_dashboard_module_delegates_alert_selection() -> None:
     assert "onDeviceSelected" in response.text
     assert "data-device-id" in response.text
     assert "button.dataset.deviceId" in response.text
+
 
 def test_application_uses_dashboard_controller() -> None:
     """The application must delegate dashboard rendering."""
@@ -558,6 +590,7 @@ def test_application_uses_dashboard_controller() -> None:
     assert ".renderKpis()" in response.text
     assert ".renderActiveAlerts()" in response.text
 
+
 def test_static_ui_exposes_websocket_module() -> None:
     """The frontend must expose its WebSocket module."""
     response = make_client().get(
@@ -566,10 +599,7 @@ def test_static_ui_exposes_websocket_module() -> None:
 
     assert response.status_code == 200
     assert "javascript" in response.headers["content-type"]
-    assert (
-        "export class WebSocketController"
-        in response.text
-    )
+    assert "export class WebSocketController" in response.text
     assert "initialize()" in response.text
     assert "connect()" in response.text
     assert "stop()" in response.text
@@ -586,7 +616,7 @@ def test_websocket_module_builds_realtime_url() -> None:
     assert '"https:"' in response.text
     assert '"wss:"' in response.text
     assert '"ws:"' in response.text
-    assert 'window.location.host' in response.text
+    assert "window.location.host" in response.text
 
 
 def test_websocket_module_handles_connection_states() -> None:
@@ -637,6 +667,7 @@ def test_application_uses_websocket_controller() -> None:
     assert "this.websocket.initialize()" in response.text
     assert "void this.refresh()" in response.text
 
+
 def test_static_ui_exposes_application_module() -> None:
     """The frontend must expose its application orchestrator."""
     response = make_client().get(
@@ -645,13 +676,11 @@ def test_static_ui_exposes_application_module() -> None:
 
     assert response.status_code == 200
     assert "javascript" in response.headers["content-type"]
-    assert (
-        "export class ApplicationController"
-        in response.text
-    )
+    assert "export class ApplicationController" in response.text
     assert "createControllers()" in response.text
     assert "initializeControllers()" in response.text
     assert "async refresh()" in response.text
+
 
 def test_application_module_coordinates_frontend_controllers() -> None:
     """The application must coordinate all frontend controllers."""
@@ -669,6 +698,7 @@ def test_application_module_coordinates_frontend_controllers() -> None:
     assert "TopologyController" in response.text
     assert "WebSocketController" in response.text
 
+
 def test_application_module_refreshes_backend_resources() -> None:
     """The application must refresh its backend-backed state."""
     response = make_client().get(
@@ -680,6 +710,7 @@ def test_application_module_refreshes_backend_resources() -> None:
     assert "this.loadObservations()" in response.text
     assert "this.topology.load()" in response.text
     assert "Promise.allSettled" in response.text
+
 
 def test_application_entry_point_is_minimal() -> None:
     """The frontend entry point must only start the application."""
@@ -695,6 +726,7 @@ def test_application_entry_point_is_minimal() -> None:
     assert "new TopologyController(" not in response.text
     assert "renderKpis(" not in response.text
 
+
 def test_static_ui_does_not_preserve_hidden_observations_table() -> None:
     """The obsolete hidden observations table must be removed."""
     client = make_client()
@@ -704,6 +736,7 @@ def test_static_ui_does_not_preserve_hidden_observations_table() -> None:
     assert response.status_code == 200
     assert 'id="observations-body"' not in response.text
     assert '<table class="visually-hidden">' not in response.text
+
 
 @pytest.mark.parametrize(
     "stylesheet",
@@ -731,6 +764,7 @@ def test_static_ui_exposes_modular_stylesheets(
     assert response.status_code == 200
     assert "text/css" in response.headers["content-type"]
 
+
 def test_static_ui_keeps_single_stylesheet_entrypoint() -> None:
     """The HTML must keep one stable stylesheet entrypoint."""
     response = make_client().get("/ui/")
@@ -739,18 +773,15 @@ def test_static_ui_keeps_single_stylesheet_entrypoint() -> None:
     assert 'href="/ui/styles.css"' in response.text
     assert 'href="/ui/styles/' not in response.text
 
+
 def test_stylesheet_imports_foundations_before_components() -> None:
     """Foundations must load before generic components."""
     response = make_client().get("/ui/styles.css")
 
     assert response.status_code == 200
 
-    foundations_import = (
-        '@import url("./styles/foundations.css");'
-    )
-    components_import = (
-        '@import url("./styles/components.css");'
-    )
+    foundations_import = '@import url("./styles/foundations.css");'
+    components_import = '@import url("./styles/components.css");'
 
     assert foundations_import in response.text
     assert components_import in response.text
@@ -759,6 +790,7 @@ def test_stylesheet_imports_foundations_before_components() -> None:
     ) < response.text.index(
         components_import,
     )
+
 
 def test_foundations_stylesheet_contains_global_rules() -> None:
     """Global CSS foundations must live in their own module."""
@@ -773,6 +805,7 @@ def test_foundations_stylesheet_contains_global_rules() -> None:
     assert "body {" in response.text
     assert "button," in response.text
 
+
 def test_components_stylesheet_contains_generic_components() -> None:
     """Reusable components must live in their own module."""
     response = make_client().get(
@@ -786,6 +819,7 @@ def test_components_stylesheet_contains_generic_components() -> None:
     assert ".empty-state {" in response.text
     assert ".hidden {" in response.text
     assert ".visually-hidden {" in response.text
+
 
 def test_stylesheet_imports_layout_and_navigation_modules() -> None:
     """Layout and navigation must use dedicated modules."""
@@ -804,11 +838,11 @@ def test_stylesheet_imports_layout_and_navigation_modules() -> None:
         assert stylesheet_import in response.text
 
     positions = [
-        response.text.index(stylesheet_import)
-        for stylesheet_import in imports
+        response.text.index(stylesheet_import) for stylesheet_import in imports
     ]
 
     assert positions == sorted(positions)
+
 
 def test_layout_stylesheet_contains_application_structure() -> None:
     """Application structure must live in the layout module."""
@@ -822,6 +856,7 @@ def test_layout_stylesheet_contains_application_structure() -> None:
     assert ".application-content {" in response.text
     assert ".application-views {" in response.text
     assert ".application-view[hidden] {" in response.text
+
 
 def test_navigation_stylesheet_contains_sidebar_navigation() -> None:
     """Sidebar navigation must live in its dedicated module."""
@@ -838,18 +873,15 @@ def test_navigation_stylesheet_contains_sidebar_navigation() -> None:
     assert ".sidebar-navigation__icon {" in response.text
     assert ".sidebar-footer {" in response.text
 
+
 def test_stylesheet_imports_dashboard_and_observations_modules() -> None:
     """Dashboard and observations must use dedicated modules."""
     response = make_client().get("/ui/styles.css")
 
     assert response.status_code == 200
 
-    dashboard_import = (
-        '@import url("./styles/dashboard.css");'
-    )
-    observations_import = (
-        '@import url("./styles/observations.css");'
-    )
+    dashboard_import = '@import url("./styles/dashboard.css");'
+    observations_import = '@import url("./styles/observations.css");'
 
     assert dashboard_import in response.text
     assert observations_import in response.text
@@ -859,6 +891,7 @@ def test_stylesheet_imports_dashboard_and_observations_modules() -> None:
     ) < response.text.index(
         observations_import,
     )
+
 
 def test_dashboard_stylesheet_contains_dashboard_structure() -> None:
     """Dashboard-specific rules must live in their module."""
@@ -874,6 +907,7 @@ def test_dashboard_stylesheet_contains_dashboard_structure() -> None:
     assert ".dashboard-primary {" in response.text
     assert ".dashboard-right-panel {" in response.text
 
+
 def test_dashboard_stylesheet_contains_side_panel_components() -> None:
     """Dashboard side panels must live in the dashboard module."""
     response = make_client().get(
@@ -888,6 +922,7 @@ def test_dashboard_stylesheet_contains_side_panel_components() -> None:
     assert ".active-alert {" in response.text
     assert ".processing-indicators {" in response.text
 
+
 def test_observations_stylesheet_contains_recent_observations() -> None:
     """Recent observations must live in their own module."""
     response = make_client().get(
@@ -897,19 +932,11 @@ def test_observations_stylesheet_contains_recent_observations() -> None:
     assert response.status_code == 200
     assert ".recent-observations {" in response.text
     assert ".recent-observation {" in response.text
-    assert (
-        ".recent-observation--healthy {"
-        in response.text
-    )
-    assert (
-        ".recent-observation__content {"
-        in response.text
-    )
-    assert (
-        ".recent-observation__meta {"
-        in response.text
-    )
+    assert ".recent-observation--healthy {" in response.text
+    assert ".recent-observation__content {" in response.text
+    assert ".recent-observation__meta {" in response.text
     assert ".observations-compact" not in response.text
+
 
 def test_stylesheet_imports_topology_module() -> None:
     """Topology styles must use a dedicated module."""
@@ -917,11 +944,10 @@ def test_stylesheet_imports_topology_module() -> None:
 
     assert response.status_code == 200
 
-    topology_import = (
-        '@import url("./styles/topology.css");'
-    )
+    topology_import = '@import url("./styles/topology.css");'
 
     assert topology_import in response.text
+
 
 def test_topology_stylesheet_contains_topology_structure() -> None:
     """Topology structure must live in its own module."""
@@ -937,6 +963,7 @@ def test_topology_stylesheet_contains_topology_structure() -> None:
     assert ".topology-controls {" in response.text
     assert ".topology-control {" in response.text
 
+
 def test_topology_stylesheet_contains_devices_and_links() -> None:
     """Topology devices and links must live in the topology module."""
     response = make_client().get(
@@ -946,17 +973,12 @@ def test_topology_stylesheet_contains_devices_and_links() -> None:
     assert response.status_code == 200
     assert ".topology-device {" in response.text
     assert ".topology-device__card {" in response.text
-    assert (
-        ".topology-device--health-healthy {"
-        in response.text
-    )
+    assert ".topology-device--health-healthy {" in response.text
     assert ".topology-link__path {" in response.text
     assert ".topology-link__connector {" in response.text
-    assert (
-        ".dashboard-primary--topology {"
-        in response.text
-    )
+    assert ".dashboard-primary--topology {" in response.text
     assert ".topology-heading-status {" in response.text
+
 
 def test_stylesheet_imports_device_details_module() -> None:
     """Device details styles must use a dedicated module."""
@@ -964,11 +986,10 @@ def test_stylesheet_imports_device_details_module() -> None:
 
     assert response.status_code == 200
 
-    device_details_import = (
-        '@import url("./styles/device-details.css");'
-    )
+    device_details_import = '@import url("./styles/device-details.css");'
 
     assert device_details_import in response.text
+
 
 def test_device_details_stylesheet_contains_panel_structure() -> None:
     """The equipment details panel must live in its module."""
@@ -984,6 +1005,7 @@ def test_device_details_stylesheet_contains_panel_structure() -> None:
     assert ".device-details__summary {" in response.text
     assert ".device-details__section {" in response.text
 
+
 def test_device_details_stylesheet_contains_health_and_links() -> None:
     """Health, properties and links must live in the details module."""
     response = make_client().get(
@@ -992,20 +1014,12 @@ def test_device_details_stylesheet_contains_health_and_links() -> None:
 
     assert response.status_code == 200
     assert ".device-details__health {" in response.text
-    assert (
-        ".device-details__health--healthy {"
-        in response.text
-    )
-    assert (
-        ".device-details__properties {"
-        in response.text
-    )
+    assert ".device-details__health--healthy {" in response.text
+    assert ".device-details__properties {" in response.text
     assert ".device-details__links {" in response.text
     assert ".device-details__link {" in response.text
-    assert (
-        "@keyframes device-details-enter"
-        in response.text
-    )
+    assert "@keyframes device-details-enter" in response.text
+
 
 def test_stylesheet_imports_timeline_module() -> None:
     """Timeline styles must use a dedicated module."""
@@ -1013,11 +1027,10 @@ def test_stylesheet_imports_timeline_module() -> None:
 
     assert response.status_code == 200
 
-    timeline_import = (
-        '@import url("./styles/timeline.css");'
-    )
+    timeline_import = '@import url("./styles/timeline.css");'
 
     assert timeline_import in response.text
+
 
 def test_timeline_stylesheet_contains_timeline_structure() -> None:
     """Timeline structure must live in its dedicated module."""
@@ -1034,6 +1047,7 @@ def test_timeline_stylesheet_contains_timeline_structure() -> None:
     assert ".timeline-row {" in response.text
     assert ".timeline-row__track {" in response.text
 
+
 def test_timeline_stylesheet_contains_period_states() -> None:
     """Timeline health periods must live in the timeline module."""
     response = make_client().get(
@@ -1047,18 +1061,10 @@ def test_timeline_stylesheet_contains_period_states() -> None:
     assert ".timeline-period--unhealthy {" in response.text
     assert ".timeline-period--unknown {" in response.text
     assert ".timeline-row__current {" in response.text
-    assert (
-        ".timeline-row__current--healthy {"
-        in response.text
-    )
-    assert (
-        ".timeline-row__current--degraded {"
-        in response.text
-    )
-    assert (
-        ".timeline-row__current--unhealthy {"
-        in response.text
-    )
+    assert ".timeline-row__current--healthy {" in response.text
+    assert ".timeline-row__current--degraded {" in response.text
+    assert ".timeline-row__current--unhealthy {" in response.text
+
 
 def test_stylesheet_imports_responsive_module_last() -> None:
     """Responsive rules must load after responsibility modules."""
@@ -1066,9 +1072,7 @@ def test_stylesheet_imports_responsive_module_last() -> None:
 
     assert response.status_code == 200
 
-    responsive_import = (
-        '@import url("./styles/responsive.css");'
-    )
+    responsive_import = '@import url("./styles/responsive.css");'
 
     assert responsive_import in response.text
 
@@ -1080,6 +1084,7 @@ def test_stylesheet_imports_responsive_module_last() -> None:
 
     assert imports[-1] == responsive_import
 
+
 def test_responsive_stylesheet_contains_application_breakpoints() -> None:
     """Responsive adaptations must live in one module."""
     response = make_client().get(
@@ -1087,30 +1092,13 @@ def test_responsive_stylesheet_contains_application_breakpoints() -> None:
     )
 
     assert response.status_code == 200
-    assert (
-        "@media (max-width: 1200px)"
-        in response.text
-    )
-    assert (
-        "@media (max-width: 1000px)"
-        in response.text
-    )
-    assert (
-        "@media (max-width: 900px)"
-        in response.text
-    )
-    assert (
-        "@media (max-width: 720px)"
-        in response.text
-    )
-    assert (
-        "@media (max-width: 460px)"
-        in response.text
-    )
-    assert (
-        "@media (min-width: 1001px)"
-        in response.text
-    )
+    assert "@media (max-width: 1200px)" in response.text
+    assert "@media (max-width: 1000px)" in response.text
+    assert "@media (max-width: 900px)" in response.text
+    assert "@media (max-width: 720px)" in response.text
+    assert "@media (max-width: 460px)" in response.text
+    assert "@media (min-width: 1001px)" in response.text
+
 
 def test_responsive_stylesheet_preserves_reduced_motion() -> None:
     """Reduced-motion accessibility must remain available."""
@@ -1119,18 +1107,10 @@ def test_responsive_stylesheet_preserves_reduced_motion() -> None:
     )
 
     assert response.status_code == 200
-    assert (
-        "@media (prefers-reduced-motion: reduce)"
-        in response.text
-    )
-    assert (
-        "animation-duration: 1ms !important"
-        in response.text
-    )
-    assert (
-        "transition-duration: 1ms !important"
-        in response.text
-    )
+    assert "@media (prefers-reduced-motion: reduce)" in response.text
+    assert "animation-duration: 1ms !important" in response.text
+    assert "transition-duration: 1ms !important" in response.text
+
 
 def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
     """The CSS entrypoint must import every responsibility module."""
@@ -1159,12 +1139,14 @@ def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
 
     assert imports == expected_imports
 
+
 def test_stylesheet_entrypoint_contains_no_media_queries() -> None:
     """Responsive rules must not remain in the CSS entrypoint."""
     response = make_client().get("/ui/styles.css")
 
     assert response.status_code == 200
     assert "@media" not in response.text
+
 
 def test_responsive_stylesheet_uses_consolidated_breakpoints() -> None:
     """Duplicate desktop and mobile breakpoints must be merged."""
@@ -1173,18 +1155,9 @@ def test_responsive_stylesheet_uses_consolidated_breakpoints() -> None:
     )
 
     assert response.status_code == 200
-    assert (
-        response.text.count(
-            "@media (min-width: 1001px)"
-        )
-        == 1
-    )
-    assert (
-        response.text.count(
-            "@media (max-width: 720px)"
-        )
-        == 1
-    )
+    assert response.text.count("@media (min-width: 1001px)") == 1
+    assert response.text.count("@media (max-width: 720px)") == 1
+
 
 def test_stylesheet_entrypoint_does_not_duplicate_module_rules() -> None:
     """Module-owned structural rules must leave the entrypoint."""
@@ -1205,6 +1178,7 @@ def test_stylesheet_entrypoint_does_not_duplicate_module_rules() -> None:
     for selector in selectors:
         assert selector not in response.text
 
+
 def test_static_ui_exposes_timeline_period_model() -> None:
     """The frontend must expose its timeline period model."""
     response = make_client().get(
@@ -1216,6 +1190,7 @@ def test_static_ui_exposes_timeline_period_model() -> None:
     assert "export class TimelinePeriod" in response.text
     assert "constructor({" in response.text
     assert "static fromPayload(payload)" in response.text
+
 
 def test_timeline_period_maps_api_contract() -> None:
     """The period model must map the explicit API fields."""
@@ -1230,6 +1205,7 @@ def test_timeline_period_maps_api_contract() -> None:
     assert "payload.duration_seconds" in response.text
     assert "payload.is_open" in response.text
 
+
 def test_timeline_period_validates_period_boundaries() -> None:
     """The period model must reject invalid boundaries."""
     response = make_client().get(
@@ -1241,6 +1217,7 @@ def test_timeline_period_validates_period_boundaries() -> None:
     assert "must not precede startedAt" in response.text
     assert "must not define endedAt" in response.text
     assert "must define endedAt" in response.text
+
 
 def test_timeline_period_supports_visible_window_clipping() -> None:
     """The period model must support continuous timeline rendering."""
@@ -1255,6 +1232,7 @@ def test_timeline_period_supports_visible_window_clipping() -> None:
     assert "Math.max(" in response.text
     assert "Math.min(" in response.text
 
+
 def test_application_state_supports_timeline() -> None:
     """Application state must expose the timeline."""
     response = make_client().get(
@@ -1265,6 +1243,7 @@ def test_application_state_supports_timeline() -> None:
 
     assert "timeline: null" in response.text
     assert "function setTimeline" in response.text
+
 
 def test_application_loads_timeline_endpoint() -> None:
     """The application controller must load the timeline API."""
@@ -1278,6 +1257,7 @@ def test_application_loads_timeline_endpoint() -> None:
     assert "setTimeline(" in response.text
     assert "loadTimeline()" in response.text
 
+
 def test_api_declares_timeline_endpoint() -> None:
     """Timeline endpoint must be part of the frontend API."""
     response = make_client().get(
@@ -1288,6 +1268,7 @@ def test_api_declares_timeline_endpoint() -> None:
 
     assert 'timeline: "/api/timeline"' in response.text
 
+
 def test_timeline_controller_imports_period_model() -> None:
     """Timeline controller must use the period model."""
     response = make_client().get(
@@ -1296,6 +1277,7 @@ def test_timeline_controller_imports_period_model() -> None:
 
     assert response.status_code == 200
     assert 'from "./timeline_period.js"' in response.text
+
 
 def test_timeline_controller_tracks_periods() -> None:
     """Timeline controller must synchronize node periods."""
@@ -1311,6 +1293,7 @@ def test_timeline_controller_tracks_periods() -> None:
     assert ".fromPayload(" in response.text
     assert "node.periods" in response.text
 
+
 def test_timeline_controller_exposes_loaded_periods() -> None:
     """Timeline controller must expose loaded periods."""
     response = make_client().get(
@@ -1320,6 +1303,7 @@ def test_timeline_controller_exposes_loaded_periods() -> None:
     assert response.status_code == 200
 
     assert "getPeriods()" in response.text
+
 
 def test_timeline_controller_uses_api_node_groups() -> None:
     """Timeline controller must consume node groups from the API."""
@@ -1333,6 +1317,7 @@ def test_timeline_controller_uses_api_node_groups() -> None:
     assert "node.node_id" in response.text
     assert "node.periods" in response.text
 
+
 def test_timeline_controller_supports_period_rendering() -> None:
     """Timeline controller must support rendering periods."""
     response = make_client().get(
@@ -1342,6 +1327,7 @@ def test_timeline_controller_supports_period_rendering() -> None:
     assert response.status_code == 200
     assert "renderPeriod(" in response.text
     assert "timeline-period--" in response.text
+
 
 def test_timeline_controller_uses_node_periods() -> None:
     """Timeline controller must use periods grouped by API nodes."""
@@ -1355,6 +1341,7 @@ def test_timeline_controller_uses_node_periods() -> None:
     assert "node.periods" in response.text
     assert "this.periodGroups" in response.text
 
+
 def test_timeline_controller_renders_period_rows() -> None:
     """Timeline controller must render one row per node."""
     response = make_client().get(
@@ -1365,6 +1352,7 @@ def test_timeline_controller_renders_period_rows() -> None:
     assert "renderPeriodRow(" in response.text
     assert "period.overlaps(" in response.text
     assert "this.renderPeriod(" in response.text
+
 
 def test_timeline_controller_contains_no_observation_pipeline() -> None:
     """The timeline must no longer render raw observations."""
@@ -1378,6 +1366,7 @@ def test_timeline_controller_contains_no_observation_pipeline() -> None:
     assert "isObservationVisible" not in response.text
     assert "renderEvent(" not in response.text
 
+
 def test_timeline_controller_uses_period_counter() -> None:
     """The timeline must count rendered health periods."""
     response = make_client().get(
@@ -1388,6 +1377,7 @@ def test_timeline_controller_uses_period_counter() -> None:
     assert "renderPeriodCount(" in response.text
     assert "#timeline-period-count" in response.text
     assert "renderEventCount(" not in response.text
+
 
 def test_timeline_rendering_is_triggered_by_timeline_loading() -> None:
     """Timeline loading must trigger the timeline rendering."""
@@ -1400,6 +1390,7 @@ def test_timeline_rendering_is_triggered_by_timeline_loading() -> None:
     assert "this.timeline.render();" in response.text
     assert "onObservationsChanged:" not in response.text
 
+
 def test_static_ui_exposes_timeline_period_count() -> None:
     """The timeline must expose a period counter."""
     response = make_client().get("/ui/")
@@ -1407,6 +1398,7 @@ def test_static_ui_exposes_timeline_period_count() -> None:
     assert response.status_code == 200
     assert 'id="timeline-period-count"' in response.text
     assert 'id="timeline-event-count"' not in response.text
+
 
 def test_timeline_module_contains_no_legacy_event_rendering() -> None:
     """The timeline must contain no legacy observation rendering."""
@@ -1428,6 +1420,7 @@ def test_timeline_module_contains_no_legacy_event_rendering() -> None:
     for term in legacy_terms:
         assert term not in response.text
 
+
 def test_timeline_styles_contain_no_legacy_events() -> None:
     """The timeline stylesheet must only style periods."""
     response = make_client().get(
@@ -1437,6 +1430,7 @@ def test_timeline_styles_contain_no_legacy_events() -> None:
     assert response.status_code == 200
     assert ".timeline-period" in response.text
     assert ".timeline-event" not in response.text
+
 
 def test_navigation_overview_combines_main_dashboard_views() -> None:
     """Overview must show dashboard, infrastructure and timeline."""
@@ -1451,6 +1445,7 @@ def test_navigation_overview_combines_main_dashboard_views() -> None:
     assert '"infrastructure"' in response.text
     assert '"timeline"' in response.text
 
+
 def test_navigation_specialized_views_remain_independent() -> None:
     """Specialized navigation targets must remain available."""
     response = make_client().get(
@@ -1460,6 +1455,7 @@ def test_navigation_specialized_views_remain_independent() -> None:
     assert response.status_code == 200
     assert "return new Set([" in response.text
     assert "viewName," in response.text
+
 
 def test_application_reflows_visible_topology_after_navigation() -> None:
     """Overview and Infrastructure must reflow the topology."""
@@ -1472,6 +1468,7 @@ def test_application_reflows_visible_topology_after_navigation() -> None:
     assert 'viewName === "infrastructure"' in response.text
     assert "this.topology.reflow()" in response.text
 
+
 def test_navigation_exposes_active_view_to_layout() -> None:
     """Navigation must expose the active view to CSS."""
     response = make_client().get(
@@ -1482,6 +1479,7 @@ def test_navigation_exposes_active_view_to_layout() -> None:
     assert "this.viewContainer" in response.text
     assert ".dataset.activeView" in response.text
 
+
 def test_layout_supports_combined_overview() -> None:
     """The overview must combine its three visible sections."""
     response = make_client().get(
@@ -1489,11 +1487,9 @@ def test_layout_supports_combined_overview() -> None:
     )
 
     assert response.status_code == 200
-    assert (
-        'data-active-view="overview"'
-        in response.text
-    )
+    assert 'data-active-view="overview"' in response.text
     assert "min-height: 0" in response.text
+
 
 def test_frontend_contains_no_console_logging() -> None:
     """Production frontend modules must not write to the console."""
@@ -1525,6 +1521,7 @@ def test_frontend_contains_no_console_logging() -> None:
         assert "console.error(" not in response.text
         assert "debugger;" not in response.text
 
+
 def test_timeline_controller_renders_loading_errors() -> None:
     """Timeline loading failures must be visible to users."""
     response = make_client().get(
@@ -1535,6 +1532,7 @@ def test_timeline_controller_renders_loading_errors() -> None:
     assert "renderError(message)" in response.text
     assert "timeline-empty--error" in response.text
     assert 'role="alert"' in response.text
+
 
 def test_application_routes_timeline_errors_to_the_ui() -> None:
     """Application must not hide timeline loading failures."""

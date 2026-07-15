@@ -54,6 +54,7 @@ def get_observations(
 
     return list(observations)
 
+
 @router.post(
     "",
     response_model=ObservationIngestionResponse,
@@ -83,8 +84,6 @@ async def ingest_observation(
     return ObservationIngestionResponse(
         accepted=result.accepted,
         message=(
-            "Observation accepted."
-            if result.accepted
-            else "Observation rejected."
+            "Observation accepted." if result.accepted else "Observation rejected."
         ),
     )

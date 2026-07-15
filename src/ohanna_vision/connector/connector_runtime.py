@@ -11,9 +11,7 @@ class ConnectorRuntime:
     """Represent the operational runtime of a connector."""
 
     state: ConnectorState = ConnectorState.CREATED
-    statistics: ConnectorStatistics = field(
-        default_factory=ConnectorStatistics
-    )
+    statistics: ConnectorStatistics = field(default_factory=ConnectorStatistics)
 
     @property
     def is_ready(self) -> bool:

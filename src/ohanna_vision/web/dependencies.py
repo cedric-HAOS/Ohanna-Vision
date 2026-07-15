@@ -79,6 +79,7 @@ TimelineEngineDependency = Annotated[
     Depends(get_timeline_engine),
 ]
 
+
 def get_websocket_hub(
     websocket: WebSocket,
 ) -> WebSocketHub:

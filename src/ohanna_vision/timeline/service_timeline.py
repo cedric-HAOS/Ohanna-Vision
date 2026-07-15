@@ -32,26 +32,21 @@ class ServiceTimeline:
             raise ValueError("node_id must not be empty.")
 
         capability_ids = tuple(
-            capability.capability_id
-            for capability in self.capabilities
+            capability.capability_id for capability in self.capabilities
         )
 
         if len(capability_ids) != len(set(capability_ids)):
-            raise ValueError(
-                "capability identifiers must be unique."
-            )
+            raise ValueError("capability identifiers must be unique.")
 
         for capability in self.capabilities:
             if capability.service_id != self.service_id:
                 raise ValueError(
-                    "Every capability timeline must belong "
-                    "to the service."
+                    "Every capability timeline must belong to the service."
                 )
 
             if capability.node_id != self.node_id:
                 raise ValueError(
-                    "Every capability timeline must belong "
-                    "to the service node."
+                    "Every capability timeline must belong to the service node."
                 )
 
         validate_periods(self.periods)
@@ -113,11 +108,7 @@ class ServiceTimeline:
             raise ValueError("instant must be timezone-aware.")
 
         period = next(
-            (
-                period
-                for period in self.periods
-                if period.contains(instant)
-            ),
+            (period for period in self.periods if period.contains(instant)),
             None,
         )
 

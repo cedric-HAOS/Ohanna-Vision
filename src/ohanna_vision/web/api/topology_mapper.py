@@ -28,18 +28,9 @@ def topology_to_response(
     return TopologyResponse(
         topology_id=topology.topology_id,
         label=topology.label,
-        devices=[
-            topology_device_to_response(device)
-            for device in topology.devices
-        ],
-        links=[
-            topology_link_to_response(link)
-            for link in topology.links
-        ],
-        layouts=[
-            topology_layout_to_response(layout)
-            for layout in topology.layouts
-        ],
+        devices=[topology_device_to_response(device) for device in topology.devices],
+        links=[topology_link_to_response(link) for link in topology.links],
+        layouts=[topology_layout_to_response(layout) for layout in topology.layouts],
         metadata=thaw_mapping(topology.metadata),
     )
 
@@ -108,30 +99,18 @@ def thaw_mapping(
     mapping: Mapping[str, object],
 ) -> dict[str, Any]:
     """Convert deeply immutable domain metadata to JSON-compatible data."""
-    return {
-        key: thaw_value(value)
-        for key, value in mapping.items()
-    }
+    return {key: thaw_value(value) for key, value in mapping.items()}
 
 
 def thaw_value(value: object) -> Any:
     """Recursively convert immutable domain values to mutable JSON values."""
     if isinstance(value, Mapping):
-        return {
-            key: thaw_value(nested_value)
-            for key, nested_value in value.items()
-        }
+        return {key: thaw_value(nested_value) for key, nested_value in value.items()}
 
     if isinstance(value, tuple | list):
-        return [
-            thaw_value(item)
-            for item in value
-        ]
+        return [thaw_value(item) for item in value]
 
     if isinstance(value, frozenset | set):
-        return [
-            thaw_value(item)
-            for item in value
-        ]
+        return [thaw_value(item) for item in value]
 
     return value

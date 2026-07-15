@@ -77,9 +77,7 @@ def make_processor() -> tuple[
 def test_pipeline_processes_first_observation() -> None:
     processor, runtime, store = make_processor()
     observation = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        )
+        observation_id=("00000000-0000-0000-0000-000000000001")
     )
 
     result = processor.process(observation)
@@ -120,17 +118,12 @@ def test_pipeline_builds_status_transition() -> None:
     processor, runtime, store = make_processor()
 
     healthy = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000001"),
     )
     degraded = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000002"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000002"),
         status=HealthStatus.DEGRADED,
-        observed_at=FIRST_OBSERVATION_AT
-        + timedelta(minutes=10),
+        observed_at=FIRST_OBSERVATION_AT + timedelta(minutes=10),
     )
 
     processor.process(healthy)
@@ -159,21 +152,15 @@ def test_pipeline_builds_status_transition() -> None:
     assert runtime.statistics.observations_accepted == 2
 
 
-def test_pipeline_accepts_redundant_observation_without_timeline_change(
-) -> None:
+def test_pipeline_accepts_redundant_observation_without_timeline_change() -> None:
     processor, runtime, store = make_processor()
 
     first = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000001"),
     )
     repeated = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000002"
-        ),
-        observed_at=FIRST_OBSERVATION_AT
-        + timedelta(minutes=5),
+        observation_id=("00000000-0000-0000-0000-000000000002"),
+        observed_at=FIRST_OBSERVATION_AT + timedelta(minutes=5),
     )
 
     first_result = processor.process(first)
@@ -191,9 +178,7 @@ def test_pipeline_rejects_duplicate_without_changing_state() -> None:
     processor, runtime, store = make_processor()
 
     observation = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        )
+        observation_id=("00000000-0000-0000-0000-000000000001")
     )
 
     accepted = processor.process(observation)
@@ -206,9 +191,7 @@ def test_pipeline_rejects_duplicate_without_changing_state() -> None:
     assert "already exists" in rejected.reason
 
     assert store.observations == (observation,)
-    assert processor.infrastructure_timeline == (
-        timeline_before_rejection
-    )
+    assert processor.infrastructure_timeline == (timeline_before_rejection)
 
     assert runtime.statistics.observations_received == 2
     assert runtime.statistics.observations_accepted == 1
@@ -219,14 +202,10 @@ def test_pipeline_rejects_conflict_without_polluting_store() -> None:
     processor, runtime, store = make_processor()
 
     healthy = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000001"),
     )
     conflicting = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000002"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000002"),
         status=HealthStatus.UNAVAILABLE,
         observed_at=healthy.observed_at,
     )
@@ -240,9 +219,7 @@ def test_pipeline_rejects_conflict_without_polluting_store() -> None:
     assert "same instant" in result.reason
 
     assert store.observations == (healthy,)
-    assert processor.infrastructure_timeline == (
-        timeline_before_rejection
-    )
+    assert processor.infrastructure_timeline == (timeline_before_rejection)
 
     assert runtime.statistics.observations_received == 2
     assert runtime.statistics.observations_accepted == 1
@@ -253,14 +230,10 @@ def test_pipeline_counts_complete_infrastructure_hierarchy() -> None:
     processor, _, store = make_processor()
 
     dns = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000001"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000001"),
     )
     mqtt = make_observation(
-        observation_id=(
-            "00000000-0000-0000-0000-000000000002"
-        ),
+        observation_id=("00000000-0000-0000-0000-000000000002"),
         node_id="green-01",
         service_id="mqtt-primary",
         capability_id="mqtt.connect",
@@ -278,7 +251,4 @@ def test_pipeline_counts_complete_infrastructure_hierarchy() -> None:
     assert result.snapshot.infrastructure_timelines == 1
     assert result.snapshot.timeline_count == 5
 
-    assert (
-        processor.infrastructure_timeline.current_status
-        is HealthStatus.DEGRADED
-    )
+    assert processor.infrastructure_timeline.current_status is HealthStatus.DEGRADED

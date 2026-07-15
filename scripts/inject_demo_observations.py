@@ -143,10 +143,7 @@ def inject_observations(
 
     for node_index, node_id in enumerate(node_ids):
         for observation_index in range(observations_per_node):
-            age_minutes = (
-                observation_index * 45
-                + node_index * 4
-            )
+            age_minutes = observation_index * 45 + node_index * 4
 
             observed_at = now - timedelta(
                 minutes=age_minutes,
@@ -180,19 +177,13 @@ def inject_observations(
 def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
-        description=(
-            "Injecter des observations de démonstration "
-            "dans Ohanna-Vision."
-        ),
+        description=("Injecter des observations de démonstration dans Ohanna-Vision."),
     )
 
     parser.add_argument(
         "--base-url",
         default=DEFAULT_BASE_URL,
-        help=(
-            "Adresse d’Ohanna-Vision "
-            f"(défaut : {DEFAULT_BASE_URL})."
-        ),
+        help=(f"Adresse d’Ohanna-Vision (défaut : {DEFAULT_BASE_URL})."),
     )
 
     parser.add_argument(
@@ -217,9 +208,7 @@ def main() -> None:
     try:
         inject_observations(
             base_url=arguments.base_url.rstrip("/"),
-            observations_per_node=(
-                arguments.observations_per_node
-            ),
+            observations_per_node=(arguments.observations_per_node),
         )
     except HTTPError as error:
         detail = error.read().decode(
@@ -232,8 +221,7 @@ def main() -> None:
         ) from error
     except URLError as error:
         raise SystemExit(
-            "Impossible de joindre Ohanna-Vision : "
-            f"{error.reason}",
+            f"Impossible de joindre Ohanna-Vision : {error.reason}",
         ) from error
 
 

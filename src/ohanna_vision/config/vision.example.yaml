@@ -1,0 +1,11 @@
+name: Ohanna Vision
+environment: production
+debug: false
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  log_level: info
+
+web:
+  documentation_enabled: false

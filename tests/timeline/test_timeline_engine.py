@@ -275,6 +275,7 @@ def test_engine_rejects_naive_until() -> None:
             until=datetime(2026, 7, 10, 9, 0),
         )
 
+
 def test_engine_builds_complete_timeline_hierarchy() -> None:
     observed_at = datetime(2026, 7, 10, 8, 0, tzinfo=UTC)
 

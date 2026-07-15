@@ -79,10 +79,7 @@ class ObservationStore:
         observations = (
             observation
             for observation in observations
-            if (
-                capability_id is None
-                or observation.capability_id == capability_id
-            )
+            if (capability_id is None or observation.capability_id == capability_id)
         )
         observations = (
             observation

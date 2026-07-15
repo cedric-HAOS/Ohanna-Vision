@@ -41,9 +41,7 @@ def test_post_observation_is_received_by_websocket_client() -> None:
     processor = FakeObservationProcessor()
     application = create_app()
 
-    application.dependency_overrides[
-        get_observation_processor
-    ] = lambda: cast(
+    application.dependency_overrides[get_observation_processor] = lambda: cast(
         ObservationProcessor,
         processor,
     )
@@ -85,9 +83,7 @@ def test_post_observation_is_received_by_websocket_client() -> None:
 
     assert message == {
         "type": "observation.accepted",
-        "observation_id": str(
-            processor.observations[0].observation_id
-        ),
+        "observation_id": str(processor.observations[0].observation_id),
         "capability_id": "dns.resolve",
         "service_id": "dns-primary",
         "node_id": "infra-01",

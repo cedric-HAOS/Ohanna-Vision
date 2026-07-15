@@ -55,8 +55,7 @@ class HealthEngine:
         for policy in policies:
             if policy.key in self._policies:
                 raise DuplicateHealthPolicyError(
-                    "A health policy already exists for "
-                    f"{'/'.join(policy.key)}."
+                    f"A health policy already exists for {'/'.join(policy.key)}."
                 )
 
             self._policies[policy.key] = policy
@@ -84,13 +83,9 @@ class HealthEngine:
             for capability in service.capabilities
         )
 
-        service_assessments = self._evaluate_services(
-            capability_assessments
-        )
+        service_assessments = self._evaluate_services(capability_assessments)
         node_assessments = self._evaluate_nodes(service_assessments)
-        infrastructure_assessment = self._evaluate_infrastructure(
-            node_assessments
-        )
+        infrastructure_assessment = self._evaluate_infrastructure(node_assessments)
 
         return HealthReport(
             evaluated_at=evaluated_at,
@@ -115,11 +110,7 @@ class HealthEngine:
         )
         policy = self._policies.get(key)
 
-        criticality = (
-            policy.criticality
-            if policy is not None
-            else Criticality.NORMAL
-        )
+        criticality = policy.criticality if policy is not None else Criticality.NORMAL
 
         status = capability.health.status
         reason = capability.health.reason or capability.message
@@ -245,10 +236,7 @@ class HealthEngine:
         )
 
         criticality = max(
-            (
-                child.criticality
-                for child in values
-            ),
+            (child.criticality for child in values),
             key=lambda value: _CRITICALITY_PRIORITY[value],
         )
 

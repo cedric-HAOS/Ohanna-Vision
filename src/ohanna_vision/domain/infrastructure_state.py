@@ -47,20 +47,13 @@ class InfrastructureState:
     def services(self) -> tuple[ServiceState, ...]:
         """Return all infrastructure services."""
 
-        return tuple(
-            service
-            for node in self.nodes
-            for service in node.services
-        )
+        return tuple(service for node in self.nodes for service in node.services)
 
     @property
     def capability_count(self) -> int:
         """Return the number of known capabilities."""
 
-        return sum(
-            len(service.capabilities)
-            for service in self.services
-        )
+        return sum(len(service.capabilities) for service in self.services)
 
     def node(self, node_id: str) -> NodeState | None:
         """Return a node by identifier."""
@@ -74,10 +67,6 @@ class InfrastructureState:
         """Return a service by identifier."""
 
         return next(
-            (
-                service
-                for service in self.services
-                if service.service_id == service_id
-            ),
+            (service for service in self.services if service.service_id == service_id),
             None,
         )

@@ -111,9 +111,7 @@ def test_observation_store_dependency_returns_context_store() -> None:
         observation_store: ObservationStoreDependency,
     ) -> dict[str, bool]:
         return {
-            "same_store": (
-                observation_store is context.observation_store
-            ),
+            "same_store": (observation_store is context.observation_store),
         }
 
     response = TestClient(app).get("/observation-store")
@@ -135,9 +133,7 @@ def test_timeline_engine_dependency_returns_context_engine() -> None:
         timeline_engine: TimelineEngineDependency,
     ) -> dict[str, bool]:
         return {
-            "same_engine": (
-                timeline_engine is context.timeline_engine
-            ),
+            "same_engine": (timeline_engine is context.timeline_engine),
         }
 
     response = TestClient(app).get("/timeline-engine")
@@ -164,9 +160,7 @@ def test_application_context_dependency_can_be_overridden() -> None:
             "overridden": context is overridden_context,
         }
 
-    app.dependency_overrides[get_application_context] = (
-        lambda: overridden_context
-    )
+    app.dependency_overrides[get_application_context] = lambda: overridden_context
 
     response = TestClient(app).get("/context")
 
@@ -175,6 +169,7 @@ def test_application_context_dependency_can_be_overridden() -> None:
         "overridden": True,
     }
 
+
 def test_timer_dependency_returns_timezone_aware_datetime() -> None:
     """The timer dependency must return an aware UTC datetime."""
     timer = get_timer()
@@ -182,6 +177,7 @@ def test_timer_dependency_returns_timezone_aware_datetime() -> None:
     now = timer()
 
     assert now.tzinfo is UTC
+
 
 def test_observation_processor_dependency_builds_processor() -> None:
     """The dependency must build an observation processor."""
@@ -206,6 +202,7 @@ def test_observation_processor_dependency_builds_processor() -> None:
 
     assert isinstance(processor, ObservationProcessor)
 
+
 def test_observation_processor_dependency_can_be_overridden() -> None:
     """FastAPI must support overriding the processor dependency."""
     expected_processor = cast(
@@ -223,9 +220,9 @@ def test_observation_processor_dependency_can_be_overridden() -> None:
             "injected": processor is expected_processor,
         }
 
-    application.dependency_overrides[
-        get_observation_processor
-    ] = lambda: expected_processor
+    application.dependency_overrides[get_observation_processor] = lambda: (
+        expected_processor
+    )
 
     response = TestClient(application).get("/processor")
 

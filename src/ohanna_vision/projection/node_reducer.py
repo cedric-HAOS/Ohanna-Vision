@@ -31,9 +31,7 @@ class NodeReducer:
         )
 
         if not values:
-            raise EmptyNodeProjectionError(
-                "At least one service state is required."
-            )
+            raise EmptyNodeProjectionError("At least one service state is required.")
 
         node_id = values[0].node_id
 

@@ -35,10 +35,7 @@ def test_topology_link_is_bidirectional_by_default() -> None:
         kind=TopologyLinkKind.ETHERNET,
     )
 
-    assert (
-        link.direction
-        is TopologyLinkDirection.BIDIRECTIONAL
-    )
+    assert link.direction is TopologyLinkDirection.BIDIRECTIONAL
 
 
 def test_topology_link_can_be_directional() -> None:
@@ -51,10 +48,7 @@ def test_topology_link_can_be_directional() -> None:
         direction=TopologyLinkDirection.SOURCE_TO_TARGET,
     )
 
-    assert (
-        link.direction
-        is TopologyLinkDirection.SOURCE_TO_TARGET
-    )
+    assert link.direction is TopologyLinkDirection.SOURCE_TO_TARGET
 
 
 def test_topology_link_can_store_bandwidth() -> None:
@@ -243,6 +237,7 @@ def test_topology_link_is_immutable() -> None:
     with pytest.raises(AttributeError):
         link.label = "Other link"  # type: ignore[misc]
 
+
 def test_topology_link_metadata_is_deeply_immutable() -> None:
     """Nested topology link metadata must remain immutable."""
     metadata = {
@@ -268,6 +263,7 @@ def test_topology_link_metadata_is_deeply_immutable() -> None:
 
     with pytest.raises(TypeError):
         ports["target"] = "10G-8"  # type: ignore[index]
+
 
 @pytest.mark.parametrize(
     "bandwidth_mbps",

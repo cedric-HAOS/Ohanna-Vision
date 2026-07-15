@@ -18,14 +18,10 @@ def validate_periods(
         strict=False,
     ):
         if current.started_at < previous.started_at:
-            raise ValueError(
-                "Periods must be ordered chronologically."
-            )
+            raise ValueError("Periods must be ordered chronologically.")
 
         if previous.ended_at is None:
-            raise ValueError(
-                "An open period cannot be followed by another period."
-            )
+            raise ValueError("An open period cannot be followed by another period.")
 
         if current.started_at < previous.ended_at:
             raise ValueError("Periods must not overlap.")
@@ -34,6 +30,4 @@ def validate_periods(
             raise ValueError("Periods must be contiguous.")
 
         if current.status is previous.status:
-            raise ValueError(
-                "Consecutive periods must have different statuses."
-            )
+            raise ValueError("Consecutive periods must have different statuses.")

@@ -63,11 +63,9 @@ def test_topology_canvas_skips_unpositioned_elements() -> None:
     response = client.get("/ui/topology_canvas.js")
 
     assert response.status_code == 200
-    assert (
-        "if (!sourcePosition || !targetPosition)"
-        in response.text
-    )
+    assert "if (!sourcePosition || !targetPosition)" in response.text
     assert "if (!position)" in response.text
+
 
 def test_topology_canvas_renders_device_icons() -> None:
     """The topology canvas must render icons by device kind."""
@@ -107,6 +105,7 @@ def test_topology_canvas_uses_device_metadata() -> None:
     assert "device.metadata?.model" in response.text
     assert "device.metadata?.role" in response.text
 
+
 def test_topology_canvas_applies_device_health() -> None:
     """The topology canvas must apply health to device cards."""
     client = make_client()
@@ -143,6 +142,7 @@ def test_topology_canvas_supports_domain_health_statuses() -> None:
     assert '"unhealthy"' in response.text
     assert '"unknown"' in response.text
 
+
 def test_topology_canvas_supports_device_selection() -> None:
     """Topology devices must support pointer selection."""
     client = make_client()
@@ -167,6 +167,7 @@ def test_topology_canvas_supports_keyboard_selection() -> None:
     assert '" "' in response.text
     assert 'setAttribute("tabindex", "0")' in response.text
 
+
 def test_static_ui_contains_device_details_panel() -> None:
     """The dashboard must expose the premium device details panel."""
     client = make_client()
@@ -182,6 +183,7 @@ def test_static_ui_contains_device_details_panel() -> None:
     assert 'id="device-details-supervision"' in response.text
     assert 'id="device-details-manufacturer"' in response.text
     assert 'id="device-links-list"' in response.text
+
 
 def test_topology_canvas_supports_zoom() -> None:
     """The topology canvas must support controlled zoom."""
@@ -231,6 +233,7 @@ def test_topology_canvas_can_reset_view() -> None:
     assert response.status_code == 200
     assert "resetView(" in response.text
     assert "initialViewBox" in response.text
+
 
 def test_topology_canvas_can_fit_content_to_viewport() -> None:
     """The topology canvas must fit devices to the visible area."""

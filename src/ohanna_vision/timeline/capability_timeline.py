@@ -133,11 +133,7 @@ class CapabilityTimeline:
             raise ValueError("instant must be timezone-aware.")
 
         return next(
-            (
-                period
-                for period in self.periods
-                if period.contains(instant)
-            ),
+            (period for period in self.periods if period.contains(instant)),
             None,
         )
 
@@ -167,20 +163,14 @@ class CapabilityTimeline:
     ) -> tuple[StatePeriod, ...]:
         """Return all periods matching a status."""
 
-        return tuple(
-            period
-            for period in self.periods
-            if period.status is status
-        )
+        return tuple(period for period in self.periods if period.status is status)
 
     def _validate_periods(self) -> None:
         """Validate ordering, continuity and open-period rules."""
 
         for index, period in enumerate(self.periods):
             if period.is_open and index != len(self.periods) - 1:
-                raise ValueError(
-                    "Only the last period may be open."
-                )
+                raise ValueError("Only the last period may be open.")
 
         for previous, current in zip(
             self.periods,
@@ -188,26 +178,16 @@ class CapabilityTimeline:
             strict=False,
         ):
             if current.started_at < previous.started_at:
-                raise ValueError(
-                    "Periods must be ordered chronologically."
-                )
+                raise ValueError("Periods must be ordered chronologically.")
 
             if previous.ended_at is None:
-                raise ValueError(
-                    "An open period cannot be followed by another period."
-                )
+                raise ValueError("An open period cannot be followed by another period.")
 
             if current.started_at < previous.ended_at:
-                raise ValueError(
-                    "Periods must not overlap."
-                )
+                raise ValueError("Periods must not overlap.")
 
             if current.started_at > previous.ended_at:
-                raise ValueError(
-                    "Periods must be contiguous."
-                )
+                raise ValueError("Periods must be contiguous.")
 
             if current.status is previous.status:
-                raise ValueError(
-                    "Consecutive periods must have different statuses."
-                )
+                raise ValueError("Consecutive periods must have different statuses.")

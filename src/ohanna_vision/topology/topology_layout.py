@@ -27,9 +27,7 @@ class TopologyLayout:
     layout_id: str
     label: str
     kind: TopologyLayoutKind
-    positions: Mapping[str, TopologyPosition] = field(
-        default_factory=dict
-    )
+    positions: Mapping[str, TopologyPosition] = field(default_factory=dict)
     canvas_width: float = 1600
     canvas_height: float = 900
     metadata: Mapping[str, object] = field(default_factory=dict)
@@ -60,14 +58,10 @@ class TopologyLayout:
             normalized_device_id = device_id.strip()
 
             if not normalized_device_id:
-                raise ValueError(
-                    "position device_id must not be empty"
-                )
+                raise ValueError("position device_id must not be empty")
 
             if normalized_device_id in normalized_positions:
-                raise ValueError(
-                    "position device identifiers must be unique"
-                )
+                raise ValueError("position device identifiers must be unique")
 
             normalized_positions[normalized_device_id] = position
 
@@ -111,6 +105,4 @@ class TopologyLayout:
             raise ValueError(f"{name} must be finite")
 
         if value <= 0:
-            raise ValueError(
-                f"{name} must be greater than zero"
-            )
+            raise ValueError(f"{name} must be greater than zero")

@@ -70,12 +70,10 @@ class ObservationProcessor:
         self.runtime.record_received(observation.observed_at)
 
         try:
-            candidate_timeline = (
-                self.timeline_engine.build_infrastructure(
-                    (
-                        *self.observation_store.observations,
-                        observation,
-                    )
+            candidate_timeline = self.timeline_engine.build_infrastructure(
+                (
+                    *self.observation_store.observations,
+                    observation,
                 )
             )
 
@@ -91,9 +89,7 @@ class ObservationProcessor:
             self.runtime.record_error()
             raise
 
-        timeline_updated = (
-            candidate_timeline != self.infrastructure_timeline
-        )
+        timeline_updated = candidate_timeline != self.infrastructure_timeline
         self.infrastructure_timeline = candidate_timeline
 
         self.runtime.record_accepted()
@@ -127,8 +123,7 @@ class ObservationProcessor:
     def _snapshot(self) -> RuntimeSnapshot:
         """Create a snapshot from the current pipeline state."""
         service_timelines = sum(
-            len(node.services)
-            for node in self.infrastructure_timeline.nodes
+            len(node.services) for node in self.infrastructure_timeline.nodes
         )
 
         infrastructure_timelines = (
@@ -141,13 +136,9 @@ class ObservationProcessor:
         )
 
         return self.runtime.snapshot(
-            observations_stored=(
-                self.observation_store.observation_count
-            ),
+            observations_stored=(self.observation_store.observation_count),
             service_timelines=service_timelines,
-            node_timelines=len(
-                self.infrastructure_timeline.nodes
-            ),
+            node_timelines=len(self.infrastructure_timeline.nodes),
             infrastructure_timelines=infrastructure_timelines,
         )
 

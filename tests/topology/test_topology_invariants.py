@@ -89,15 +89,13 @@ def test_topology_accepts_disconnected_components() -> None:
         ),
     )
 
-    assert tuple(
-        device.device_id
-        for device in topology.neighbor_devices("first")
-    ) == ("second",)
+    assert tuple(device.device_id for device in topology.neighbor_devices("first")) == (
+        "second",
+    )
 
-    assert tuple(
-        device.device_id
-        for device in topology.neighbor_devices("third")
-    ) == ("fourth",)
+    assert tuple(device.device_id for device in topology.neighbor_devices("third")) == (
+        "fourth",
+    )
 
 
 def test_topology_accepts_cycles() -> None:
@@ -268,19 +266,13 @@ def test_topology_preserves_declaration_order() -> None:
         ),
     )
 
-    assert tuple(
-        device.device_id
-        for device in topology.devices
-    ) == (
+    assert tuple(device.device_id for device in topology.devices) == (
         "internet",
         "freebox",
         "sw-01",
     )
 
-    assert tuple(
-        link.link_id
-        for link in topology.links
-    ) == (
+    assert tuple(link.link_id for link in topology.links) == (
         "internet-freebox",
         "freebox-sw-01",
     )

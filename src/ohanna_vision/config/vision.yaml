@@ -1,0 +1,11 @@
+name: Ohanna Vision
+environment: development
+debug: true
+
+server:
+  host: 127.0.0.1
+  port: 8000
+  log_level: debug
+
+web:
+  documentation_enabled: true

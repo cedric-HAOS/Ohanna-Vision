@@ -20,8 +20,7 @@ def make_observation(
         service_id="dns-primary",
         node_id="zwave-01",
         status=HealthStatus.HEALTHY,
-        observed_at=observed_at
-        or datetime(2026, 7, 10, 14, 0, tzinfo=UTC),
+        observed_at=observed_at or datetime(2026, 7, 10, 14, 0, tzinfo=UTC),
     )
 
 

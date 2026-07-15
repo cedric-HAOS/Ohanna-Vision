@@ -69,10 +69,7 @@ class TimelineRuntime:
     @property
     def service_count(self) -> int:
         """Return the number of retained service timelines."""
-        return sum(
-            len(node.services)
-            for node in self.timeline.nodes
-        )
+        return sum(len(node.services) for node in self.timeline.nodes)
 
     @property
     def capability_count(self) -> int:
@@ -86,12 +83,7 @@ class TimelineRuntime:
     @property
     def infrastructure_count(self) -> int:
         """Return whether an infrastructure timeline is retained."""
-        return int(
-            bool(
-                self.timeline.nodes
-                or self.timeline.periods
-            )
-        )
+        return int(bool(self.timeline.nodes or self.timeline.periods))
 
     @property
     def empty(self) -> bool:

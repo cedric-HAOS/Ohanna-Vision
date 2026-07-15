@@ -5,6 +5,9 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from ohanna_vision.configuration import (
+    ApplicationConfiguration,
+)
 from ohanna_vision.web.api.topology_router import (
     router as topology_router,
 )
@@ -25,13 +28,24 @@ STATIC_DIRECTORY = Path(__file__).parent / "static"
 def create_app(
     context: ApplicationContext | None = None,
     *,
+    configuration: ApplicationConfiguration | None = None,
     websocket_hub: WebSocketHub | None = None,
 ) -> FastAPI:
-    """Create and configure the Ohanna-Vision FastAPI application."""
+    """Create and configure the Ohanna-Vision application."""
+    resolved_configuration = configuration or ApplicationConfiguration()
+
+    documentation_enabled = resolved_configuration.web.documentation_enabled
+
     app = FastAPI(
-        title=APPLICATION_NAME,
+        title=resolved_configuration.name,
         version=APPLICATION_VERSION,
+        debug=resolved_configuration.debug,
+        docs_url="/docs" if documentation_enabled else None,
+        redoc_url="/redoc" if documentation_enabled else None,
+        openapi_url=("/openapi.json" if documentation_enabled else None),
     )
+
+    app.state.configuration = resolved_configuration
 
     if context is not None:
         app.state.context = context

@@ -223,6 +223,7 @@ def test_snapshot_rejects_naive_clock_datetime() -> None:
     ):
         runtime.snapshot()
 
+
 def test_record_received_updates_runtime_statistics() -> None:
     runtime = BackendRuntime()
 

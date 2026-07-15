@@ -47,9 +47,7 @@ class AgentConnector:
             self._runtime.statistics.record_failure(received_at)
             self._runtime.mark_error()
 
-            return ConnectorResult.failed(
-                f"Observation processing failed: {error}"
-            )
+            return ConnectorResult.failed(f"Observation processing failed: {error}")
 
         self._runtime.statistics.record_success(received_at)
         self._runtime.mark_ready()

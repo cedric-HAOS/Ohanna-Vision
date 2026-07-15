@@ -22,9 +22,7 @@ class NodeState:
 
         for service in self.services:
             if service.node_id != self.node_id:
-                raise ValueError(
-                    "Every service must belong to the node."
-                )
+                raise ValueError("Every service must belong to the node.")
 
     @property
     def health(self) -> Health:
@@ -51,10 +49,6 @@ class NodeState:
         """Return a service by identifier."""
 
         return next(
-            (
-                service
-                for service in self.services
-                if service.service_id == service_id
-            ),
+            (service for service in self.services if service.service_id == service_id),
             None,
         )

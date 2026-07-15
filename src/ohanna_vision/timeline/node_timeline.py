@@ -25,19 +25,14 @@ class NodeTimeline:
         if not self.node_id.strip():
             raise ValueError("node_id must not be empty.")
 
-        service_ids = tuple(
-            service.service_id
-            for service in self.services
-        )
+        service_ids = tuple(service.service_id for service in self.services)
 
         if len(service_ids) != len(set(service_ids)):
             raise ValueError("service identifiers must be unique.")
 
         for service in self.services:
             if service.node_id != self.node_id:
-                raise ValueError(
-                    "Every service timeline must belong to the node."
-                )
+                raise ValueError("Every service timeline must belong to the node.")
 
         validate_periods(self.periods)
 
@@ -80,11 +75,7 @@ class NodeTimeline:
         """Return a service timeline by identifier."""
 
         return next(
-            (
-                service
-                for service in self.services
-                if service.service_id == service_id
-            ),
+            (service for service in self.services if service.service_id == service_id),
             None,
         )
 
@@ -98,11 +89,7 @@ class NodeTimeline:
             raise ValueError("instant must be timezone-aware.")
 
         period = next(
-            (
-                period
-                for period in self.periods
-                if period.contains(instant)
-            ),
+            (period for period in self.periods if period.contains(instant)),
             None,
         )
 

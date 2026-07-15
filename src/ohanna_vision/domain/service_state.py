@@ -26,22 +26,16 @@ class ServiceState:
 
         for capability in self.capabilities:
             if capability.service_id != self.service_id:
-                raise ValueError(
-                    "Every capability must belong to the service."
-                )
+                raise ValueError("Every capability must belong to the service.")
 
             if capability.node_id != self.node_id:
-                raise ValueError(
-                    "Every capability must belong to the service node."
-                )
+                raise ValueError("Every capability must belong to the service node.")
 
     @property
     def health(self) -> Health:
         """Return the aggregated health of the service."""
 
-        return aggregate_health(
-            capability.health for capability in self.capabilities
-        )
+        return aggregate_health(capability.health for capability in self.capabilities)
 
     @property
     def last_updated_at(self) -> datetime | None:
@@ -50,9 +44,7 @@ class ServiceState:
         if not self.capabilities:
             return None
 
-        return max(
-            capability.observed_at for capability in self.capabilities
-        )
+        return max(capability.observed_at for capability in self.capabilities)
 
     def capability(self, capability_id: str) -> CapabilityState | None:
         """Return a capability by identifier."""

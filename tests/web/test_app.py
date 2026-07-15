@@ -5,6 +5,11 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from ohanna_vision.configuration import (
+    ApplicationConfiguration,
+    Environment,
+    WebConfiguration,
+)
 from ohanna_vision.domain.observation_store import ObservationStore
 from ohanna_vision.runtime import BackendRuntime
 from ohanna_vision.timeline import TimelineEngine
@@ -15,11 +20,13 @@ def make_client() -> TestClient:
     """Create an Ohanna-Vision application client."""
     return TestClient(create_app())
 
+
 def test_create_app_returns_fastapi_application() -> None:
     """The application factory must return a FastAPI instance."""
     app = create_app()
 
     assert isinstance(app, FastAPI)
+
 
 def test_root_endpoint_returns_application_status() -> None:
     """The application must expose its root status endpoint."""
@@ -69,6 +76,7 @@ def test_swagger_documentation_is_available() -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
 
+
 def make_context() -> ApplicationContext:
     """Create a context for application factory tests."""
     return ApplicationContext(
@@ -93,6 +101,7 @@ def test_create_app_can_run_without_application_context() -> None:
 
     assert getattr(app.state, "context", None) is None
 
+
 def test_runtime_api_is_registered() -> None:
     """The application must register the runtime API."""
     client = TestClient(create_app())
@@ -104,6 +113,7 @@ def test_runtime_api_is_registered() -> None:
         "detail": "Application context is not configured",
     }
 
+
 def test_runtime_api_is_exposed_in_openapi() -> None:
     """The runtime API must appear in the OpenAPI schema."""
     client = TestClient(create_app())
@@ -112,6 +122,7 @@ def test_runtime_api_is_exposed_in_openapi() -> None:
 
     assert response.status_code == 200
     assert "/api/runtime" in response.json()["paths"]
+
 
 def test_observations_api_is_registered() -> None:
     """The application must register the observation API."""
@@ -134,6 +145,7 @@ def test_observations_api_is_exposed_in_openapi() -> None:
     assert response.status_code == 200
     assert "/api/observations" in response.json()["paths"]
 
+
 def test_timeline_api_is_registered() -> None:
     """The application must register the timeline API."""
     client = TestClient(create_app())
@@ -141,6 +153,7 @@ def test_timeline_api_is_registered() -> None:
     response = client.get("/api/timeline")
 
     assert response.status_code == 503
+
 
 def test_timeline_routes_are_exposed_in_openapi() -> None:
     """Timeline routes must appear in the OpenAPI schema."""
@@ -152,10 +165,8 @@ def test_timeline_routes_are_exposed_in_openapi() -> None:
 
     assert "/api/timeline" in paths
     assert "/api/timeline/nodes/{node_id}" in paths
-    assert (
-        "/api/timeline/nodes/{node_id}/services/{service_id}"
-        in paths
-    )
+    assert "/api/timeline/nodes/{node_id}/services/{service_id}" in paths
+
 
 def test_create_app_stores_websocket_hub() -> None:
     """The application must retain its WebSocket hub."""
@@ -164,6 +175,7 @@ def test_create_app_stores_websocket_hub() -> None:
     app = create_app(websocket_hub=hub)
 
     assert app.state.websocket_hub is hub
+
 
 def test_create_app_builds_default_websocket_hub() -> None:
     """The application must build a hub when none is provided."""
@@ -174,6 +186,7 @@ def test_create_app_builds_default_websocket_hub() -> None:
         WebSocketHub,
     )
 
+
 def test_application_mounts_static_ui() -> None:
     """The application must expose the static dashboard."""
     client = TestClient(create_app())
@@ -182,12 +195,14 @@ def test_application_mounts_static_ui() -> None:
 
     assert response.status_code == 200
 
+
 def test_observation_ingestion_is_exposed_in_openapi() -> None:
     """The ingestion endpoint must appear in the OpenAPI schema."""
     response = TestClient(create_app()).get("/openapi.json")
 
     assert response.status_code == 200
     assert "post" in response.json()["paths"]["/api/observations"]
+
 
 def test_dashboard_connects_topology_controls() -> None:
     """The topology module must connect its navigation controls."""
@@ -202,7 +217,8 @@ def test_dashboard_connects_topology_controls() -> None:
     assert "this.canvas.zoomIn()" in response.text
     assert "this.canvas.zoomOut()" in response.text
     assert "this.canvas.resetView()" in response.text
-   
+
+
 def test_dashboard_calculates_kpis() -> None:
     """The dashboard must calculate its main indicators."""
     client = make_client()
@@ -216,6 +232,7 @@ def test_dashboard_calculates_kpis() -> None:
     assert "renderServiceCount()" in response.text
     assert "renderCapabilityCount()" in response.text
 
+
 def test_dashboard_renders_global_topology_health() -> None:
     """The dashboard must render a global topology status."""
     client = make_client()
@@ -228,6 +245,7 @@ def test_dashboard_renders_global_topology_health() -> None:
     assert "topologyHealthIndicator" in response.text
     assert "topologyHealthLabel" in response.text
 
+
 def test_dashboard_renders_graphical_timeline() -> None:
     """The dashboard must render health periods graphically."""
     client = make_client()
@@ -239,6 +257,7 @@ def test_dashboard_renders_graphical_timeline() -> None:
     assert "renderAxis(" in response.text
     assert "renderPeriodRow(" in response.text
     assert "renderPeriod(" in response.text
+
 
 def test_dashboard_connects_timeline_to_topology() -> None:
     """Timeline nodes must select their topology devices."""
@@ -257,6 +276,7 @@ def test_dashboard_connects_timeline_to_topology() -> None:
     assert "this.onNodeSelected(" in timeline_response.text
     assert "selectDeviceByNode(" in topology_response.text
 
+
 def test_dashboard_animates_kpi_updates() -> None:
     """The dashboard must animate changed KPI values."""
     client = make_client()
@@ -268,6 +288,7 @@ def test_dashboard_animates_kpi_updates() -> None:
     assert "dashboard-kpi--updating" in response.text
     assert "requestAnimationFrame" in response.text
     assert "setTimeout" in response.text
+
 
 def test_dashboard_renders_device_details() -> None:
     """The frontend must render selected-device details."""
@@ -282,6 +303,7 @@ def test_dashboard_renders_device_details() -> None:
     assert "deviceIconMarkup(" in response.text
     assert "renderLinks(" in response.text
     assert "healthStatusLabel(" in response.text
+
 
 def test_dashboard_connects_topology_to_device_details() -> None:
     """Topology selections must open device details."""
@@ -305,12 +327,10 @@ def test_dashboard_connects_topology_to_device_details() -> None:
     assert "this.deviceDetails" in application_response.text
     assert ".select(" in application_response.text
 
-    assert (
-        "this.onDeviceSelected("
-        in topology_response.text
-    )
+    assert "this.onDeviceSelected(" in topology_response.text
     assert "select(deviceId)" in details_response.text
-    
+
+
 def test_dashboard_renders_realtime_side_panel() -> None:
     """The frontend must render alerts and recent activity."""
     client = make_client()
@@ -325,14 +345,9 @@ def test_dashboard_renders_realtime_side_panel() -> None:
     assert dashboard_response.status_code == 200
     assert observations_response.status_code == 200
 
-    assert (
-        "renderActiveAlerts()"
-        in dashboard_response.text
-    )
-    assert (
-        "renderRecent("
-        in observations_response.text
-    )
+    assert "renderActiveAlerts()" in dashboard_response.text
+    assert "renderRecent(" in observations_response.text
+
 
 def test_dashboard_connects_to_websocket() -> None:
     """The frontend must connect to the realtime backend."""
@@ -351,6 +366,7 @@ def test_dashboard_connects_to_websocket() -> None:
     assert "websocketUrl()" in websocket_response.text
     assert "this.onMessage(message)" in websocket_response.text
 
+
 def test_dashboard_reconnects_websocket() -> None:
     """The realtime connection must reconnect after closing."""
     client = make_client()
@@ -364,6 +380,7 @@ def test_dashboard_reconnects_websocket() -> None:
     assert "reconnectDelayMs" in response.text
     assert "window.setTimeout(" in response.text
 
+
 def test_static_javascript_is_available() -> None:
     """The frontend JavaScript entry point must be served."""
     client = make_client()
@@ -375,3 +392,74 @@ def test_static_javascript_is_available() -> None:
     assert 'from "./application.js"' in response.text
     assert "ApplicationController" in response.text
     assert "application.initialize()" in response.text
+
+
+def test_create_app_stores_configuration() -> None:
+    """The application must retain its configuration."""
+    configuration = ApplicationConfiguration(
+        environment=Environment.TEST,
+    )
+
+    app = create_app(configuration=configuration)
+
+    assert app.state.configuration is configuration
+
+
+def test_create_app_uses_configuration_name() -> None:
+    """The configured name must be exposed through OpenAPI."""
+    configuration = ApplicationConfiguration(
+        name="Configured Vision",
+    )
+
+    client = TestClient(create_app(configuration=configuration))
+
+    response = client.get("/openapi.json")
+
+    assert response.status_code == 200
+    assert response.json()["info"]["title"] == "Configured Vision"
+
+
+def test_create_app_enables_debug_from_configuration() -> None:
+    """FastAPI debug mode must follow the configuration."""
+    configuration = ApplicationConfiguration(
+        environment=Environment.DEVELOPMENT,
+        debug=True,
+    )
+
+    app = create_app(configuration=configuration)
+
+    assert app.debug is True
+
+
+def test_create_app_disables_documentation() -> None:
+    """Documentation endpoints must be removable in production."""
+    configuration = ApplicationConfiguration(
+        environment=Environment.PRODUCTION,
+        debug=False,
+        web=WebConfiguration(
+            documentation_enabled=False,
+        ),
+    )
+
+    client = TestClient(create_app(configuration=configuration))
+
+    assert client.get("/docs").status_code == 404
+    assert client.get("/redoc").status_code == 404
+    assert client.get("/openapi.json").status_code == 404
+
+
+def test_create_app_keeps_api_when_documentation_is_disabled() -> None:
+    """Disabling documentation must not disable the application."""
+    configuration = ApplicationConfiguration(
+        environment=Environment.PRODUCTION,
+        debug=False,
+        web=WebConfiguration(
+            documentation_enabled=False,
+        ),
+    )
+
+    client = TestClient(create_app(configuration=configuration))
+
+    response = client.get("/")
+
+    assert response.status_code == 200

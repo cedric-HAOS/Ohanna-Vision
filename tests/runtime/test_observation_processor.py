@@ -1,4 +1,5 @@
 """Tests for the observation processing pipeline."""
+
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
@@ -17,9 +18,7 @@ from ohanna_vision.timeline import (
     TimelineEngine,
 )
 
-OBSERVATION_ID = UUID(
-    "00000000-0000-0000-0000-000000000001"
-)
+OBSERVATION_ID = UUID("00000000-0000-0000-0000-000000000001")
 
 OBSERVED_AT = datetime(
     2026,
@@ -83,9 +82,7 @@ class FakeTimelineEngine:
     """Timeline engine used by processor tests."""
 
     error: Exception | None = None
-    processed: list[tuple[Observation, ...]] = field(
-        default_factory=list
-    )
+    processed: list[tuple[Observation, ...]] = field(default_factory=list)
 
     def build_infrastructure(
         self,
@@ -235,9 +232,7 @@ def test_processor_can_accept_without_timeline_change() -> None:
     first = make_observation()
 
     repeated = Observation(
-        observation_id=UUID(
-            "00000000-0000-0000-0000-000000000002"
-        ),
+        observation_id=UUID("00000000-0000-0000-0000-000000000002"),
         capability_id=first.capability_id,
         service_id=first.service_id,
         node_id=first.node_id,
@@ -367,6 +362,7 @@ def test_negative_timer_difference_is_clamped_to_zero() -> None:
 
     assert result.duration_ms == 0.0
 
+
 class FakeTimelineRuntime:
     """Timeline runtime double for processor tests."""
 
@@ -377,10 +373,7 @@ class FakeTimelineRuntime:
 
     @property
     def service_count(self) -> int:
-        return sum(
-            len(node.services)
-            for node in self.timeline.nodes
-        )
+        return sum(len(node.services) for node in self.timeline.nodes)
 
     @property
     def node_count(self) -> int:
@@ -388,12 +381,7 @@ class FakeTimelineRuntime:
 
     @property
     def infrastructure_count(self) -> int:
-        return int(
-            bool(
-                self.timeline.nodes
-                or self.timeline.periods
-            )
-        )
+        return int(bool(self.timeline.nodes or self.timeline.periods))
 
     def build(
         self,

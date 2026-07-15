@@ -33,8 +33,7 @@ def make_observation(
         service_id=service_id,
         capability_id=capability_id,
         status=status,
-        observed_at=observed_at
-        or datetime(2026, 7, 11, 12, 0, tzinfo=UTC),
+        observed_at=observed_at or datetime(2026, 7, 11, 12, 0, tzinfo=UTC),
     )
 
 
@@ -65,6 +64,7 @@ def make_client(
 
     return TestClient(app)
 
+
 def test_timeline_router_returns_empty_infrastructure() -> None:
     """An empty store must produce an empty infrastructure timeline."""
     client = make_client(ObservationStore())
@@ -76,6 +76,7 @@ def test_timeline_router_returns_empty_infrastructure() -> None:
         "nodes": [],
         "periods": [],
     }
+
 
 def test_timeline_router_returns_complete_hierarchy() -> None:
     """The endpoint must expose nodes, services and capabilities."""
@@ -96,13 +97,11 @@ def test_timeline_router_returns_complete_hierarchy() -> None:
     payload = response.json()
 
     assert len(payload["nodes"]) == 2
-    assert [
-        node["node_id"]
-        for node in payload["nodes"]
-    ] == [
+    assert [node["node_id"] for node in payload["nodes"]] == [
         "green-01",
         "infra-01",
     ]
+
 
 def test_timeline_router_returns_requested_node() -> None:
     """The node endpoint must return the requested node timeline."""
@@ -121,6 +120,7 @@ def test_timeline_router_returns_requested_node() -> None:
     assert response.status_code == 200
     assert response.json()["node_id"] == "green-01"
 
+
 def test_timeline_router_returns_404_for_unknown_node() -> None:
     """An unknown node must produce HTTP 404."""
     store = make_store(make_observation())
@@ -133,35 +133,31 @@ def test_timeline_router_returns_404_for_unknown_node() -> None:
         "detail": "Node timeline 'unknown' was not found.",
     }
 
+
 def test_timeline_router_returns_requested_service() -> None:
     """The service endpoint must return the requested service timeline."""
     store = make_store(make_observation())
     client = make_client(store)
 
-    response = client.get(
-        "/timeline/nodes/infra-01/services/dns-primary"
-    )
+    response = client.get("/timeline/nodes/infra-01/services/dns-primary")
 
     assert response.status_code == 200
     assert response.json()["service_id"] == "dns-primary"
     assert response.json()["node_id"] == "infra-01"
+
 
 def test_timeline_router_returns_404_for_unknown_service() -> None:
     """An unknown service must produce HTTP 404."""
     store = make_store(make_observation())
     client = make_client(store)
 
-    response = client.get(
-        "/timeline/nodes/infra-01/services/unknown"
-    )
+    response = client.get("/timeline/nodes/infra-01/services/unknown")
 
     assert response.status_code == 404
     assert response.json() == {
-        "detail": (
-            "Service timeline 'unknown' was not found "
-            "on node 'infra-01'."
-        ),
+        "detail": ("Service timeline 'unknown' was not found on node 'infra-01'."),
     }
+
 
 def test_timeline_router_builds_timeline_until_requested_date() -> None:
     """The until parameter must close the active timeline period."""
@@ -187,6 +183,7 @@ def test_timeline_router_builds_timeline_until_requested_date() -> None:
     assert period["started_at"] == "2026-07-11T10:00:00Z"
     assert period["ended_at"] == "2026-07-11T11:00:00Z"
 
+
 def test_timeline_router_returns_422_for_naive_until() -> None:
     """A timezone-naive until value must produce HTTP 422."""
     store = make_store(make_observation())
@@ -204,6 +201,7 @@ def test_timeline_router_returns_422_for_naive_until() -> None:
         "detail": "until must be timezone-aware.",
     }
 
+
 def test_timeline_router_returns_503_without_context() -> None:
     """The timeline API must require an application context."""
     app = FastAPI()
@@ -215,6 +213,7 @@ def test_timeline_router_returns_503_without_context() -> None:
     assert response.json() == {
         "detail": "Application context is not configured",
     }
+
 
 def test_timeline_router_exposes_period_metadata() -> None:
     """Timeline periods must expose the explicit API contract."""

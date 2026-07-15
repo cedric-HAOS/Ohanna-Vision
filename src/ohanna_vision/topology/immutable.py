@@ -11,23 +11,14 @@ def freeze_value(value: Any) -> Any:
     """Recursively convert a value into an immutable representation."""
     if isinstance(value, Mapping):
         return MappingProxyType(
-            {
-                key: freeze_value(nested_value)
-                for key, nested_value in value.items()
-            }
+            {key: freeze_value(nested_value) for key, nested_value in value.items()}
         )
 
     if isinstance(value, list | tuple):
-        return tuple(
-            freeze_value(item)
-            for item in value
-        )
+        return tuple(freeze_value(item) for item in value)
 
     if isinstance(value, set | frozenset):
-        return frozenset(
-            freeze_value(item)
-            for item in value
-        )
+        return frozenset(freeze_value(item) for item in value)
 
     return value
 

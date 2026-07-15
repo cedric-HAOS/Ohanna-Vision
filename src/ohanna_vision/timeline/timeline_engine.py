@@ -215,29 +215,20 @@ class TimelineEngine:
 
     @staticmethod
     def _aggregate_timelines(
-        timelines: Sequence[
-            CapabilityTimeline | ServiceTimeline | NodeTimeline
-        ],
+        timelines: Sequence[CapabilityTimeline | ServiceTimeline | NodeTimeline],
     ) -> tuple[StatePeriod, ...]:
         """Aggregate child timelines using the most severe active status."""
 
         child_periods = tuple(
-            period
-            for timeline in timelines
-            for period in timeline.periods
+            period for timeline in timelines for period in timeline.periods
         )
 
         if not child_periods:
             return ()
 
-        boundaries = {
-            period.started_at
-            for period in child_periods
-        }
+        boundaries = {period.started_at for period in child_periods}
         boundaries.update(
-            period.ended_at
-            for period in child_periods
-            if period.ended_at is not None
+            period.ended_at for period in child_periods if period.ended_at is not None
         )
 
         ordered_boundaries = tuple(sorted(boundaries))
@@ -245,9 +236,7 @@ class TimelineEngine:
 
         for index, started_at in enumerate(ordered_boundaries):
             statuses = tuple(
-                period.status
-                for period in child_periods
-                if period.contains(started_at)
+                period.status for period in child_periods if period.contains(started_at)
             )
 
             if not statuses:
@@ -352,8 +341,7 @@ class TimelineEngine:
                 and current.status is not previous.status
             ):
                 raise ConflictingTimelineObservationsError(
-                    "Observations at the same instant must have "
-                    "the same status."
+                    "Observations at the same instant must have the same status."
                 )
 
             previous = current

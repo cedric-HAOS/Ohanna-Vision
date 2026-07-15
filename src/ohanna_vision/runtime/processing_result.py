@@ -32,14 +32,10 @@ class ProcessingResult:
             )
 
         if not self.accepted and not self.reason:
-            raise ValueError(
-                "A rejected processing result must have a reason"
-            )
+            raise ValueError("A rejected processing result must have a reason")
 
         if not self.accepted and self.timeline_updated:
-            raise ValueError(
-                "A rejected observation cannot update a timeline"
-            )
+            raise ValueError("A rejected observation cannot update a timeline")
 
     @property
     def rejected(self) -> bool:

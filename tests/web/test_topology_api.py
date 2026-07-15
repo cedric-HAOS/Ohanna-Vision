@@ -74,9 +74,7 @@ def make_client(
     application = create_app()
 
     if topology is not None:
-        application.dependency_overrides[
-            get_topology
-        ] = lambda: cast(
+        application.dependency_overrides[get_topology] = lambda: cast(
             Topology,
             topology,
         )
@@ -91,9 +89,7 @@ def test_topology_api_is_available() -> None:
     response = client.get("/api/topology")
 
     assert response.status_code == 200
-    assert response.headers["content-type"].startswith(
-        "application/json"
-    )
+    assert response.headers["content-type"].startswith("application/json")
 
 
 def test_topology_api_returns_identity() -> None:
@@ -217,4 +213,3 @@ def test_topology_api_is_documented_in_openapi() -> None:
 
     assert response.status_code == 200
     assert "/api/topology" in response.json()["paths"]
-

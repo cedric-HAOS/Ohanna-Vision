@@ -24,6 +24,7 @@ class FakeProcessingResult:
 
     accepted: bool
 
+
 class FakeObservationStore:
     """Observation store double exposing fixed history results."""
 
@@ -55,7 +56,8 @@ class FakeObservationStore:
         )
 
         return self._observations
-    
+
+
 def make_observation(
     *,
     capability_id: str = "dns-resolution",
@@ -71,11 +73,11 @@ def make_observation(
         service_id=service_id,
         node_id=node_id,
         status=status,
-        observed_at=observed_at
-        or datetime(2026, 7, 11, 12, 0, tzinfo=UTC),
+        observed_at=observed_at or datetime(2026, 7, 11, 12, 0, tzinfo=UTC),
         latency_ms=latency_ms,
         metadata={},
     )
+
 
 def make_client(
     store: FakeObservationStore,
@@ -91,6 +93,7 @@ def make_client(
 
     return TestClient(app)
 
+
 def test_observations_router_returns_empty_list() -> None:
     """The endpoint must return an empty list when no history exists."""
     client = make_client(FakeObservationStore())
@@ -99,6 +102,7 @@ def test_observations_router_returns_empty_list() -> None:
 
     assert response.status_code == 200
     assert response.json() == []
+
 
 def test_observations_router_returns_stored_observations() -> None:
     """The endpoint must return observations provided by the store."""
@@ -117,6 +121,7 @@ def test_observations_router_returns_stored_observations() -> None:
 
     assert response.status_code == 200
     assert len(response.json()) == 2
+
 
 def test_observations_router_passes_filters_to_store() -> None:
     """The endpoint must delegate all filters to the store."""
@@ -159,6 +164,7 @@ def test_observations_router_passes_filters_to_store() -> None:
         }
     ]
 
+
 class InvalidHistoryObservationStore(FakeObservationStore):
     """Observation store double rejecting history filters."""
 
@@ -173,6 +179,7 @@ class InvalidHistoryObservationStore(FakeObservationStore):
     ) -> tuple[Observation, ...]:
         """Reject invalid date ordering."""
         raise ValueError("since must not be after until.")
+
 
 def test_observations_router_returns_422_for_invalid_history() -> None:
     """Domain validation errors must become HTTP 422 responses."""
@@ -191,6 +198,7 @@ def test_observations_router_returns_422_for_invalid_history() -> None:
         "detail": "since must not be after until.",
     }
 
+
 def test_observations_router_returns_503_without_context() -> None:
     """The endpoint must fail explicitly without application context."""
     app = FastAPI()
@@ -202,6 +210,7 @@ def test_observations_router_returns_503_without_context() -> None:
     assert response.json() == {
         "detail": "Application context is not configured",
     }
+
 
 class FakeObservationProcessor:
     """Observation processor recording received observations."""
@@ -224,7 +233,8 @@ class FakeObservationProcessor:
         return FakeProcessingResult(
             accepted=self.accepted,
         )
-    
+
+
 class FakeWebSocketHub:
     """WebSocket hub recording broadcast messages."""
 
@@ -238,27 +248,25 @@ class FakeWebSocketHub:
         """Record a broadcast message."""
         self.messages.append(message)
 
+
 def make_ingestion_client(
     processor: FakeObservationProcessor,
     websocket_hub: FakeWebSocketHub | None = None,
 ) -> TestClient:
     """Create an API client with injected ingestion services."""
     application = FastAPI()
-    application.state.websocket_hub = (
-        websocket_hub or FakeWebSocketHub()
-    )
+    application.state.websocket_hub = websocket_hub or FakeWebSocketHub()
     application.include_router(
         observations_router,
         prefix="/api",
     )
-    application.dependency_overrides[
-        get_observation_processor
-    ] = lambda: cast(
+    application.dependency_overrides[get_observation_processor] = lambda: cast(
         ObservationProcessor,
         processor,
     )
 
     return TestClient(application)
+
 
 def test_post_observation_returns_accepted_response() -> None:
     """The endpoint must accept a valid observation."""
@@ -294,6 +302,7 @@ def test_post_observation_returns_accepted_response() -> None:
         "message": "Observation accepted.",
     }
 
+
 def test_post_observation_forwards_domain_observation() -> None:
     """The endpoint must forward a domain observation to the processor."""
     processor = FakeObservationProcessor()
@@ -328,6 +337,7 @@ def test_post_observation_forwards_domain_observation() -> None:
         "hostname": "example.com",
     }
 
+
 def test_post_observation_rejects_invalid_payload() -> None:
     """The endpoint must reject an invalid observation request."""
     processor = FakeObservationProcessor()
@@ -347,6 +357,7 @@ def test_post_observation_rejects_invalid_payload() -> None:
 
     assert response.status_code == 422
     assert processor.observations == []
+
 
 def test_post_observation_broadcasts_after_success() -> None:
     """An accepted observation must be broadcast to WebSocket clients."""
@@ -380,6 +391,7 @@ def test_post_observation_broadcasts_after_success() -> None:
     assert message["service_id"] == "dns-primary"
     assert message["node_id"] == "infra-01"
     assert message["status"] == "healthy"
+
 
 def test_post_observation_does_not_broadcast_after_rejection() -> None:
     """A rejected observation must not be broadcast."""

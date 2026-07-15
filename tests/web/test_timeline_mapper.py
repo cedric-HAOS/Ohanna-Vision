@@ -130,10 +130,7 @@ def test_mapper_preserves_capability_period_order() -> None:
 
     response = map_capability_timeline(timeline)
 
-    assert [
-        period.status
-        for period in response.periods
-    ] == [
+    assert [period.status for period in response.periods] == [
         HealthStatus.HEALTHY,
         HealthStatus.DEGRADED,
     ]
@@ -170,20 +167,10 @@ def test_mapper_preserves_complete_hierarchy() -> None:
 
     assert len(response.nodes) == 1
     assert response.nodes[0].node_id == "infra-01"
-    assert (
-        response.nodes[0]
-        .services[0]
-        .service_id
-        == "dns-primary"
-    )
-    assert (
-        response.nodes[0]
-        .services[0]
-        .capabilities[0]
-        .capability_id
-        == "dns.resolve"
-    )
+    assert response.nodes[0].services[0].service_id == "dns-primary"
+    assert response.nodes[0].services[0].capabilities[0].capability_id == "dns.resolve"
     assert response.periods[0].duration_seconds == 5400.0
+
 
 def test_timeline_period_schema_serializes_for_json() -> None:
     """Timeline schemas must produce a stable JSON contract."""

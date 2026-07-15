@@ -54,9 +54,7 @@ class RuntimeSnapshot:
         """Return the total number of timelines."""
 
         return (
-            self.service_timelines
-            + self.node_timelines
-            + self.infrastructure_timelines
+            self.service_timelines + self.node_timelines + self.infrastructure_timelines
         )
 
     @property

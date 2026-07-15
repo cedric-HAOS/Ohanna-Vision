@@ -14,11 +14,17 @@ authors = [
 ]
 dependencies = [
     "fastapi",
+    "pydantic",
+    "PyYAML",
     "uvicorn",
 ]
 
+[project.scripts]
+ohanna-vision = "ohanna_vision.main:main"
+
 [dependency-groups]
 dev = [
+    "build",
     "httpx",
     "pytest",
     "ruff",
@@ -26,6 +32,8 @@ dev = [
 
 [project.optional-dependencies]
 dev = [
+    "build",
+    "httpx",
     "pytest>=9.0",
     "ruff>=0.12",
 ]

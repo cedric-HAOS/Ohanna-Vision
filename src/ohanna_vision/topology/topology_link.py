@@ -27,9 +27,7 @@ class TopologyLink:
     source_device_id: str
     target_device_id: str
     kind: TopologyLinkKind
-    direction: TopologyLinkDirection = (
-        TopologyLinkDirection.BIDIRECTIONAL
-    )
+    direction: TopologyLinkDirection = TopologyLinkDirection.BIDIRECTIONAL
     label: str | None = None
     bandwidth_mbps: float | None = None
     metadata: Mapping[str, object] = field(default_factory=dict)
@@ -51,20 +49,14 @@ class TopologyLink:
             raise ValueError("target_device_id must not be empty")
 
         if source_device_id == target_device_id:
-            raise ValueError(
-                "source_device_id and target_device_id must differ"
-            )
+            raise ValueError("source_device_id and target_device_id must differ")
 
         if self.bandwidth_mbps is not None:
             if not isfinite(self.bandwidth_mbps):
-                raise ValueError(
-                    "bandwidth_mbps must be finite"
-                )
+                raise ValueError("bandwidth_mbps must be finite")
 
             if self.bandwidth_mbps <= 0:
-                raise ValueError(
-                    "bandwidth_mbps must be greater than zero"
-                )
+                raise ValueError("bandwidth_mbps must be greater than zero")
 
         object.__setattr__(self, "link_id", link_id)
         object.__setattr__(

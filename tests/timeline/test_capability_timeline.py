@@ -137,9 +137,7 @@ def test_period_at_returns_matching_period() -> None:
         periods=(healthy, degraded),
     )
 
-    assert timeline.period_at(
-        first_date + timedelta(minutes=5)
-    ) is healthy
+    assert timeline.period_at(first_date + timedelta(minutes=5)) is healthy
 
     assert timeline.period_at(transition_date) is degraded
 
@@ -159,9 +157,9 @@ def test_status_at_returns_matching_status() -> None:
         ),
     )
 
-    assert timeline.status_at(
-        started_at + timedelta(minutes=5)
-    ) is HealthStatus.DEGRADED
+    assert (
+        timeline.status_at(started_at + timedelta(minutes=5)) is HealthStatus.DEGRADED
+    )
 
 
 def test_period_at_returns_none_outside_timeline() -> None:
@@ -179,9 +177,7 @@ def test_period_at_returns_none_outside_timeline() -> None:
         ),
     )
 
-    assert timeline.period_at(
-        started_at - timedelta(minutes=1)
-    ) is None
+    assert timeline.period_at(started_at - timedelta(minutes=1)) is None
 
 
 def test_current_duration_returns_open_period_duration() -> None:
@@ -199,9 +195,9 @@ def test_current_duration_returns_open_period_duration() -> None:
         ),
     )
 
-    assert timeline.current_duration(
-        started_at + timedelta(minutes=20)
-    ) == timedelta(minutes=20)
+    assert timeline.current_duration(started_at + timedelta(minutes=20)) == timedelta(
+        minutes=20
+    )
 
 
 def test_current_duration_returns_none_without_open_period() -> None:
@@ -220,9 +216,7 @@ def test_current_duration_returns_none_without_open_period() -> None:
         ),
     )
 
-    assert timeline.current_duration(
-        started_at + timedelta(minutes=20)
-    ) is None
+    assert timeline.current_duration(started_at + timedelta(minutes=20)) is None
 
 
 def test_periods_with_status_filters_periods() -> None:
@@ -256,9 +250,7 @@ def test_periods_with_status_filters_periods() -> None:
         ),
     )
 
-    assert timeline.periods_with_status(
-        HealthStatus.HEALTHY
-    ) == (
+    assert timeline.periods_with_status(HealthStatus.HEALTHY) == (
         first_healthy,
         second_healthy,
     )

@@ -13,9 +13,7 @@ from ohanna_vision.runtime import (
     RuntimeStatistics,
 )
 
-OBSERVATION_ID = UUID(
-    "00000000-0000-0000-0000-000000000001"
-)
+OBSERVATION_ID = UUID("00000000-0000-0000-0000-000000000001")
 
 GENERATED_AT = datetime(
     2026,
@@ -131,10 +129,7 @@ def test_negative_duration_is_rejected() -> None:
 def test_accepted_result_rejects_reason() -> None:
     with pytest.raises(
         ValueError,
-        match=(
-            "An accepted processing result cannot have "
-            "a rejection reason"
-        ),
+        match=("An accepted processing result cannot have a rejection reason"),
     ):
         ProcessingResult(
             observation_id=OBSERVATION_ID,

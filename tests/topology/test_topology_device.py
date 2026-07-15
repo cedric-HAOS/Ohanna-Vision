@@ -147,6 +147,7 @@ def test_topology_device_is_immutable() -> None:
     with pytest.raises(AttributeError):
         device.label = "Other switch"  # type: ignore[misc]
 
+
 def test_topology_device_metadata_is_deeply_immutable() -> None:
     """Nested topology device metadata must remain immutable."""
     metadata = {

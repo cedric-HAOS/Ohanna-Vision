@@ -1,4 +1,5 @@
 """State period model used by infrastructure timelines."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -26,9 +27,7 @@ class StatePeriod:
                 raise ValueError("ended_at must be timezone-aware.")
 
             if self.ended_at < self.started_at:
-                raise ValueError(
-                    "ended_at must not be before started_at."
-                )
+                raise ValueError("ended_at must not be before started_at.")
 
     @property
     def is_open(self) -> bool:
@@ -79,9 +78,7 @@ class StatePeriod:
             raise ValueError("instant must be timezone-aware.")
 
         if instant < self.started_at:
-            raise ValueError(
-                "instant must not be before started_at."
-            )
+            raise ValueError("instant must not be before started_at.")
 
         if self.ended_at is not None:
             return self.ended_at - self.started_at

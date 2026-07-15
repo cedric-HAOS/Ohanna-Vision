@@ -64,11 +64,7 @@ class InfrastructureTimeline:
         """Return a node timeline by identifier."""
 
         return next(
-            (
-                node
-                for node in self.nodes
-                if node.node_id == node_id
-            ),
+            (node for node in self.nodes if node.node_id == node_id),
             None,
         )
 
@@ -82,11 +78,7 @@ class InfrastructureTimeline:
             raise ValueError("instant must be timezone-aware.")
 
         period = next(
-            (
-                period
-                for period in self.periods
-                if period.contains(instant)
-            ),
+            (period for period in self.periods if period.contains(instant)),
             None,
         )
 

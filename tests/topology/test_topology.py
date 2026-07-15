@@ -221,9 +221,7 @@ def test_topology_returns_outgoing_links() -> None:
 
     links = topology.outgoing_links("sw-01")
 
-    assert tuple(link.link_id for link in links) == (
-        "sw-01-ha-green",
-    )
+    assert tuple(link.link_id for link in links) == ("sw-01-ha-green",)
 
 
 def test_topology_returns_incoming_links() -> None:
@@ -232,9 +230,7 @@ def test_topology_returns_incoming_links() -> None:
 
     links = topology.incoming_links("sw-01")
 
-    assert tuple(link.link_id for link in links) == (
-        "freebox-sw-01",
-    )
+    assert tuple(link.link_id for link in links) == ("freebox-sw-01",)
 
 
 def test_topology_returns_neighbor_devices() -> None:
@@ -278,9 +274,7 @@ def test_topology_returns_each_neighbor_only_once() -> None:
 
     neighbors = topology.neighbor_devices("first")
 
-    assert tuple(device.device_id for device in neighbors) == (
-        "second",
-    )
+    assert tuple(device.device_id for device in neighbors) == ("second",)
 
 
 def test_topology_rejects_empty_topology_id() -> None:
@@ -486,10 +480,7 @@ def test_topology_copies_metadata() -> None:
 
     metadata["description"] = "Changed"
 
-    assert (
-        topology.metadata["description"]
-        == "Ohanna-House topology"
-    )
+    assert topology.metadata["description"] == "Ohanna-House topology"
 
 
 def test_topology_metadata_is_immutable() -> None:
@@ -513,6 +504,7 @@ def test_topology_is_immutable() -> None:
     with pytest.raises(AttributeError):
         topology.label = "Other"  # type: ignore[misc]
 
+
 def test_topology_metadata_is_deeply_immutable() -> None:
     """Nested topology metadata must remain immutable."""
     metadata = {
@@ -533,9 +525,7 @@ def test_topology_metadata_is_deeply_immutable() -> None:
     metadata["owners"].append("Other")
     metadata["configuration"]["version"] = 2
 
-    assert topology.metadata["owners"] == (
-        "Ohanna-House",
-    )
+    assert topology.metadata["owners"] == ("Ohanna-House",)
 
     configuration = topology.metadata["configuration"]
 

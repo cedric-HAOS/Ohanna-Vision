@@ -27,7 +27,7 @@ class Topology:
     links: tuple[TopologyLink, ...] = ()
     layouts: tuple[TopologyLayout, ...] = ()
     metadata: Mapping[str, object] = field(default_factory=dict)
-    
+
     _device_index: Mapping[str, TopologyDevice] = field(
         init=False,
         repr=False,
@@ -192,9 +192,7 @@ class Topology:
             return ()
 
         return tuple(
-            link
-            for link in self.links
-            if link.source_device_id == normalized_device_id
+            link for link in self.links if link.source_device_id == normalized_device_id
         )
 
     def incoming_links(
@@ -208,9 +206,7 @@ class Topology:
             return ()
 
         return tuple(
-            link
-            for link in self.links
-            if link.target_device_id == normalized_device_id
+            link for link in self.links if link.target_device_id == normalized_device_id
         )
 
     def neighbor_devices(
@@ -249,9 +245,7 @@ class Topology:
 
         for device in devices:
             if device.device_id in index:
-                raise ValueError(
-                    "device identifiers must be unique"
-                )
+                raise ValueError("device identifiers must be unique")
 
             index[device.device_id] = device
 
@@ -266,9 +260,7 @@ class Topology:
 
         for link in links:
             if link.link_id in index:
-                raise ValueError(
-                    "link identifiers must be unique"
-                )
+                raise ValueError("link identifiers must be unique")
 
             index[link.link_id] = link
 
@@ -283,9 +275,7 @@ class Topology:
 
         for layout in layouts:
             if layout.layout_id in index:
-                raise ValueError(
-                    "layout identifiers must be unique"
-                )
+                raise ValueError("layout identifiers must be unique")
 
             index[layout.layout_id] = layout
 
@@ -301,14 +291,12 @@ class Topology:
         for link in links:
             if link.source_device_id not in device_index:
                 raise ValueError(
-                    "link source device does not exist: "
-                    f"{link.source_device_id}"
+                    f"link source device does not exist: {link.source_device_id}"
                 )
 
             if link.target_device_id not in device_index:
                 raise ValueError(
-                    "link target device does not exist: "
-                    f"{link.target_device_id}"
+                    f"link target device does not exist: {link.target_device_id}"
                 )
 
     @staticmethod
@@ -322,6 +310,5 @@ class Topology:
             for device_id in layout.positions:
                 if device_id not in device_index:
                     raise ValueError(
-                        "layout position device does not exist: "
-                        f"{device_id}"
+                        f"layout position device does not exist: {device_id}"
                     )

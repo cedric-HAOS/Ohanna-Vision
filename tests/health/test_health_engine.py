@@ -166,8 +166,7 @@ def test_recent_observation_does_not_become_stale() -> None:
     assert assessment.status is HealthStatus.HEALTHY
 
 
-def test_critical_unavailable_capability_makes_infrastructure_unavailable(
-) -> None:
+def test_critical_unavailable_capability_makes_infrastructure_unavailable() -> None:
     capability = make_capability(
         status=HealthStatus.UNAVAILABLE,
     )
@@ -187,8 +186,7 @@ def test_critical_unavailable_capability_makes_infrastructure_unavailable(
     assert report.infrastructure.status is HealthStatus.UNAVAILABLE
 
 
-def test_normal_unavailable_capability_only_degrades_infrastructure(
-) -> None:
+def test_normal_unavailable_capability_only_degrades_infrastructure() -> None:
     capability = make_capability(
         status=HealthStatus.UNAVAILABLE,
     )

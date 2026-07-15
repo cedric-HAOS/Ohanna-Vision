@@ -48,6 +48,7 @@ class FakeBackendRuntime:
         }
         return self._snapshot
 
+
 class FakeObservationStore:
     """Observation store double exposing stored observations."""
 
@@ -71,9 +72,8 @@ class FakeTimelineEngine:
     ) -> None:
         self.service_timelines = [object()] * service_timelines
         self.node_timelines = [object()] * node_timelines
-        self.infrastructure_timelines = (
-            [object()] * infrastructure_timelines
-        )
+        self.infrastructure_timelines = [object()] * infrastructure_timelines
+
 
 def make_snapshot(
     *,
@@ -101,6 +101,7 @@ def make_snapshot(
         node_timelines=node_timelines,
         infrastructure_timelines=infrastructure_timelines,
     )
+
 
 def make_client(
     runtime: FakeBackendRuntime,
@@ -178,7 +179,8 @@ def test_runtime_router_serializes_snapshot() -> None:
         "service_timelines": 2,
         "node_timelines": 1,
         "infrastructure_timelines": 1,
-}
+    }
+
 
 def test_runtime_router_exposes_runtime_state() -> None:
     """The runtime endpoint must expose the runtime state."""
@@ -190,6 +192,7 @@ def test_runtime_router_exposes_runtime_state() -> None:
 
     assert response.status_code == 200
     assert response.json()["state"] == snapshot.state.value
+
 
 def test_runtime_router_returns_503_without_context() -> None:
     """The runtime API must fail explicitly without application context."""
