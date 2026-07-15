@@ -15,6 +15,7 @@ export class NavigationController {
 
         this.navigationItems = [];
         this.views = [];
+        this.viewContainer = null;
         this.activeView = null;
 
         this.handleHashChange = this.handleHashChange.bind(this);
@@ -28,6 +29,11 @@ export class NavigationController {
         this.views = Array.from(
             document.querySelectorAll(this.viewSelector),
         );
+
+        this.viewContainer =
+            document.querySelector(
+                ".application-views",
+            );
 
         this.navigationItems.forEach((navigationItem) => {
             navigationItem.addEventListener("click", () => {
@@ -61,14 +67,24 @@ export class NavigationController {
             return false;
         }
 
-        this.views.forEach((view) => {
-            const isActive =
-                view.dataset.view === viewName;
+        const visibleViews =
+            this.visibleViews(viewName);
 
-            view.hidden = !isActive;
+        if (this.viewContainer) {
+            this.viewContainer.dataset.activeView =
+                viewName;
+        }
+
+        this.views.forEach((view) => {
+            const isVisible =
+                visibleViews.has(
+                    view.dataset.view,
+                );
+
+            view.hidden = !isVisible;
             view.classList.toggle(
                 "is-active",
-                isActive,
+                isVisible,
             );
         });
 
@@ -103,6 +119,29 @@ export class NavigationController {
         this.dispatchNavigationChanged(viewName);
 
         return true;
+    }
+
+    /**
+     * Return the views visible for one navigation target.
+     *
+     * The overview combines the dashboard, infrastructure
+     * and timeline without duplicating their DOM elements.
+     *
+     * @param {string} viewName
+     * @returns {Set<string>}
+     */
+    visibleViews(viewName) {
+        if (viewName === "overview") {
+            return new Set([
+                "overview",
+                "infrastructure",
+                "timeline",
+            ]);
+        }
+
+        return new Set([
+            viewName,
+        ]);
     }
 
     hasView(viewName) {

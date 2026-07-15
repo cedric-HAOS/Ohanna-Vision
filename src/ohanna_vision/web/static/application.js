@@ -153,9 +153,6 @@ export class ApplicationController {
         this.observations =
             new ObservationsController({
                 state: this.state,
-                onObservationsChanged: () => {
-                    this.timeline.render();
-                },
                 onDashboardRefresh: () => {
                     this.dashboard
                         .renderKpis();
@@ -225,7 +222,10 @@ export class ApplicationController {
             viewName,
         );
 
-        if (viewName === "infrastructure") {
+        if (
+            viewName === "overview"
+            || viewName === "infrastructure"
+        ) {
             this.topology.reflow();
         }
     }
@@ -304,8 +304,13 @@ export class ApplicationController {
             setTimeline(
                 timeline,
             );
+            this.timeline.render();
         } catch (error) {
-            console.error(
+            setTimeline(
+                null,
+            );
+
+            this.timeline.renderError(
                 "Timeline indisponible : "
                 + this.errorMessage(error),
             );

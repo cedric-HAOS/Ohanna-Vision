@@ -1,167 +1,215 @@
 # Ohanna-Vision
 
-> Visualiser l'état réel des capacités d'une infrastructure dans le temps.
+> Visualiser l'état réel d'une infrastructure pilotée par capacités.
+
+Ohanna-Vision est l'interface web d'Ohanna.
+
+Contrairement aux outils de supervision classiques qui affichent principalement des métriques techniques, Ohanna-Vision présente les **capacités métier** de l'infrastructure, leur état courant ainsi que leur évolution dans le temps.
+
+Le projet est conçu pour fonctionner avec **Ohanna-Agent**, qui collecte les observations et calcule l'état de santé des capacités.
 
 ---
 
-# Vision
+# Philosophie
 
-Une infrastructure fiable ne se résume pas à des services qui répondent.
+Une infrastructure fiable n'est pas uniquement une infrastructure qui fonctionne.
 
-Elle doit permettre de comprendre :
+C'est une infrastructure dont les capacités sont garanties dans le temps.
 
-* ce qui fonctionne actuellement ;
-* ce qui s'est produit auparavant ;
-* depuis quand une capacité est disponible ;
-* comment l'état global évolue dans le temps.
+Ohanna-Vision ne supervise pas directement les équipements.
 
-Ohanna-Vision est le composant de visualisation d'Ohanna.
+Il visualise :
 
-Il transforme les observations produites par **Ohanna-Agent** en une représentation exploitable de l'état de l'infrastructure.
-
-Son rôle est exclusivement de présenter les informations.
-
-Il ne réalise aucune supervision réseau et n'exécute aucune vérification.
-
----
-
-# Architecture
-
-```
-                 Ohanna-Agent
-                       │
-                Observations
-                       │
-                       ▼
-               Observation Store
-                       │
-         ┌─────────────┼─────────────┐
-         ▼             ▼             ▼
- Projection Engine  Health Engine  Timeline Engine
-         │             │             │
-         └─────────────┼─────────────┘
-                       ▼
-               Backend Runtime
-                       │
-          ┌────────────┴────────────┐
-          ▼                         ▼
-      REST API                 WebSocket
-          │                         │
-          └────────────┬────────────┘
-                       ▼
-                 Static Web UI
-```
+- l'état courant des capacités ;
+- la santé des services ;
+- la topologie de l'infrastructure ;
+- l'historique des périodes de fonctionnement.
 
 ---
 
 # Fonctionnalités
 
-## Domaine
+## Dashboard
 
-* Modèle d'observation immuable
-* États de santé
-* Observation Store
-* Historique filtrable
+La vue d'ensemble regroupe :
 
-## Moteurs
+- indicateurs principaux ;
+- alertes actives ;
+- état global du runtime ;
+- topologie de l'infrastructure ;
+- timeline des périodes métier.
 
-* Projection Engine
-* Health Engine
-* Timeline Engine
+---
 
-## Runtime
+## Topologie
 
-* Backend Runtime
-* Runtime Snapshot
-* Runtime Statistics
-* Observation Processor
+Visualisation interactive :
 
-## API REST
+- équipements ;
+- services ;
+- dépendances ;
+- état de santé ;
+- sélection d'un équipement ;
+- panneau de détails.
 
-* Runtime
-* Observations
-* Timeline
+---
+
+## Timeline
+
+La timeline repose sur les **périodes métier** calculées par le backend.
+
+Le frontend n'effectue aucun regroupement des observations.
+
+Chaque ligne représente un nœud de l'infrastructure.
+
+Les périodes sont calculées par le Timeline Engine d'Ohanna-Vision.
+
+---
+
+## Observations
+
+Affichage des observations reçues en temps réel :
+
+- date ;
+- capacité ;
+- service ;
+- état ;
+- latence ;
+- métadonnées.
+
+---
 
 ## Temps réel
 
-* WebSocket
-* Broadcast multiclient
-* Heartbeat ping/pong
+Le tableau de bord est mis à jour automatiquement grâce au WebSocket.
 
-## Interface Web
+Les nouvelles observations mettent à jour :
 
-* Tableau de bord statique
-* Sans framework JavaScript
-* HTML/CSS/JavaScript natifs
+- les KPI ;
+- la topologie ;
+- la timeline ;
+- la liste des observations.
 
 ---
 
-# Structure du projet
+# Architecture
+
+Le frontend est volontairement modulaire.
+
+```
+app.js
+        │
+        ▼
+ApplicationController
+        │
+        ├── DashboardController
+        ├── NavigationController
+        ├── TopologyController
+        ├── TimelineController
+        ├── ObservationsController
+        ├── DeviceDetailsController
+        └── WebSocketController
+```
+
+Les données sont centralisées dans :
+
+```
+application_state.js
+```
+
+Le frontend est un moteur de rendu.
+
+Toute la logique métier est calculée côté backend.
+
+---
+
+# Timeline
+
+La timeline est fondée sur les objets métier :
+
+```
+Observation
+        │
+        ▼
+TimelineEngine
+        │
+        ▼
+StatePeriod
+        │
+        ▼
+Timeline API
+        │
+        ▼
+TimelinePeriod
+        │
+        ▼
+TimelineController
+```
+
+Le navigateur ne regroupe jamais les observations.
+
+---
+
+# Technologies
+
+- Python 3.13
+- FastAPI
+- JavaScript ES Modules
+- HTML5
+- CSS modulaire
+- WebSocket
+
+---
+
+# Structure
 
 ```
 src/
-└── ohanna_vision/
-    ├── domain/
-    ├── projection/
-    ├── health/
-    ├── timeline/
-    ├── runtime/
-    └── web/
-        ├── routers/
-        ├── static/
-        ├── websocket_hub.py
-        ├── bootstrap.py
-        └── app.py
+    ohanna_vision/
+        web/
+            api/
+            static/
 
 tests/
+
 docs/
+
+scripts/
+```
+
+Le frontend est organisé par responsabilités :
+
+```
+styles/
+
+    foundations.css
+    layout.css
+    components.css
+    dashboard.css
+    topology.css
+    timeline.css
+    observations.css
+    device-details.css
+    responsive.css
 ```
 
 ---
 
-# Installation
+# Développement
 
-Créer un environnement virtuel :
+Installer les dépendances :
 
-```powershell
-python -m venv .venv
+```bash
+pip install -e .[dev]
 ```
 
-Activer l'environnement :
+Lancer le serveur :
 
-```powershell
-.\.venv\Scripts\Activate.ps1
+```bash
+uvicorn ohanna_vision.web.bootstrap:build_application --factory --reload
 ```
 
-Installer le projet :
-
-```powershell
-python -m pip install -e .
-```
-
----
-
-# Lancer Ohanna-Vision
-
-Le point d'entrée officiel est :
-
-```powershell
-python -m uvicorn ohanna_vision.web.bootstrap:app --reload
-```
-
-L'application est alors disponible sur :
-
-```
-http://127.0.0.1:8000/
-```
-
-Documentation OpenAPI :
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Interface Web :
+Accéder au tableau de bord :
 
 ```
 http://127.0.0.1:8000/ui/
@@ -169,139 +217,50 @@ http://127.0.0.1:8000/ui/
 
 ---
 
-# API REST
+# Tests
 
-## Runtime
+Exécuter tous les tests :
 
-```
-GET /api/runtime
-```
-
-Retourne :
-
-* état du backend ;
-* statistiques ;
-* snapshot courant.
-
----
-
-## Observations
-
-```
-GET /api/observations
-```
-
-Filtres disponibles :
-
-* node_id
-* service_id
-* capability_id
-* since
-* until
-
----
-
-## Timeline
-
-Infrastructure complète :
-
-```
-GET /api/timeline
-```
-
-Timeline d'un nœud :
-
-```
-GET /api/timeline/nodes/{node_id}
-```
-
-Timeline d'un service :
-
-```
-GET /api/timeline/nodes/{node_id}/services/{service_id}
-```
-
----
-
-# WebSocket
-
-Connexion :
-
-```
-/ws
-```
-
-Messages actuellement supportés :
-
-```
-connected
-ping
-pong
-```
-
-L'architecture permet ensuite de diffuser :
-
-* observation.received
-* runtime.updated
-* timeline.updated
-
----
-
-# Interface Web
-
-Le tableau de bord affiche :
-
-* état du runtime ;
-* statistiques ;
-* observations récentes ;
-* timeline de l'infrastructure ;
-* état de la connexion WebSocket.
-
-Les données proviennent exclusivement des API REST et du canal WebSocket.
-
-Aucune donnée n'est stockée côté navigateur.
-
----
-
-# Développement
-
-Vérification Ruff :
-
-```powershell
-python -m ruff check .
-```
-
-Exécution des tests :
-
-```powershell
+```bash
 python -m pytest
 ```
 
-Tous les warnings deviennent des erreurs :
+Vérifier la qualité du code :
 
-```powershell
-python -m pytest -W error
+```bash
+python -m ruff check --fix
 ```
 
 ---
 
-# Qualité
+# État actuel
 
-Version actuelle :
+Phase **3.5** terminée.
 
-* 270 tests unitaires
-* Ruff sans erreur
-* API REST documentée automatiquement
-* Interface Web intégrée
-* WebSocket intégré
+Le projet comprend notamment :
+
+- backend de projection ;
+- moteur de santé ;
+- Timeline Engine ;
+- API REST ;
+- WebSocket temps réel ;
+- dashboard interactif ;
+- topologie réseau ;
+- timeline fondée sur les périodes métier ;
+- frontend modulaire ;
+- CSS modulaire.
 
 ---
 
-# Roadmap
+# Feuille de route
 
-La Phase 1 est terminée.
+Les prochaines évolutions concernent principalement :
 
-La prochaine étape consiste à connecter Ohanna-Vision à Ohanna-Agent afin de recevoir les observations en temps réel et d'afficher l'évolution de l'infrastructure sans rechargement de la page.
+- administration de l'infrastructure ;
+- configuration des services ;
+- historique avancé ;
+- vues temporelles enrichies ;
+- authentification.
 
 ---
 

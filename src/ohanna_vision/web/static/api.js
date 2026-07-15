@@ -5,7 +5,6 @@ export const API = Object.freeze({
     observations: "/api/observations",
     timeline: "/api/timeline",
     topology: "/api/topology",
-    TIMELINE: "/api/timeline",
 });
 
 /**

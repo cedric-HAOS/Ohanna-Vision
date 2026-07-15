@@ -4,6 +4,7 @@ const state = {
     runtime: null,
     observations: [],
     topology: null,
+    timeline: null,
     deviceHealth: {},
     selectedDeviceId: null,
     timelineRangeHours: 6,
@@ -19,6 +20,7 @@ const state = {
  *     runtime: object | null,
  *     observations: Array<object>,
  *     topology: object | null,
+ *     timeline: object | null,
  *     deviceHealth: Record<string, string>,
  *     selectedDeviceId: string | null,
  *     timelineRangeHours: number,
@@ -26,6 +28,17 @@ const state = {
  */
 export function applicationState() {
     return state;
+}
+
+/**
+ * Store the current infrastructure timeline.
+ *
+ * @param {object|null} timeline
+ */
+export function setTimeline(
+    timeline,
+) {
+    state.timeline = timeline;
 }
 
 /**
@@ -37,25 +50,8 @@ export function resetApplicationState() {
     state.runtime = null;
     state.observations = [];
     state.topology = null;
+    state.timeline = null;
     state.deviceHealth = {};
     state.selectedDeviceId = null;
     state.timelineRangeHours = 6;
-}
-
-export const applicationState = {
-    runtime: null,
-    observations: [],
-    topology: null,
-    timeline: null,
-};
-
-/**
- * Store the current infrastructure timeline.
- *
- * @param {object|null} timeline
- */
-export function setTimeline(
-    timeline,
-) {
-    applicationState.timeline = timeline;
 }

@@ -60,3 +60,103 @@
 .application-view.is-active {
     display: block;
 }
+
+.application-views[
+    data-active-view="overview"
+] {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(18rem, 20rem);
+    grid-template-rows:
+        auto
+        minmax(30rem, 1fr)
+        10rem;
+    grid-template-areas:
+        "summary summary"
+        "topology side-panel"
+        "timeline side-panel";
+    gap: 0.8rem;
+    min-height: 0;
+    padding: 0.8rem;
+    overflow: hidden;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="overview"] {
+    display: contents;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-layout--overview {
+    display: contents;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-kpis {
+    grid-area: summary;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-right-panel {
+    grid-area: side-panel;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 0.8rem;
+    overflow-y: auto;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="infrastructure"] {
+    grid-area: topology;
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="timeline"] {
+    grid-area: timeline;
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-primary--topology {
+    height: 100%;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .topology-workspace,
+.application-views[
+    data-active-view="overview"
+] .topology-container,
+.application-views[
+    data-active-view="overview"
+] .topology-canvas {
+    height: 100%;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-timeline {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.application-views[
+    data-active-view="overview"
+] #runtime-error {
+    grid-column: 1 / -1;
+}

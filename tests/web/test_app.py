@@ -229,7 +229,7 @@ def test_dashboard_renders_global_topology_health() -> None:
     assert "topologyHealthLabel" in response.text
 
 def test_dashboard_renders_graphical_timeline() -> None:
-    """The dashboard must render observation history graphically."""
+    """The dashboard must render health periods graphically."""
     client = make_client()
 
     response = client.get("/ui/timeline.js")
@@ -237,9 +237,8 @@ def test_dashboard_renders_graphical_timeline() -> None:
     assert response.status_code == 200
     assert "export class TimelineController" in response.text
     assert "renderAxis(" in response.text
-    assert "renderRow(" in response.text
-    assert "timeline-event" in response.text
-    assert "timeline-row" in response.text
+    assert "renderPeriodRow(" in response.text
+    assert "renderPeriod(" in response.text
 
 def test_dashboard_connects_timeline_to_topology() -> None:
     """Timeline nodes must select their topology devices."""

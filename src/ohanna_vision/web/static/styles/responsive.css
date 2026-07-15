@@ -49,7 +49,15 @@
         overflow: auto;
     }
 
-    .application-view.is-active {
+    .application-views[
+        data-active-view="infrastructure"
+    ] .application-view.is-active,
+    .application-views[
+        data-active-view="timeline"
+    ] .application-view.is-active,
+    .application-views[
+        data-active-view="observations"
+    ] .application-view.is-active {
         min-height: 100%;
     }
 
@@ -135,6 +143,31 @@
 
     .timeline-empty {
         padding: 0.2rem;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-layout--overview {
+        display: contents;
+        overflow: visible;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-right-panel {
+        padding-right: 0;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-primary {
+        min-height: 0;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-timeline {
+        min-height: 0;
     }
 }
 
@@ -254,6 +287,34 @@
 
     .topology-container,
     .topology-canvas {
+        min-height: 32rem;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-template-areas:
+            "summary"
+            "topology"
+            "side-panel"
+            "timeline";
+        overflow: visible;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-right-panel {
+        display: grid;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+        overflow: visible;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] > [data-view="infrastructure"] {
         min-height: 32rem;
     }
 }
@@ -427,6 +488,25 @@
 
     .timeline-legend {
         overflow-x: auto;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] {
+        gap: 0.55rem;
+        padding: 0.55rem;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] .dashboard-right-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .application-views[
+        data-active-view="overview"
+    ] > [data-view="infrastructure"] {
+        min-height: 28rem;
     }
 }
 

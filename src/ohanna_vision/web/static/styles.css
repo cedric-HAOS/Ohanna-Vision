@@ -238,7 +238,7 @@
     transform-origin: center;
 }
 
-@keyframes timeline-event-enter {
+@keyframes timeline-period-enter {
     from {
         opacity: 0;
         transform:

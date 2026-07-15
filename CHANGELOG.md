@@ -1,159 +1,150 @@
-# Changelog
+# CHANGELOG
 
-Toutes les évolutions importantes du projet **Ohanna-Vision** sont documentées dans ce fichier.
+Toutes les évolutions importantes du projet sont documentées dans ce fichier.
 
-Le projet suit les principes de **Keep a Changelog** et du **Semantic Versioning**.
+Le projet suit les principes de Semantic Versioning.
 
 ---
 
-# [0.1.0] - 2026-07-11
+# v0.4.0 — Frontend modulaire et Timeline métier
 
-Première version fonctionnelle d'Ohanna-Vision.
+## Ajouté
 
-Cette version établit l'ensemble des fondations du projet : modèle de domaine, moteurs de calcul, backend Web, API REST, WebSocket et première interface utilisateur.
+### Frontend modulaire
 
-## Added
+- Découpage complet du JavaScript en modules spécialisés.
+- Introduction d'un `ApplicationController` responsable de l'orchestration.
+- Centralisation de l'état partagé dans `application_state.js`.
+- Séparation des contrôleurs :
+  - Dashboard
+  - Navigation
+  - Topologie
+  - Timeline
+  - Observations
+  - Détails des équipements
+  - WebSocket
 
-### Domaine
+### CSS modulaire
 
-* Modèle immuable `Observation`
-* États de santé (`HealthStatus`)
-* Validation des observations
-* Identifiants d'observations
-* Métadonnées extensibles
+Découpage complet de la feuille de style en modules indépendants :
 
-### Observation Store
+- foundations.css
+- layout.css
+- components.css
+- dashboard.css
+- topology.css
+- timeline.css
+- observations.css
+- device-details.css
+- responsive.css
 
-* Stockage immuable des observations
-* Détection des doublons
-* Historique chronologique
-* Filtres :
+### Navigation
 
-  * nœud
-  * service
-  * capacité
-  * période
+- Navigation latérale entièrement modulaire.
+- Synchronisation avec l'URL (`location.hash`).
+- Conservation de la vue active.
+- Vue d'ensemble regroupant dashboard, topologie et timeline.
 
-### Projection Engine
+### Timeline
 
-* Projection des observations
-* Calcul de l'état courant
-* Agrégation des capacités
+Refonte complète de la timeline.
 
-### Health Engine
+Le frontend n'utilise plus les observations pour reconstruire l'historique.
 
-* Calcul de l'état des services
-* Calcul de l'état des nœuds
-* Calcul de l'état global
-* Projection déterministe
+La timeline repose désormais sur les périodes métier calculées par le backend.
 
-### Timeline Engine
+Ajouts :
 
-* Gestion des périodes d'état
-* `StatePeriod`
-* `CapabilityTimeline`
-* `ServiceTimeline`
-* `NodeTimeline`
-* `InfrastructureTimeline`
-* Reconstruction complète à partir des observations
+- modèle JavaScript `TimelinePeriod`
+- rendu par périodes
+- compteur de périodes
+- affichage des périodes par nœud
+- simplification importante du contrôleur Timeline
 
-### Runtime
+### Dashboard
 
-* `BackendRuntime`
-* États du runtime
-* Statistiques
-* Snapshots
-* Horloge injectable
-* `ObservationProcessor`
-* Résultats de traitement
+- restauration complète de la vue d'ensemble
+- intégration de la topologie
+- intégration de la timeline
+- amélioration du responsive
+- optimisation des proportions du tableau de bord
 
-### Backend Web
+### Qualité
 
-* Application FastAPI
-* Point de composition (`bootstrap.py`)
-* `ApplicationContext`
-* Injection de dépendances
-* Documentation OpenAPI
+- suppression du code mort
+- suppression des anciens styles de timeline
+- suppression des anciens regroupements d'observations
+- suppression des logs JavaScript de production
+- amélioration des messages d'erreur utilisateur
 
-### API REST
+---
 
-Ajout des endpoints :
+## Modifié
 
-* `GET /`
-* `GET /api/`
-* `GET /api/runtime`
-* `GET /api/observations`
-* `GET /api/timeline`
-* `GET /api/timeline/nodes/{node_id}`
-* `GET /api/timeline/nodes/{node_id}/services/{service_id}`
+### Architecture Frontend
 
-### WebSocket
+Le frontend devient un moteur de visualisation.
 
-* Endpoint `/ws`
-* Gestionnaire `WebSocketHub`
-* Gestion des connexions
-* Broadcast multi-clients
-* Heartbeat `ping` / `pong`
+Toute la logique métier est désormais calculée côté backend.
 
-### Interface Web
+Le navigateur ne reconstruit plus les modèles métier.
 
-* Tableau de bord HTML statique
-* CSS intégré
-* JavaScript natif
-* Rafraîchissement manuel
-* Connexion WebSocket
-* Affichage :
+### Timeline
 
-  * Runtime
-  * Statistiques
-  * Timeline
-  * Observations
+Abandon définitif du pipeline :
 
-### Tests
-
-Ajout d'une couverture complète pour :
-
-* domaine
-* moteurs
-* runtime
-* API REST
-* WebSocket
-* interface Web
-* bootstrap
-
-## Changed
-
-* Séparation stricte entre le domaine métier et la couche Web.
-* Le `BackendRuntime` reste totalement indépendant de FastAPI.
-* Le `TimelineEngine` reconstruit les timelines exclusivement à partir des observations.
-* L'interface Web consomme uniquement les API REST et le WebSocket.
-* Le point d'entrée officiel devient :
-
-```powershell
-python -m uvicorn ohanna_vision.web.bootstrap:app --reload
+```
+Observation
+    ↓
+Javascript
+    ↓
+Regroupement
 ```
 
-## Quality
+au profit de :
 
-* 270 tests unitaires
-* Ruff sans erreur
-* Documentation OpenAPI générée automatiquement
-* Architecture entièrement injectée
-* Bootstrap de production opérationnel
+```
+Observation
+    ↓
+TimelineEngine
+    ↓
+StatePeriod
+    ↓
+API
+    ↓
+TimelinePeriod
+    ↓
+Frontend
+```
+
+### Interface
+
+- amélioration de la disposition générale
+- meilleure séparation des responsabilités
+- simplification de la navigation
+- amélioration de la cohérence visuelle
 
 ---
 
-# Historique
+## Supprimé
 
-## Pré-version
+- ancien rendu fondé sur les observations
+- `renderEvent()`
+- `renderRow()`
+- `groupObservationsByNode()`
+- `groupPeriodsByNode()`
+- `isObservationVisible()`
+- styles `timeline-event`
+- compteur d'événements
+- logs JavaScript de production
 
-Les travaux ayant conduit à cette première version comprennent :
+---
 
-* définition de la vision d'architecture ;
-* conception du modèle d'observation ;
-* implémentation des moteurs métier ;
-* construction du runtime ;
-* développement de l'API Web ;
-* création de l'interface utilisateur.
+## Qualité
 
-Cette version marque la fin de la **Phase 1** du projet.
+- 620 tests unitaires
+- validation complète du responsive
+- audit du frontend
+- audit du CSS
+- audit de la timeline
+- audit d'hygiène du dépôt

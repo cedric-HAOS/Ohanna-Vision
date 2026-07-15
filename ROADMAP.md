@@ -2,230 +2,182 @@
 
 ## Vision
 
-Une infrastructure fiable n'est pas uniquement une infrastructure qui fonctionne.
+Ohanna-Vision est l'interface de visualisation d'Ohanna.
 
-C'est une infrastructure dont les capacités sont garanties dans le temps.
+Son objectif est de représenter l'état réel des capacités d'une infrastructure, leur évolution dans le temps et leurs dépendances.
 
-Ohanna-Vision ne supervise pas les équipements.
+Le frontend est volontairement simple.
 
-Il présente l'état réel des capacités observées par Ohanna-Agent afin de permettre une compréhension immédiate de la santé de l'infrastructure et de son évolution.
-
-Le projet poursuit un objectif unique :
-
-> Transformer des observations techniques en une vision claire, historique et temps réel des capacités de l'infrastructure.
+Toute la logique métier est calculée par le backend.
 
 ---
 
-# Phase 1 — Domaine, moteurs et backend Web
+# Phase 3 — Dashboard interactif
 
-**Statut : Terminée ✅**
+## 3.1
 
-Cette première phase a permis de construire l'ensemble des fondations d'Ohanna-Vision.
+- Domaine Web
+- Observation Store
+- Projection Engine
+- Health Engine
+- Timeline Engine
 
-## Domaine
-
-* [x] 1.1 Domain Model
-* [x] Observation
-* [x] HealthStatus
-* [x] Validation métier
-
-## Stockage
-
-* [x] 1.2 Observation Store
-* [x] Historique
-* [x] Filtres
-* [x] Détection des doublons
-
-## Moteurs
-
-* [x] 1.3 Projection Engine
-* [x] 1.4 Health Engine
-* [x] 1.5 Timeline Engine
-* [x] StatePeriod
-* [x] CapabilityTimeline
-* [x] ServiceTimeline
-* [x] NodeTimeline
-* [x] InfrastructureTimeline
-
-## Runtime
-
-* [x] BackendRuntime
-* [x] RuntimeStatistics
-* [x] RuntimeSnapshot
-* [x] ObservationProcessor
-
-## Backend Web
-
-* [x] FastAPI
-* [x] API REST
-* [x] Runtime API
-* [x] Observation API
-* [x] Timeline API
-* [x] WebSocket
-* [x] Application Context
-* [x] Bootstrap de production
-
-## Interface Web
-
-* [x] Tableau de bord HTML
-* [x] CSS
-* [x] JavaScript natif
-* [x] Connexion WebSocket
+**Statut :** ✅ Terminé
 
 ---
 
-# Phase 2 — Intégration avec Ohanna-Agent
+## 3.2
 
-**Objectif**
+- Runtime Backend
+- Observation Processor
+- API REST
+- WebSocket
 
-Recevoir les observations produites par Ohanna-Agent en temps réel.
-
-## 2.1 Connecteur Agent
-
-* [x] Client de réception des observations
-* [x] Validation des messages
-* [x] Gestion des erreurs
-
-## 2.2 Ingestion
-
-* [x] Injection automatique dans l'Observation Store
-* [x] Mise à jour du Projection Engine
-* [x] Mise à jour du Health Engine
-* [x] Mise à jour du Timeline Engine
-
-## 2.3 Temps réel
-
-* [x] GET /api/runtime enrichi
-* [x] Connecter ObservationProcessor à TimelineRuntime
-* [x] Notification temps réel lors d'une ingestion
-* [x] Tests d'intégration REST ↔ WebSocket
+**Statut :** ✅ Terminé
 
 ---
 
-# Phase 3 — Dashboard
+## 3.3
 
-**Objectif**
+- Dashboard
+- KPI
+- Runtime
+- Alertes
 
-Construire une interface de supervision exploitable au quotidien.
+**Statut :** ✅ Terminé
 
-## Vue Infrastructure
+---
 
-* [ ] Santé globale
-* [ ] Historique des changements
-* [ ] Derniers événements
+## 3.4
 
-## Vue Nœuds
+- Topologie interactive
+- Sélection des équipements
+- Panneau de détails
 
-* [ ] Santé par machine
-* [ ] Services actifs
-* [ ] Capacités
+**Statut :** ✅ Terminé
 
-## Vue Services
+---
 
-* [ ] Historique
-* [ ] Latence
-* [ ] Disponibilité
+## 3.5
 
-## Timeline
+- Navigation
+- Frontend modulaire
+- CSS modulaire
+- Timeline fondée sur les périodes métier
+- Responsive
+- Audit frontend
 
-* [ ] Navigation temporelle
-* [ ] Zoom
-* [ ] Filtres
-* [ ] Recherche
+**Statut :** ✅ Terminé
 
 ---
 
 # Phase 4 — Administration
 
-**Objectif**
+L'objectif de cette phase est de permettre l'administration de l'infrastructure depuis Ohanna-Vision.
 
-Administrer l'infrastructure directement depuis Ohanna-Vision.
+## 4.1 Infrastructure
 
-## Configuration
+- consultation de la configuration
+- modification des nœuds
+- modification des services
+- validation de configuration
 
-* [ ] Gestion des nœuds
-* [ ] Gestion des services
-* [ ] Capacités
+## 4.2 Capacités
 
-## Administration
+- vue détaillée d'une capacité
+- historique complet
+- dépendances
+- statistiques
 
-* [ ] Déploiement de configuration
-* [ ] Validation
-* [ ] Rechargement
+## 4.3 Observations
 
-## Supervision
+- recherche
+- filtrage
+- export
 
-* [ ] Gestion des agents connectés
-* [ ] Informations système
-* [ ] Diagnostics
+## 4.4 Plugins
+
+- liste des plugins installés
+- informations
+- configuration
+
+## 4.5 Runtime
+
+- informations système
+- santé des composants
+- diagnostics
 
 ---
 
 # Phase 5 — Historique
 
-**Objectif**
+## 5.1 Timeline
 
-Conserver les observations sur le long terme.
+- zoom temporel
+- navigation
+- agrégation
 
-* [ ] Persistance
-* [ ] Archivage
-* [ ] Recherche historique
-* [ ] Statistiques
-* [ ] Tendances
-* [ ] Rapports
+## 5.2 Historique
+
+- recherche
+- comparaison
+- évolution d'une capacité
+
+## 5.3 Rapports
+
+- disponibilité
+- SLA
+- export PDF
+- export CSV
 
 ---
 
-# Phase 6 — Visualisation avancée
+# Phase 6 — Administration avancée
 
-**Objectif**
+## 6.1 Utilisateurs
 
-Transformer les données en véritable outil d'analyse.
+- authentification
+- rôles
+- permissions
 
-* [ ] Graphiques temporels
-* [ ] Heatmaps
-* [ ] Disponibilité
-* [ ] Évolution des capacités
-* [ ] Analyse des incidents
-* [ ] Corrélations
+## 6.2 Configuration
+
+- paramètres globaux
+- préférences utilisateur
+
+## 6.3 Notifications
+
+- événements
+- alertes
+- Webhooks
 
 ---
 
 # Phase 7 — Écosystème Ohanna
 
-**Objectif**
+## 7.1 Ohanna-Agent
 
-Faire d'Ohanna-Vision le centre de visualisation de l'écosystème.
+- supervision multi-agents
+- vue consolidée
 
-* [ ] Intégration complète avec Ohanna-Agent
-* [ ] API publique
-* [ ] Notifications
-* [ ] Export des données
-* [ ] Authentification
-* [ ] Gestion des utilisateurs
+## 7.2 Ohanna-SDK
 
----
+- informations plugins
+- documentation intégrée
 
-# Objectif de la prochaine release
+## 7.3 Ohanna-CLI
 
-## v0.2.0
-
-Connexion temps réel avec Ohanna-Agent :
-
-* réception automatique des observations ;
-* mise à jour immédiate des moteurs ;
-* diffusion WebSocket des événements ;
-* tableau de bord réellement vivant.
+- intégration des diagnostics
+- lancement d'actions
 
 ---
 
-# État actuel
+# Objectif v1.0
 
-* Version : **v0.1.0**
-* Phase 1 : **Terminée**
-* Couverture : **270 tests unitaires**
-* Qualité : **Ruff sans erreur**
-* Interface Web : **Opérationnelle**
-* API REST : **Opérationnelle**
-* WebSocket : **Opérationnel**
-* Bootstrap : **Opérationnel**
+La version 1.0 sera atteinte lorsque Ohanna-Vision permettra :
+
+- de visualiser l'état courant d'une infrastructure ;
+- d'explorer son historique ;
+- d'administrer sa configuration ;
+- d'analyser les capacités supervisées ;
+- de fonctionner entièrement avec Ohanna-Agent.

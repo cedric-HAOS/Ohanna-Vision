@@ -186,19 +186,6 @@ def test_static_ui_contains_realtime_side_panel() -> None:
     assert 'id="acceptance-rate"' in response.text
     assert 'id="acceptance-rate-progress"' in response.text
 
-def test_static_ui_contains_graphical_timeline() -> None:
-    """The dashboard must expose its graphical timeline."""
-    client = make_client()
-
-    response = client.get("/ui/")
-
-    assert response.status_code == 200
-    assert 'id="timeline-content"' in response.text
-    assert 'id="timeline-event-count"' in response.text
-    assert 'data-timeline-hours="1"' in response.text
-    assert 'data-timeline-hours="6"' in response.text
-    assert 'data-timeline-hours="24"' in response.text
-
 def test_static_styles_support_responsive_dashboard() -> None:
     """The responsive module must expose dashboard breakpoints."""
     client = make_client()
@@ -310,38 +297,6 @@ def test_application_script_connects_navigation() -> None:
     assert '"ohanna:navigation-changed"' in response.text
     assert "this.navigation.initialize()" in response.text
 
-def test_application_reflows_topology_after_navigation() -> None:
-    """Opening Infrastructure must reflow its topology."""
-    client = make_client()
-
-    application_response = client.get(
-        "/ui/application.js",
-    )
-    topology_response = client.get(
-        "/ui/topology.js",
-    )
-
-    assert application_response.status_code == 200
-    assert topology_response.status_code == 200
-
-    assert (
-        'viewName === "infrastructure"'
-        in application_response.text
-    )
-    assert (
-        "this.topology.reflow()"
-        in application_response.text
-    )
-
-    assert (
-        "requestAnimationFrame"
-        in topology_response.text
-    )
-    assert (
-        'new Event("resize")'
-        in topology_response.text
-    )
-
 def test_static_ui_exposes_frontend_api_module() -> None:
     """The frontend must expose its API client module."""
     response = make_client().get("/ui/api.js")
@@ -406,30 +361,6 @@ def test_application_uses_observations_controller() -> None:
     assert "this.observations.render(" in response.text
     assert "this.observations.showError(" in response.text
 
-def test_observations_module_uses_shared_frontend_foundations() -> None:
-    """The observations module must reuse state and utilities."""
-    response = make_client().get(
-        "/ui/observations.js",
-    )
-
-    assert response.status_code == 200
-    assert 'from "./utils.js"' in response.text
-    assert "this.state.observations" in response.text
-
-def test_static_ui_exposes_timeline_module() -> None:
-    """The frontend must expose its timeline module."""
-    response = make_client().get(
-        "/ui/timeline.js",
-    )
-
-    assert response.status_code == 200
-    assert "javascript" in response.headers["content-type"]
-    assert "export class TimelineController" in response.text
-    assert "groupObservationsByNode" in response.text
-    assert "timelinePosition" in response.text
-    assert "renderAxis" in response.text
-    assert "renderRow" in response.text
-
 def test_application_uses_timeline_controller() -> None:
     """The application must delegate timeline rendering."""
     response = make_client().get("/ui/application.js")
@@ -441,15 +372,13 @@ def test_application_uses_timeline_controller() -> None:
     assert "this.timeline.render()" in response.text
 
 def test_timeline_module_uses_shared_application_state() -> None:
-    """The timeline must use observations from shared state."""
+    """The timeline must use periods from shared state."""
     response = make_client().get(
         "/ui/timeline.js",
     )
 
     assert response.status_code == 200
-    assert "this.state.observations" in response.text
-    assert "this.state.timelineRangeHours" in response.text
-    assert "data-timeline-hours" in response.text
+    assert "this.state.timeline?.nodes" in response.text
 
 def test_timeline_delegates_node_selection() -> None:
     """Timeline interactions must delegate node selection."""
@@ -1105,30 +1034,18 @@ def test_timeline_stylesheet_contains_timeline_structure() -> None:
     assert ".timeline-row {" in response.text
     assert ".timeline-row__track {" in response.text
 
-def test_timeline_stylesheet_contains_event_states() -> None:
-    """Timeline health events must live in the timeline module."""
+def test_timeline_stylesheet_contains_period_states() -> None:
+    """Timeline health periods must live in the timeline module."""
     response = make_client().get(
         "/ui/styles/timeline.css",
     )
 
     assert response.status_code == 200
-    assert ".timeline-event {" in response.text
-    assert (
-        ".timeline-event--healthy {"
-        in response.text
-    )
-    assert (
-        ".timeline-event--degraded {"
-        in response.text
-    )
-    assert (
-        ".timeline-event--unhealthy {"
-        in response.text
-    )
-    assert (
-        ".timeline-event--unknown {"
-        in response.text
-    )
+    assert ".timeline-period {" in response.text
+    assert ".timeline-period--healthy {" in response.text
+    assert ".timeline-period--degraded {" in response.text
+    assert ".timeline-period--unhealthy {" in response.text
+    assert ".timeline-period--unknown {" in response.text
     assert ".timeline-row__current {" in response.text
     assert (
         ".timeline-row__current--healthy {"
@@ -1369,7 +1286,7 @@ def test_api_declares_timeline_endpoint() -> None:
 
     assert response.status_code == 200
 
-    assert 'TIMELINE: "/api/timeline"' in response.text
+    assert 'timeline: "/api/timeline"' in response.text
 
 def test_timeline_controller_imports_period_model() -> None:
     """Timeline controller must use the period model."""
@@ -1381,16 +1298,18 @@ def test_timeline_controller_imports_period_model() -> None:
     assert 'from "./timeline_period.js"' in response.text
 
 def test_timeline_controller_tracks_periods() -> None:
-    """Timeline controller must synchronize periods."""
+    """Timeline controller must synchronize node periods."""
     response = make_client().get(
         "/ui/timeline.js",
     )
 
     assert response.status_code == 200
 
-    assert "this.periods = []" in response.text
+    assert "this.periodGroups = []" in response.text
     assert "updatePeriods()" in response.text
-    assert "TimelinePeriod.fromPayload" in response.text
+    assert "TimelinePeriod" in response.text
+    assert ".fromPayload(" in response.text
+    assert "node.periods" in response.text
 
 def test_timeline_controller_exposes_loaded_periods() -> None:
     """Timeline controller must expose loaded periods."""
@@ -1402,14 +1321,17 @@ def test_timeline_controller_exposes_loaded_periods() -> None:
 
     assert "getPeriods()" in response.text
 
-def test_timeline_controller_supports_period_grouping() -> None:
-    """Timeline controller must support grouping periods."""
+def test_timeline_controller_uses_api_node_groups() -> None:
+    """Timeline controller must consume node groups from the API."""
     response = make_client().get(
         "/ui/timeline.js",
     )
 
     assert response.status_code == 200
-    assert "groupPeriodsByNode()" in response.text
+    assert "this.state.timeline?.nodes" in response.text
+    assert "this.periodGroups" in response.text
+    assert "node.node_id" in response.text
+    assert "node.periods" in response.text
 
 def test_timeline_controller_supports_period_rendering() -> None:
     """Timeline controller must support rendering periods."""
@@ -1420,3 +1342,206 @@ def test_timeline_controller_supports_period_rendering() -> None:
     assert response.status_code == 200
     assert "renderPeriod(" in response.text
     assert "timeline-period--" in response.text
+
+def test_timeline_controller_uses_node_periods() -> None:
+    """Timeline controller must use periods grouped by API nodes."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "this.state.timeline?.nodes" in response.text
+    assert "node.node_id" in response.text
+    assert "node.periods" in response.text
+    assert "this.periodGroups" in response.text
+
+def test_timeline_controller_renders_period_rows() -> None:
+    """Timeline controller must render one row per node."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "renderPeriodRow(" in response.text
+    assert "period.overlaps(" in response.text
+    assert "this.renderPeriod(" in response.text
+
+def test_timeline_controller_contains_no_observation_pipeline() -> None:
+    """The timeline must no longer render raw observations."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "this.state.observations" not in response.text
+    assert "groupObservationsByNode" not in response.text
+    assert "isObservationVisible" not in response.text
+    assert "renderEvent(" not in response.text
+
+def test_timeline_controller_uses_period_counter() -> None:
+    """The timeline must count rendered health periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "renderPeriodCount(" in response.text
+    assert "#timeline-period-count" in response.text
+    assert "renderEventCount(" not in response.text
+
+def test_timeline_rendering_is_triggered_by_timeline_loading() -> None:
+    """Timeline loading must trigger the timeline rendering."""
+    response = make_client().get(
+        "/ui/application.js",
+    )
+
+    assert response.status_code == 200
+    assert "setTimeline(" in response.text
+    assert "this.timeline.render();" in response.text
+    assert "onObservationsChanged:" not in response.text
+
+def test_static_ui_exposes_timeline_period_count() -> None:
+    """The timeline must expose a period counter."""
+    response = make_client().get("/ui/")
+
+    assert response.status_code == 200
+    assert 'id="timeline-period-count"' in response.text
+    assert 'id="timeline-event-count"' not in response.text
+
+def test_timeline_module_contains_no_legacy_event_rendering() -> None:
+    """The timeline must contain no legacy observation rendering."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+
+    legacy_terms = [
+        "renderEvent(",
+        "renderRow(",
+        "groupObservationsByNode",
+        "isObservationVisible",
+        "timeline-event",
+        "this.state.observations",
+    ]
+
+    for term in legacy_terms:
+        assert term not in response.text
+
+def test_timeline_styles_contain_no_legacy_events() -> None:
+    """The timeline stylesheet must only style periods."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+    assert ".timeline-period" in response.text
+    assert ".timeline-event" not in response.text
+
+def test_navigation_overview_combines_main_dashboard_views() -> None:
+    """Overview must show dashboard, infrastructure and timeline."""
+    response = make_client().get(
+        "/ui/navigation.js",
+    )
+
+    assert response.status_code == 200
+    assert "visibleViews(viewName)" in response.text
+    assert 'viewName === "overview"' in response.text
+    assert '"overview"' in response.text
+    assert '"infrastructure"' in response.text
+    assert '"timeline"' in response.text
+
+def test_navigation_specialized_views_remain_independent() -> None:
+    """Specialized navigation targets must remain available."""
+    response = make_client().get(
+        "/ui/navigation.js",
+    )
+
+    assert response.status_code == 200
+    assert "return new Set([" in response.text
+    assert "viewName," in response.text
+
+def test_application_reflows_visible_topology_after_navigation() -> None:
+    """Overview and Infrastructure must reflow the topology."""
+    response = make_client().get(
+        "/ui/application.js",
+    )
+
+    assert response.status_code == 200
+    assert 'viewName === "overview"' in response.text
+    assert 'viewName === "infrastructure"' in response.text
+    assert "this.topology.reflow()" in response.text
+
+def test_navigation_exposes_active_view_to_layout() -> None:
+    """Navigation must expose the active view to CSS."""
+    response = make_client().get(
+        "/ui/navigation.js",
+    )
+
+    assert response.status_code == 200
+    assert "this.viewContainer" in response.text
+    assert ".dataset.activeView" in response.text
+
+def test_layout_supports_combined_overview() -> None:
+    """The overview must combine its three visible sections."""
+    response = make_client().get(
+        "/ui/styles/layout.css",
+    )
+
+    assert response.status_code == 200
+    assert (
+        'data-active-view="overview"'
+        in response.text
+    )
+    assert "min-height: 0" in response.text
+
+def test_frontend_contains_no_console_logging() -> None:
+    """Production frontend modules must not write to the console."""
+    modules = [
+        "/ui/api.js",
+        "/ui/application.js",
+        "/ui/application_state.js",
+        "/ui/dashboard.js",
+        "/ui/device_details.js",
+        "/ui/navigation.js",
+        "/ui/observations.js",
+        "/ui/timeline.js",
+        "/ui/timeline_period.js",
+        "/ui/topology.js",
+        "/ui/topology_canvas.js",
+        "/ui/utils.js",
+        "/ui/websocket.js",
+    ]
+
+    client = make_client()
+
+    for module in modules:
+        response = client.get(module)
+
+        assert response.status_code == 200
+        assert "console.log(" not in response.text
+        assert "console.info(" not in response.text
+        assert "console.warn(" not in response.text
+        assert "console.error(" not in response.text
+        assert "debugger;" not in response.text
+
+def test_timeline_controller_renders_loading_errors() -> None:
+    """Timeline loading failures must be visible to users."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "renderError(message)" in response.text
+    assert "timeline-empty--error" in response.text
+    assert 'role="alert"' in response.text
+
+def test_application_routes_timeline_errors_to_the_ui() -> None:
+    """Application must not hide timeline loading failures."""
+    response = make_client().get(
+        "/ui/application.js",
+    )
+
+    assert response.status_code == 200
+    assert "this.timeline.renderError(" in response.text
+    assert "console.error(" not in response.text
