@@ -1,0 +1,393 @@
+.device-details {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    width: min(27rem, calc(100% - 2rem));
+    max-height: calc(100% - 2rem);
+    overflow-y: auto;
+    padding: 0;
+    border: 1px solid rgb(71 87 124 / 80%);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            160deg,
+            rgb(33 47 78 / 98%),
+            rgb(15 23 41 / 98%)
+        );
+    box-shadow:
+        0 30px 90px rgb(0 0 0 / 48%),
+        0 0 0 1px rgb(125 162 255 / 5%);
+    backdrop-filter: blur(20px);
+    animation:
+        device-details-enter
+        180ms ease-out;
+}
+
+.device-details__hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 4.4rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.3rem;
+    border-bottom: 1px solid var(--border);
+    background:
+        radial-gradient(
+            circle at 18% 30%,
+            rgb(125 162 255 / 14%),
+            transparent 12rem
+        );
+}
+
+.device-details__icon {
+    --details-icon-color: var(--unknown);
+    display: grid;
+    width: 4.4rem;
+    height: 4.4rem;
+    place-items: center;
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--details-icon-color) 50%,
+            transparent
+        );
+    border-radius: 18px;
+    color: var(--details-icon-color);
+    background:
+        color-mix(
+            in srgb,
+            var(--details-icon-color) 12%,
+            transparent
+        );
+    box-shadow:
+        inset 0 0 18px
+        color-mix(
+            in srgb,
+            var(--details-icon-color) 7%,
+            transparent
+        );
+}
+
+.device-details__icon svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.device-details__icon--internet {
+    --details-icon-color: #58a6ff;
+}
+
+.device-details__icon--router {
+    --details-icon-color: #8d7dff;
+}
+
+.device-details__icon--switch {
+    --details-icon-color: #47d18c;
+}
+
+.device-details__icon--access_point {
+    --details-icon-color: #f6c453;
+}
+
+.device-details__icon--raspberry_pi {
+    --details-icon-color: #f2769a;
+}
+
+.device-details__icon--home_assistant {
+    --details-icon-color: #41bdf5;
+}
+
+.device-details__icon--camera {
+    --details-icon-color: #c393ff;
+}
+
+.device-details__icon--storage {
+    --details-icon-color: #58d4e8;
+}
+
+.device-details__icon--solar {
+    --details-icon-color: #ffd35a;
+}
+
+.device-details__identity {
+    min-width: 0;
+}
+
+.device-details__identity h3 {
+    margin: 0;
+    font-size: 1.55rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.device-details__kind {
+    margin-bottom: 0.35rem;
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.device-details__primary {
+    margin: 0.45rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+}
+
+.device-details__close {
+    display: grid;
+    width: 2.2rem;
+    height: 2.2rem;
+    place-items: center;
+    align-self: start;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-muted);
+    background: rgb(24 35 60 / 85%);
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.device-details__close:hover {
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.device-details__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 1rem 1.3rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.device-details__health {
+    --details-health: var(--unknown);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--details-health);
+    border-radius: 999px;
+    color: var(--details-health);
+    background: rgb(141 153 174 / 8%);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.device-details__health-indicator {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--details-health);
+    box-shadow:
+        0 0 0 0.25rem
+        color-mix(
+            in srgb,
+            var(--details-health) 12%,
+            transparent
+        );
+}
+
+.device-details__health--healthy {
+    --details-health: var(--healthy);
+}
+
+.device-details__health--degraded {
+    --details-health: var(--degraded);
+}
+
+.device-details__health--unhealthy {
+    --details-health: var(--unhealthy);
+}
+
+.device-details__health--unknown {
+    --details-health: var(--unknown);
+}
+
+.device-details__supervision {
+    padding: 0.4rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.device-details__supervision--active {
+    color: var(--healthy);
+    background: rgb(71 209 140 / 10%);
+}
+
+.device-details__supervision--inactive {
+    color: var(--text-muted);
+    background: rgb(141 153 174 / 10%);
+}
+
+.device-details__section {
+    padding: 1.15rem 1.3rem;
+}
+
+.device-details__section
++ .device-details__section {
+    padding-top: 0;
+}
+
+.device-details__section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.device-details__section-heading h4 {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.device-details__section-heading > span {
+    display: inline-grid;
+    min-width: 1.7rem;
+    height: 1.7rem;
+    place-items: center;
+    border-radius: 999px;
+    color: var(--accent);
+    background: rgb(125 162 255 / 12%);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.device-details__properties {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+}
+
+.device-details__properties > div {
+    min-width: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgb(24 35 60 / 70%);
+}
+
+.device-details__properties dt {
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.device-details__properties dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.device-details__links {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.device-details__link {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgb(24 35 60 / 72%);
+}
+
+.device-details__link-icon {
+    display: grid;
+    width: 2.6rem;
+    height: 2.6rem;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--accent);
+    background: rgb(125 162 255 / 10%);
+}
+
+.device-details__link-icon svg {
+    width: 1.45rem;
+    height: 1.45rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.device-details__link-content {
+    display: grid;
+    min-width: 0;
+    gap: 0.15rem;
+}
+
+.device-details__link-content strong {
+    font-size: 0.82rem;
+    overflow-wrap: anywhere;
+}
+
+.device-details__link-content span {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.device-details__link-meta {
+    display: grid;
+    justify-items: end;
+    gap: 0.2rem;
+}
+
+.device-details__link-meta span {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.device-details__link-meta small {
+    color: var(--text-muted);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+}
+
+.device-details__empty {
+    padding: 1rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+@keyframes device-details-enter {
+    from {
+        opacity: 0;
+        transform: translateX(1rem) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}

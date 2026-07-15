@@ -1,0 +1,109 @@
+.recent-observations {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.65rem;
+}
+
+.recent-observation {
+    --observation-color: var(--unknown);
+    display: grid;
+    grid-template-columns:
+        0.5rem
+        minmax(0, 1fr)
+        auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: rgb(24 35 60 / 62%);
+}
+
+.recent-observation--healthy {
+    --observation-color: var(--healthy);
+}
+
+.recent-observation--degraded {
+    --observation-color: var(--degraded);
+}
+
+.recent-observation--unhealthy {
+    --observation-color: var(--unhealthy);
+}
+
+.recent-observation__indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--observation-color);
+}
+
+.recent-observation__content {
+    display: grid;
+    min-width: 0;
+    gap: 0.15rem;
+}
+
+.recent-observation__content strong {
+    overflow: hidden;
+    font-size: 0.66rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recent-observation__content span {
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.58rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recent-observation__meta {
+    display: grid;
+    justify-items: end;
+    gap: 0.15rem;
+}
+
+.recent-observation__meta span {
+    color: var(--observation-color);
+    font-size: 0.56rem;
+    font-weight: 800;
+}
+
+.recent-observation__meta time {
+    color: var(--text-muted);
+    font-size: 0.54rem;
+    white-space: nowrap;
+}
+
+.recent-observation {
+    animation:
+        realtime-item-enter
+        var(--transition-normal)
+        var(--easing-standard)
+        both;
+    transition:
+        transform var(--transition-fast)
+        var(--easing-standard),
+        border-color var(--transition-fast)
+        var(--easing-standard),
+        background-color var(--transition-fast)
+        var(--easing-standard);
+}
+
+.recent-observation:hover {
+    transform: translateX(-0.15rem);
+}
+
+.recent-observation:nth-child(2) {
+    animation-delay: 35ms;
+}
+
+.recent-observation:nth-child(3) {
+    animation-delay: 70ms;
+}
+
+.recent-observation:nth-child(4) {
+    animation-delay: 105ms;
+}

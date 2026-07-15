@@ -3,15 +3,12 @@
 import {
     escapeHtml,
     formatDate,
-    formatLatency,
     healthStatusLabel,
     hideError,
     normalizeHealthStatus,
     showError,
     statusBadge,
 } from "./utils.js";
-
-const MAX_OBSERVATIONS = 50;
 
 /**
  * Manage the observations displayed by the frontend.
@@ -38,9 +35,6 @@ export class ObservationsController {
             error: document.querySelector(
                 "#observations-error",
             ),
-            body: document.querySelector(
-                "#observations-body",
-            ),
             count: document.querySelector(
                 "#observation-count",
             ),
@@ -55,26 +49,6 @@ export class ObservationsController {
      *
      * @param {Array<object>} observations
      */
-    render(observations) {
-        const normalizedObservations =
-            Array.isArray(observations)
-                ? observations
-                : [];
-
-        this.state.observations =
-            normalizedObservations;
-
-        this.renderRecent(normalizedObservations);
-        this.renderTable(normalizedObservations);
-
-        hideError(this.elements.error);
-
-        this.onObservationsChanged(
-            normalizedObservations,
-        );
-
-        this.onDashboardRefresh();
-    }
 
     /**
      * Display an observations loading error.
@@ -193,58 +167,34 @@ export class ObservationsController {
         `;
     }
 
+    render(observations) {
+        const normalizedObservations =
+            Array.isArray(observations)
+                ? observations
+                : [];
+
+        this.state.observations =
+            normalizedObservations;
+
+        this.renderRecent(normalizedObservations);
+        this.renderCount(
+            normalizedObservations.length,
+        );
+
+        hideError(this.elements.error);
+
+        this.onObservationsChanged(
+            normalizedObservations,
+        );
+
+        this.onDashboardRefresh();
+    }
+
     /**
      * Render the observations table.
      *
      * @param {Array<object>} observations
      */
-    renderTable(observations) {
-        const visibleObservations = observations
-            .slice()
-            .sort((first, second) => {
-                return (
-                    new Date(
-                        second.observed_at,
-                    ).getTime()
-                    - new Date(
-                        first.observed_at,
-                    ).getTime()
-                );
-            })
-            .slice(0, MAX_OBSERVATIONS);
-
-        this.renderCount(
-            visibleObservations.length,
-            observations.length,
-        );
-
-        if (!this.elements.body) {
-            return;
-        }
-
-        if (visibleObservations.length === 0) {
-            this.elements.body.innerHTML = `
-                <tr>
-                    <td
-                        class="empty-table"
-                        colspan="6"
-                    >
-                        Aucune observation enregistrée.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        this.elements.body.innerHTML =
-            visibleObservations
-                .map((observation) => {
-                    return this.renderTableRow(
-                        observation,
-                    );
-                })
-                .join("");
-    }
 
     /**
      * Render the observations count.
@@ -252,19 +202,14 @@ export class ObservationsController {
      * @param {number} visibleCount
      * @param {number} totalCount
      */
-    renderCount(visibleCount, totalCount) {
+    renderCount(count) {
         if (!this.elements.count) {
             return;
         }
 
         this.elements.count.textContent =
-            `${visibleCount} observation`
-            + (visibleCount > 1 ? "s" : "")
-            + (
-                totalCount > MAX_OBSERVATIONS
-                    ? ` sur ${totalCount}`
-                    : ""
-            );
+            `${count} observation`
+            + (count > 1 ? "s" : "");
     }
 
     /**
@@ -273,49 +218,4 @@ export class ObservationsController {
      * @param {object} observation
      * @returns {string}
      */
-    renderTableRow(observation) {
-        return `
-            <tr>
-                <td>
-                    ${escapeHtml(
-                        formatDate(
-                            observation.observed_at,
-                        ),
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        observation.node_id,
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        observation.service_id,
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        observation.capability_id,
-                    )}
-                </td>
-
-                <td>
-                    ${statusBadge(
-                        observation.status,
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        formatLatency(
-                            observation.latency_ms,
-                        ),
-                    )}
-                </td>
-            </tr>
-        `;
-    }
 }

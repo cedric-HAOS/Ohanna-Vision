@@ -1,0 +1,62 @@
+.application-header,
+.dashboard,
+.application-footer {
+    width: min(1440px, calc(100% - 2rem));
+    margin-inline: auto;
+}
+
+.application-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 3rem 2rem;
+}
+
+.application-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.5rem 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.application-shell {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.application-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    background:
+        linear-gradient(
+            180deg,
+            rgb(10 17 31 / 99%),
+            rgb(8 14 26 / 99%)
+        );
+}
+
+.application-content {
+    min-width: 0;
+}
+
+.application-views {
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-view[hidden] {
+    display: none;
+}
+
+.application-view.is-active {
+    display: block;
+}

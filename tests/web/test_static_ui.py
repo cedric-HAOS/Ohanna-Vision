@@ -1,5 +1,6 @@
 """Tests for the Ohanna-Vision static web interface."""
 
+import pytest
 from fastapi.testclient import TestClient
 
 from ohanna_vision.web import create_app
@@ -144,7 +145,7 @@ def test_static_ui_preserves_interactive_components() -> None:
     assert 'id="topology-container"' in response.text
     assert 'id="device-details"' in response.text
     assert 'id="topology-zoom-in"' in response.text
-    assert 'id="observations-body"' in response.text
+    assert 'id="recent-observations-list"' in response.text
 
 def test_static_ui_contains_dashboard_kpis() -> None:
     """The dashboard must expose its main KPI cards."""
@@ -199,26 +200,37 @@ def test_static_ui_contains_graphical_timeline() -> None:
     assert 'data-timeline-hours="24"' in response.text
 
 def test_static_styles_support_responsive_dashboard() -> None:
-    """The dashboard stylesheet must expose responsive rules."""
+    """The responsive module must expose dashboard breakpoints."""
     client = make_client()
 
-    response = client.get("/ui/styles.css")
+    response = client.get(
+        "/ui/styles/responsive.css",
+    )
 
     assert response.status_code == 200
     assert "@media (max-width: 1200px)" in response.text
     assert "@media (max-width: 1000px)" in response.text
     assert "@media (max-width: 720px)" in response.text
-    assert "@media (max-width: 460px)" in response.text
 
 def test_static_styles_respect_reduced_motion() -> None:
-    """The dashboard must respect reduced-motion preferences."""
+    """The responsive module must preserve reduced motion."""
     client = make_client()
 
-    response = client.get("/ui/styles.css")
+    response = client.get(
+        "/ui/styles/responsive.css",
+    )
 
     assert response.status_code == 200
     assert (
         "@media (prefers-reduced-motion: reduce)"
+        in response.text
+    )
+    assert (
+        "animation-duration: 1ms !important"
+        in response.text
+    )
+    assert (
+        "transition-duration: 1ms !important"
         in response.text
     )
 
@@ -382,8 +394,7 @@ def test_static_ui_exposes_observations_module() -> None:
     assert "javascript" in response.headers["content-type"]
     assert "export class ObservationsController" in response.text
     assert "renderRecent(" in response.text
-    assert "renderTable(" in response.text
-    assert "renderTableRow(" in response.text
+    assert "renderCount(" in response.text
 
 def test_application_uses_observations_controller() -> None:
     """The application must delegate observation rendering."""
@@ -404,9 +415,6 @@ def test_observations_module_uses_shared_frontend_foundations() -> None:
     assert response.status_code == 200
     assert 'from "./utils.js"' in response.text
     assert "this.state.observations" in response.text
-    assert "formatDate" in response.text
-    assert "formatLatency" in response.text
-    assert "statusBadge" in response.text
 
 def test_static_ui_exposes_timeline_module() -> None:
     """The frontend must expose its timeline module."""
@@ -757,3 +765,525 @@ def test_application_entry_point_is_minimal() -> None:
     assert "new WebSocket(" not in response.text
     assert "new TopologyController(" not in response.text
     assert "renderKpis(" not in response.text
+
+def test_static_ui_does_not_preserve_hidden_observations_table() -> None:
+    """The obsolete hidden observations table must be removed."""
+    client = make_client()
+
+    response = client.get("/ui/")
+
+    assert response.status_code == 200
+    assert 'id="observations-body"' not in response.text
+    assert '<table class="visually-hidden">' not in response.text
+
+@pytest.mark.parametrize(
+    "stylesheet",
+    [
+        "foundations.css",
+        "layout.css",
+        "components.css",
+        "navigation.css",
+        "dashboard.css",
+        "topology.css",
+        "device-details.css",
+        "observations.css",
+        "timeline.css",
+        "responsive.css",
+    ],
+)
+def test_static_ui_exposes_modular_stylesheets(
+    stylesheet: str,
+) -> None:
+    """Every responsibility stylesheet must be served."""
+    response = make_client().get(
+        f"/ui/styles/{stylesheet}",
+    )
+
+    assert response.status_code == 200
+    assert "text/css" in response.headers["content-type"]
+
+def test_static_ui_keeps_single_stylesheet_entrypoint() -> None:
+    """The HTML must keep one stable stylesheet entrypoint."""
+    response = make_client().get("/ui/")
+
+    assert response.status_code == 200
+    assert 'href="/ui/styles.css"' in response.text
+    assert 'href="/ui/styles/' not in response.text
+
+def test_stylesheet_imports_foundations_before_components() -> None:
+    """Foundations must load before generic components."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    foundations_import = (
+        '@import url("./styles/foundations.css");'
+    )
+    components_import = (
+        '@import url("./styles/components.css");'
+    )
+
+    assert foundations_import in response.text
+    assert components_import in response.text
+    assert response.text.index(
+        foundations_import,
+    ) < response.text.index(
+        components_import,
+    )
+
+def test_foundations_stylesheet_contains_global_rules() -> None:
+    """Global CSS foundations must live in their own module."""
+    response = make_client().get(
+        "/ui/styles/foundations.css",
+    )
+
+    assert response.status_code == 200
+    assert ":root {" in response.text
+    assert "box-sizing: border-box" in response.text
+    assert "html {" in response.text
+    assert "body {" in response.text
+    assert "button," in response.text
+
+def test_components_stylesheet_contains_generic_components() -> None:
+    """Reusable components must live in their own module."""
+    response = make_client().get(
+        "/ui/styles/components.css",
+    )
+
+    assert response.status_code == 200
+    assert ".button {" in response.text
+    assert ".status-badge {" in response.text
+    assert ".alert {" in response.text
+    assert ".empty-state {" in response.text
+    assert ".hidden {" in response.text
+    assert ".visually-hidden {" in response.text
+
+def test_stylesheet_imports_layout_and_navigation_modules() -> None:
+    """Layout and navigation must use dedicated modules."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    imports = [
+        '@import url("./styles/foundations.css");',
+        '@import url("./styles/layout.css");',
+        '@import url("./styles/components.css");',
+        '@import url("./styles/navigation.css");',
+    ]
+
+    for stylesheet_import in imports:
+        assert stylesheet_import in response.text
+
+    positions = [
+        response.text.index(stylesheet_import)
+        for stylesheet_import in imports
+    ]
+
+    assert positions == sorted(positions)
+
+def test_layout_stylesheet_contains_application_structure() -> None:
+    """Application structure must live in the layout module."""
+    response = make_client().get(
+        "/ui/styles/layout.css",
+    )
+
+    assert response.status_code == 200
+    assert ".application-shell {" in response.text
+    assert ".application-sidebar {" in response.text
+    assert ".application-content {" in response.text
+    assert ".application-views {" in response.text
+    assert ".application-view[hidden] {" in response.text
+
+def test_navigation_stylesheet_contains_sidebar_navigation() -> None:
+    """Sidebar navigation must live in its dedicated module."""
+    response = make_client().get(
+        "/ui/styles/navigation.css",
+    )
+
+    assert response.status_code == 200
+    assert ".sidebar-brand {" in response.text
+    assert ".sidebar-navigation {" in response.text
+    assert ".sidebar-navigation__title {" in response.text
+    assert ".sidebar-navigation__item {" in response.text
+    assert ".sidebar-navigation__item.is-active {" in response.text
+    assert ".sidebar-navigation__icon {" in response.text
+    assert ".sidebar-footer {" in response.text
+
+def test_stylesheet_imports_dashboard_and_observations_modules() -> None:
+    """Dashboard and observations must use dedicated modules."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    dashboard_import = (
+        '@import url("./styles/dashboard.css");'
+    )
+    observations_import = (
+        '@import url("./styles/observations.css");'
+    )
+
+    assert dashboard_import in response.text
+    assert observations_import in response.text
+
+    assert response.text.index(
+        dashboard_import,
+    ) < response.text.index(
+        observations_import,
+    )
+
+def test_dashboard_stylesheet_contains_dashboard_structure() -> None:
+    """Dashboard-specific rules must live in their module."""
+    response = make_client().get(
+        "/ui/styles/dashboard.css",
+    )
+
+    assert response.status_code == 200
+    assert ".dashboard-header {" in response.text
+    assert ".dashboard-layout {" in response.text
+    assert ".dashboard-kpis {" in response.text
+    assert ".dashboard-kpi {" in response.text
+    assert ".dashboard-primary {" in response.text
+    assert ".dashboard-right-panel {" in response.text
+
+def test_dashboard_stylesheet_contains_side_panel_components() -> None:
+    """Dashboard side panels must live in the dashboard module."""
+    response = make_client().get(
+        "/ui/styles/dashboard.css",
+    )
+
+    assert response.status_code == 200
+    assert ".side-panel-card {" in response.text
+    assert ".side-panel-card__heading {" in response.text
+    assert ".side-panel-card__count {" in response.text
+    assert ".active-alerts {" in response.text
+    assert ".active-alert {" in response.text
+    assert ".processing-indicators {" in response.text
+
+def test_observations_stylesheet_contains_recent_observations() -> None:
+    """Recent observations must live in their own module."""
+    response = make_client().get(
+        "/ui/styles/observations.css",
+    )
+
+    assert response.status_code == 200
+    assert ".recent-observations {" in response.text
+    assert ".recent-observation {" in response.text
+    assert (
+        ".recent-observation--healthy {"
+        in response.text
+    )
+    assert (
+        ".recent-observation__content {"
+        in response.text
+    )
+    assert (
+        ".recent-observation__meta {"
+        in response.text
+    )
+    assert ".observations-compact" not in response.text
+
+def test_stylesheet_imports_topology_module() -> None:
+    """Topology styles must use a dedicated module."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    topology_import = (
+        '@import url("./styles/topology.css");'
+    )
+
+    assert topology_import in response.text
+
+def test_topology_stylesheet_contains_topology_structure() -> None:
+    """Topology structure must live in its own module."""
+    response = make_client().get(
+        "/ui/styles/topology.css",
+    )
+
+    assert response.status_code == 200
+    assert ".topology-section {" in response.text
+    assert ".topology-container {" in response.text
+    assert ".topology-canvas {" in response.text
+    assert ".topology-workspace {" in response.text
+    assert ".topology-controls {" in response.text
+    assert ".topology-control {" in response.text
+
+def test_topology_stylesheet_contains_devices_and_links() -> None:
+    """Topology devices and links must live in the topology module."""
+    response = make_client().get(
+        "/ui/styles/topology.css",
+    )
+
+    assert response.status_code == 200
+    assert ".topology-device {" in response.text
+    assert ".topology-device__card {" in response.text
+    assert (
+        ".topology-device--health-healthy {"
+        in response.text
+    )
+    assert ".topology-link__path {" in response.text
+    assert ".topology-link__connector {" in response.text
+    assert (
+        ".dashboard-primary--topology {"
+        in response.text
+    )
+    assert ".topology-heading-status {" in response.text
+
+def test_stylesheet_imports_device_details_module() -> None:
+    """Device details styles must use a dedicated module."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    device_details_import = (
+        '@import url("./styles/device-details.css");'
+    )
+
+    assert device_details_import in response.text
+
+def test_device_details_stylesheet_contains_panel_structure() -> None:
+    """The equipment details panel must live in its module."""
+    response = make_client().get(
+        "/ui/styles/device-details.css",
+    )
+
+    assert response.status_code == 200
+    assert ".device-details {" in response.text
+    assert ".device-details__hero {" in response.text
+    assert ".device-details__identity {" in response.text
+    assert ".device-details__close {" in response.text
+    assert ".device-details__summary {" in response.text
+    assert ".device-details__section {" in response.text
+
+def test_device_details_stylesheet_contains_health_and_links() -> None:
+    """Health, properties and links must live in the details module."""
+    response = make_client().get(
+        "/ui/styles/device-details.css",
+    )
+
+    assert response.status_code == 200
+    assert ".device-details__health {" in response.text
+    assert (
+        ".device-details__health--healthy {"
+        in response.text
+    )
+    assert (
+        ".device-details__properties {"
+        in response.text
+    )
+    assert ".device-details__links {" in response.text
+    assert ".device-details__link {" in response.text
+    assert (
+        "@keyframes device-details-enter"
+        in response.text
+    )
+
+def test_stylesheet_imports_timeline_module() -> None:
+    """Timeline styles must use a dedicated module."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    timeline_import = (
+        '@import url("./styles/timeline.css");'
+    )
+
+    assert timeline_import in response.text
+
+def test_timeline_stylesheet_contains_timeline_structure() -> None:
+    """Timeline structure must live in its dedicated module."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+    assert ".dashboard-timeline {" in response.text
+    assert ".timeline-grid {" in response.text
+    assert ".timeline-header {" in response.text
+    assert ".timeline-axis {" in response.text
+    assert ".timeline-rows {" in response.text
+    assert ".timeline-row {" in response.text
+    assert ".timeline-row__track {" in response.text
+
+def test_timeline_stylesheet_contains_event_states() -> None:
+    """Timeline health events must live in the timeline module."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+    assert ".timeline-event {" in response.text
+    assert (
+        ".timeline-event--healthy {"
+        in response.text
+    )
+    assert (
+        ".timeline-event--degraded {"
+        in response.text
+    )
+    assert (
+        ".timeline-event--unhealthy {"
+        in response.text
+    )
+    assert (
+        ".timeline-event--unknown {"
+        in response.text
+    )
+    assert ".timeline-row__current {" in response.text
+    assert (
+        ".timeline-row__current--healthy {"
+        in response.text
+    )
+    assert (
+        ".timeline-row__current--degraded {"
+        in response.text
+    )
+    assert (
+        ".timeline-row__current--unhealthy {"
+        in response.text
+    )
+
+def test_stylesheet_imports_responsive_module_last() -> None:
+    """Responsive rules must load after responsibility modules."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    responsive_import = (
+        '@import url("./styles/responsive.css");'
+    )
+
+    assert responsive_import in response.text
+
+    imports = [
+        line.strip()
+        for line in response.text.splitlines()
+        if line.strip().startswith("@import")
+    ]
+
+    assert imports[-1] == responsive_import
+
+def test_responsive_stylesheet_contains_application_breakpoints() -> None:
+    """Responsive adaptations must live in one module."""
+    response = make_client().get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert response.status_code == 200
+    assert (
+        "@media (max-width: 1200px)"
+        in response.text
+    )
+    assert (
+        "@media (max-width: 1000px)"
+        in response.text
+    )
+    assert (
+        "@media (max-width: 900px)"
+        in response.text
+    )
+    assert (
+        "@media (max-width: 720px)"
+        in response.text
+    )
+    assert (
+        "@media (max-width: 460px)"
+        in response.text
+    )
+    assert (
+        "@media (min-width: 1001px)"
+        in response.text
+    )
+
+def test_responsive_stylesheet_preserves_reduced_motion() -> None:
+    """Reduced-motion accessibility must remain available."""
+    response = make_client().get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert response.status_code == 200
+    assert (
+        "@media (prefers-reduced-motion: reduce)"
+        in response.text
+    )
+    assert (
+        "animation-duration: 1ms !important"
+        in response.text
+    )
+    assert (
+        "transition-duration: 1ms !important"
+        in response.text
+    )
+
+def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
+    """The CSS entrypoint must import every responsibility module."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    expected_imports = [
+        '@import url("./styles/foundations.css");',
+        '@import url("./styles/layout.css");',
+        '@import url("./styles/components.css");',
+        '@import url("./styles/navigation.css");',
+        '@import url("./styles/dashboard.css");',
+        '@import url("./styles/observations.css");',
+        '@import url("./styles/topology.css");',
+        '@import url("./styles/device-details.css");',
+        '@import url("./styles/timeline.css");',
+        '@import url("./styles/responsive.css");',
+    ]
+
+    imports = [
+        line.strip()
+        for line in response.text.splitlines()
+        if line.strip().startswith("@import")
+    ]
+
+    assert imports == expected_imports
+
+def test_stylesheet_entrypoint_contains_no_media_queries() -> None:
+    """Responsive rules must not remain in the CSS entrypoint."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+    assert "@media" not in response.text
+
+def test_responsive_stylesheet_uses_consolidated_breakpoints() -> None:
+    """Duplicate desktop and mobile breakpoints must be merged."""
+    response = make_client().get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert response.status_code == 200
+    assert (
+        response.text.count(
+            "@media (min-width: 1001px)"
+        )
+        == 1
+    )
+    assert (
+        response.text.count(
+            "@media (max-width: 720px)"
+        )
+        == 1
+    )
+
+def test_stylesheet_entrypoint_does_not_duplicate_module_rules() -> None:
+    """Module-owned structural rules must leave the entrypoint."""
+    response = make_client().get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    selectors = [
+        ".application-shell {",
+        ".sidebar-brand {",
+        ".dashboard-header {",
+        ".recent-observation {",
+        ".topology-section {",
+        ".device-details {",
+        ".timeline-grid {",
+    ]
+
+    for selector in selectors:
+        assert selector not in response.text
