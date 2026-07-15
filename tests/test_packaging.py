@@ -40,3 +40,45 @@ def test_package_installs_websocket_support() -> None:
     )
 
     assert '"uvicorn[standard]"' in pyproject
+
+
+def test_pyproject_packages_branding_assets() -> None:
+    """Branding assets must be included in the package."""
+    pyproject = Path("pyproject.toml").read_text(
+        encoding="utf-8",
+    )
+
+    assert '"web/static/*.ico"' in pyproject
+    assert '"web/static/*.svg"' in pyproject
+    assert '"web/static/*.png"' in pyproject
+    assert '"web/static/*.webmanifest"' in pyproject
+
+
+def test_static_branding_assets_exist() -> None:
+    """Required branding assets must exist."""
+    static_directory = Path("src/ohanna_vision/web/static")
+
+    required_files = [
+        "favicon.ico",
+        "favicon.svg",
+        "apple-touch-icon.png",
+        "icon-192.png",
+        "icon-512.png",
+        "site.webmanifest",
+    ]
+
+    for filename in required_files:
+        assert (static_directory / filename).is_file()
+
+
+def test_index_declares_branding_assets() -> None:
+    """The web interface must declare its branding assets."""
+    index = Path("src/ohanna_vision/web/static/index.html").read_text(
+        encoding="utf-8",
+    )
+
+    assert 'href="/ui/favicon.ico"' in index
+    assert 'href="/ui/favicon.svg"' in index
+    assert 'href="/ui/apple-touch-icon.png"' in index
+    assert 'href="/ui/site.webmanifest"' in index
+    assert 'content="#18C5E8"' in index
