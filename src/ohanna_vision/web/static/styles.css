@@ -2042,6 +2042,15 @@ td {
         overflow: hidden;
     }
 
+    .application-views {
+        min-height: 0;
+        overflow: auto;
+    }
+
+    .application-view.is-active {
+        min-height: 100%;
+    }
+
     .dashboard-header {
         min-height: 0;
     }
@@ -3331,6 +3340,83 @@ td {
         overflow-x: auto;
     }
 }
+
+.sidebar-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.sidebar-navigation__title {
+    margin: 0 0 0.5rem;
+    padding: 0 0.85rem;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.sidebar-navigation__item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid transparent;
+    border-radius: 0.65rem;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease;
+}
+
+.sidebar-navigation__item:hover {
+    border-color: var(--border-color);
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.sidebar-navigation__item:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.sidebar-navigation__item.is-active {
+    border-color: color-mix(
+        in srgb,
+        var(--accent-color) 40%,
+        transparent
+    );
+    background: color-mix(
+        in srgb,
+        var(--accent-color) 14%,
+        transparent
+    );
+    color: var(--text-primary);
+}
+
+.sidebar-navigation__icon {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: 0 0 1.5rem;
+    place-items: center;
+    color: currentColor;
+}
+
+.application-view[hidden] {
+    display: none;
+}
+
+.application-view.is-active {
+    display: block;
+}
 @media (max-width: 460px) {
     .dashboard-kpis {
         grid-template-columns: 1fr;
@@ -3352,6 +3438,12 @@ td {
         padding: 0.45rem 0.6rem;
     }
 }
+
+.application-views {
+    min-width: 0;
+    min-height: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

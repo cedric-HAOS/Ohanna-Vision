@@ -190,37 +190,37 @@ def test_observation_ingestion_is_exposed_in_openapi() -> None:
     assert "post" in response.json()["paths"]["/api/observations"]
 
 def test_dashboard_connects_topology_controls() -> None:
-    """The dashboard must connect topology navigation buttons."""
+    """The topology module must connect its navigation controls."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    response = client.get("/ui/topology.js")
 
     assert response.status_code == 200
-    assert "topologyZoomIn" in response.text
-    assert "topologyZoomOut" in response.text
-    assert "topologyResetView" in response.text
-    assert "topologyCanvas.zoomIn()" in response.text
-    assert "topologyCanvas.zoomOut()" in response.text
-    assert "topologyCanvas.resetView()" in response.text
+    assert "#topology-zoom-in" in response.text
+    assert "#topology-zoom-out" in response.text
+    assert "#topology-reset-view" in response.text
+    assert "this.canvas.zoomIn()" in response.text
+    assert "this.canvas.zoomOut()" in response.text
+    assert "this.canvas.resetView()" in response.text
    
 def test_dashboard_calculates_kpis() -> None:
     """The dashboard must calculate its main indicators."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    response = client.get("/ui/dashboard.js")
 
     assert response.status_code == 200
-    assert "renderDashboardKpis(" in response.text
-    assert "deviceHealthStatistics(" in response.text
+    assert "renderKpis()" in response.text
     assert "availabilityPercentage(" in response.text
-    assert "capabilitiesCount" in response.text
-    assert "alertsCount" in response.text
+    assert "deviceHealthStatistics()" in response.text
+    assert "renderServiceCount()" in response.text
+    assert "renderCapabilityCount()" in response.text
 
 def test_dashboard_renders_global_topology_health() -> None:
     """The dashboard must render a global topology status."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    response = client.get("/ui/dashboard.js")
 
     assert response.status_code == 200
     assert "globalTopologyHealth(" in response.text
@@ -228,50 +228,151 @@ def test_dashboard_renders_global_topology_health() -> None:
     assert "topologyHealthIndicator" in response.text
     assert "topologyHealthLabel" in response.text
 
-def test_dashboard_renders_realtime_side_panel() -> None:
-    """The dashboard must render alerts and recent activity."""
-    client = make_client()
-
-    response = client.get("/ui/app.js")
-
-    assert response.status_code == 200
-    assert "renderActiveAlerts(" in response.text
-    assert "renderRecentObservations(" in response.text
-    assert "renderAcceptanceRate(" in response.text
-    assert "activeAlertsList" in response.text
-    assert "recentObservationsList" in response.text
-
 def test_dashboard_renders_graphical_timeline() -> None:
     """The dashboard must render observation history graphically."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    response = client.get("/ui/timeline.js")
 
     assert response.status_code == 200
-    assert "renderInfrastructureTimeline(" in response.text
-    assert "renderTimelineRow(" in response.text
-    assert "renderTimelineAxis(" in response.text
-    assert "groupObservationsByNode(" in response.text
-    assert "timelinePosition(" in response.text
+    assert "export class TimelineController" in response.text
+    assert "renderAxis(" in response.text
+    assert "renderRow(" in response.text
+    assert "timeline-event" in response.text
+    assert "timeline-row" in response.text
 
 def test_dashboard_connects_timeline_to_topology() -> None:
     """Timeline nodes must select their topology devices."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    app_response = client.get("/ui/application.js")
+    timeline_response = client.get("/ui/timeline.js")
+    topology_response = client.get("/ui/topology.js")
 
-    assert response.status_code == 200
-    assert "selectTopologyDeviceByNode(" in response.text
-    assert "attachTimelineInteractions(" in response.text
-    assert "data-timeline-node" in response.text
+    assert app_response.status_code == 200
+    assert timeline_response.status_code == 200
+    assert topology_response.status_code == 200
+
+    assert "onNodeSelected" in app_response.text
+    assert "selectDeviceByNode" in app_response.text
+    assert "this.onNodeSelected(" in timeline_response.text
+    assert "selectDeviceByNode(" in topology_response.text
 
 def test_dashboard_animates_kpi_updates() -> None:
     """The dashboard must animate changed KPI values."""
     client = make_client()
 
-    response = client.get("/ui/app.js")
+    response = client.get("/ui/dashboard.js")
 
     assert response.status_code == 200
     assert "animateKpi(" in response.text
-    assert "updateAnimatedText(" in response.text
     assert "dashboard-kpi--updating" in response.text
+    assert "requestAnimationFrame" in response.text
+    assert "setTimeout" in response.text
+
+def test_dashboard_renders_device_details() -> None:
+    """The frontend must render selected-device details."""
+    client = make_client()
+
+    response = client.get(
+        "/ui/device_details.js",
+    )
+
+    assert response.status_code == 200
+    assert "DeviceDetailsController" in response.text
+    assert "deviceIconMarkup(" in response.text
+    assert "renderLinks(" in response.text
+    assert "healthStatusLabel(" in response.text
+
+def test_dashboard_connects_topology_to_device_details() -> None:
+    """Topology selections must open device details."""
+    client = make_client()
+
+    application_response = client.get(
+        "/ui/application.js",
+    )
+    topology_response = client.get(
+        "/ui/topology.js",
+    )
+    details_response = client.get(
+        "/ui/device_details.js",
+    )
+
+    assert application_response.status_code == 200
+    assert topology_response.status_code == 200
+    assert details_response.status_code == 200
+
+    assert "onDeviceSelected" in application_response.text
+    assert "this.deviceDetails" in application_response.text
+    assert ".select(" in application_response.text
+
+    assert (
+        "this.onDeviceSelected("
+        in topology_response.text
+    )
+    assert "select(deviceId)" in details_response.text
+    
+def test_dashboard_renders_realtime_side_panel() -> None:
+    """The frontend must render alerts and recent activity."""
+    client = make_client()
+
+    dashboard_response = client.get(
+        "/ui/dashboard.js",
+    )
+    observations_response = client.get(
+        "/ui/observations.js",
+    )
+
+    assert dashboard_response.status_code == 200
+    assert observations_response.status_code == 200
+
+    assert (
+        "renderActiveAlerts()"
+        in dashboard_response.text
+    )
+    assert (
+        "renderRecent("
+        in observations_response.text
+    )
+
+def test_dashboard_connects_to_websocket() -> None:
+    """The frontend must connect to the realtime backend."""
+    client = make_client()
+
+    app_response = client.get("/ui/application.js")
+    websocket_response = client.get(
+        "/ui/websocket.js",
+    )
+
+    assert app_response.status_code == 200
+    assert websocket_response.status_code == 200
+
+    assert "WebSocketController" in app_response.text
+    assert "new WebSocket(" in websocket_response.text
+    assert "websocketUrl()" in websocket_response.text
+    assert "this.onMessage(message)" in websocket_response.text
+
+def test_dashboard_reconnects_websocket() -> None:
+    """The realtime connection must reconnect after closing."""
+    client = make_client()
+
+    response = client.get(
+        "/ui/websocket.js",
+    )
+
+    assert response.status_code == 200
+    assert "scheduleReconnect()" in response.text
+    assert "reconnectDelayMs" in response.text
+    assert "window.setTimeout(" in response.text
+
+def test_static_javascript_is_available() -> None:
+    """The frontend JavaScript entry point must be served."""
+    client = make_client()
+
+    response = client.get("/ui/app.js")
+
+    assert response.status_code == 200
+    assert "javascript" in response.headers["content-type"]
+    assert 'from "./application.js"' in response.text
+    assert "ApplicationController" in response.text
+    assert "application.initialize()" in response.text

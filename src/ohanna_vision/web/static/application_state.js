@@ -1,0 +1,43 @@
+"use strict";
+
+const state = {
+    runtime: null,
+    observations: [],
+    topology: null,
+    deviceHealth: {},
+    selectedDeviceId: null,
+    timelineRangeHours: 6,
+};
+
+/**
+ * Return the shared frontend state.
+ *
+ * The returned object must not be replaced. Modules may update
+ * its declared properties.
+ *
+ * @returns {{
+ *     runtime: object | null,
+ *     observations: Array<object>,
+ *     topology: object | null,
+ *     deviceHealth: Record<string, string>,
+ *     selectedDeviceId: string | null,
+ *     timelineRangeHours: number,
+ * }}
+ */
+export function applicationState() {
+    return state;
+}
+
+/**
+ * Reset the frontend state.
+ *
+ * Mainly intended for tests and controlled reinitialization.
+ */
+export function resetApplicationState() {
+    state.runtime = null;
+    state.observations = [];
+    state.topology = null;
+    state.deviceHealth = {};
+    state.selectedDeviceId = null;
+    state.timelineRangeHours = 6;
+}
