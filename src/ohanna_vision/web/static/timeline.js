@@ -7,6 +7,10 @@ import {
     normalizeHealthStatus,
 } from "./utils.js";
 
+import {
+    TimelinePeriod,
+} from "./timeline_period.js";
+
 /**
  * Controls the infrastructure timeline.
  */
@@ -35,6 +39,34 @@ export class TimelineController {
                 "[data-timeline-hours]",
             ),
         };
+        this.periods = [];
+    }
+
+    /**
+     * Synchronize timeline periods from the shared application state.
+     */
+    updatePeriods() {
+        const timeline =
+            this.state.timeline;
+
+        if (
+            !timeline
+            || !Array.isArray(
+                timeline.periods,
+            )
+        ) {
+            this.periods = [];
+
+            return;
+        }
+
+        this.periods =
+            timeline.periods.map(
+                (period) =>
+                    TimelinePeriod.fromPayload(
+                        period,
+                    ),
+            );
     }
 
     /**
@@ -46,9 +78,21 @@ export class TimelineController {
     }
 
     /**
+     * Return the currently loaded periods.
+     *
+     * @returns {TimelinePeriod[]}
+     */
+    getPeriods() {
+        return [
+            ...this.periods,
+        ];
+    }
+
+    /**
      * Render the timeline from the shared observations.
      */
     render() {
+        this.updatePeriods();
         if (!this.elements.content) {
             return;
         }
@@ -427,6 +471,57 @@ export class TimelineController {
         `;
     }
 
+    /**
+     * Render one timeline period.
+     *
+     * @param {string} nodeId
+     * @param {TimelinePeriod} period
+     * @param {Date} startedAt
+     * @param {Date} endedAt
+     * @returns {string}
+     */
+    renderPeriod(
+        nodeId,
+        period,
+        startedAt,
+        endedAt,
+    ) {
+        const position =
+            this.timelinePosition(
+                period.startedAt,
+                startedAt,
+                endedAt,
+            );
+
+        const title = [
+            formatDate(
+                period.startedAt,
+            ),
+            period.endedAt
+                ? formatDate(
+                    period.endedAt,
+                )
+                : "En cours",
+            healthStatusLabel(
+                period.status,
+            ),
+        ].join(" · ");
+
+        return `
+            <button
+                class="timeline-period
+                    timeline-period--${period.status}"
+                type="button"
+                style="left: ${position}%"
+                title="${escapeHtml(title)}"
+                aria-label="${escapeHtml(title)}"
+                data-node-id="${escapeHtml(nodeId)}"
+            >
+                <span></span>
+            </button>
+        `;
+    }
+
     groupObservationsByNode(observations) {
         const groups = new Map();
 
@@ -480,6 +575,62 @@ export class TimelineController {
             });
     }
 
+    /**
+     * Group timeline periods by node.
+     *
+     * @returns {Array<{
+     *     nodeId: string,
+     *     periods: TimelinePeriod[],
+     * }>}
+     */
+    groupPeriodsByNode() {
+        const groups = new Map();
+
+        for (const period of this.periods) {
+            const nodeId =
+                period.nodeId
+                ?? "infrastructure";
+
+            if (!groups.has(nodeId)) {
+                groups.set(
+                    nodeId,
+                    [],
+                );
+            }
+
+            groups
+                .get(nodeId)
+                .push(period);
+        }
+
+        return Array.from(
+            groups.entries(),
+        )
+            .map(
+                ([
+                    nodeId,
+                    periods,
+                ]) => ({
+                    nodeId,
+                    periods: periods.sort(
+                        (
+                            first,
+                            second,
+                        ) =>
+                            first.startedAt
+                                .getTime()
+                            - second.startedAt
+                                .getTime(),
+                    ),
+                }),
+            )
+            .sort(
+                (first, second) =>
+                    first.nodeId.localeCompare(
+                        second.nodeId,
+                    ),
+            );
+    }
     isObservationVisible(
         observation,
         startedAt,

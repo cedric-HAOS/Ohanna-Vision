@@ -215,3 +215,50 @@ def test_timeline_router_returns_503_without_context() -> None:
     assert response.json() == {
         "detail": "Application context is not configured",
     }
+
+def test_timeline_router_exposes_period_metadata() -> None:
+    """Timeline periods must expose the explicit API contract."""
+    observed_at = datetime(
+        2026,
+        7,
+        11,
+        10,
+        0,
+        tzinfo=UTC,
+    )
+    until = datetime(
+        2026,
+        7,
+        11,
+        11,
+        0,
+        tzinfo=UTC,
+    )
+    store = make_store(
+        make_observation(
+            observed_at=observed_at,
+        ),
+    )
+    client = make_client(store)
+
+    response = client.get(
+        "/timeline",
+        params={
+            "until": until.isoformat().replace(
+                "+00:00",
+                "Z",
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+
+    period = response.json()["periods"][0]
+
+    assert period == {
+        "status": "healthy",
+        "started_at": "2026-07-11T10:00:00Z",
+        "ended_at": "2026-07-11T11:00:00Z",
+        "duration_seconds": 3600.0,
+        "is_open": False,
+    }

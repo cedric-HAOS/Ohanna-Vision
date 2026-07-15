@@ -7,6 +7,7 @@ import {
 
 import {
     applicationState,
+    setTimeline,
 } from "./application_state.js";
 
 import {
@@ -239,6 +240,7 @@ export class ApplicationController {
             await Promise.allSettled([
                 this.loadRuntime(),
                 this.loadObservations(),
+                this.loadTimeline(),
                 this.topology.load(),
             ]);
 
@@ -284,6 +286,27 @@ export class ApplicationController {
         } catch (error) {
             this.observations.showError(
                 "Observations indisponibles : "
+                + this.errorMessage(error),
+            );
+        }
+    }
+
+    /**
+     * Load infrastructure timeline.
+     */
+    async loadTimeline() {
+        try {
+            const timeline =
+                await fetchJson(
+                    API.timeline,
+                );
+
+            setTimeline(
+                timeline,
+            );
+        } catch (error) {
+            console.error(
+                "Timeline indisponible : "
                 + this.errorMessage(error),
             );
         }

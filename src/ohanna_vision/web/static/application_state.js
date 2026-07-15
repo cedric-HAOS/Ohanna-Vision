@@ -41,3 +41,21 @@ export function resetApplicationState() {
     state.selectedDeviceId = null;
     state.timelineRangeHours = 6;
 }
+
+export const applicationState = {
+    runtime: null,
+    observations: [],
+    topology: null,
+    timeline: null,
+};
+
+/**
+ * Store the current infrastructure timeline.
+ *
+ * @param {object|null} timeline
+ */
+export function setTimeline(
+    timeline,
+) {
+    applicationState.timeline = timeline;
+}

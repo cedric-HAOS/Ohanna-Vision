@@ -1287,3 +1287,136 @@ def test_stylesheet_entrypoint_does_not_duplicate_module_rules() -> None:
 
     for selector in selectors:
         assert selector not in response.text
+
+def test_static_ui_exposes_timeline_period_model() -> None:
+    """The frontend must expose its timeline period model."""
+    response = make_client().get(
+        "/ui/timeline_period.js",
+    )
+
+    assert response.status_code == 200
+    assert "javascript" in response.headers["content-type"]
+    assert "export class TimelinePeriod" in response.text
+    assert "constructor({" in response.text
+    assert "static fromPayload(payload)" in response.text
+
+def test_timeline_period_maps_api_contract() -> None:
+    """The period model must map the explicit API fields."""
+    response = make_client().get(
+        "/ui/timeline_period.js",
+    )
+
+    assert response.status_code == 200
+    assert "payload.status" in response.text
+    assert "payload.started_at" in response.text
+    assert "payload.ended_at" in response.text
+    assert "payload.duration_seconds" in response.text
+    assert "payload.is_open" in response.text
+
+def test_timeline_period_validates_period_boundaries() -> None:
+    """The period model must reject invalid boundaries."""
+    response = make_client().get(
+        "/ui/timeline_period.js",
+    )
+
+    assert response.status_code == 200
+    assert "endedAt < this.startedAt" in response.text
+    assert "must not precede startedAt" in response.text
+    assert "must not define endedAt" in response.text
+    assert "must define endedAt" in response.text
+
+def test_timeline_period_supports_visible_window_clipping() -> None:
+    """The period model must support continuous timeline rendering."""
+    response = make_client().get(
+        "/ui/timeline_period.js",
+    )
+
+    assert response.status_code == 200
+    assert "effectiveEnd(referenceDate)" in response.text
+    assert "overlaps(" in response.text
+    assert "clippedTo(" in response.text
+    assert "Math.max(" in response.text
+    assert "Math.min(" in response.text
+
+def test_application_state_supports_timeline() -> None:
+    """Application state must expose the timeline."""
+    response = make_client().get(
+        "/ui/application_state.js",
+    )
+
+    assert response.status_code == 200
+
+    assert "timeline: null" in response.text
+    assert "function setTimeline" in response.text
+
+def test_application_loads_timeline_endpoint() -> None:
+    """The application controller must load the timeline API."""
+    response = make_client().get(
+        "/ui/application.js",
+    )
+
+    assert response.status_code == 200
+
+    assert "API.timeline" in response.text
+    assert "setTimeline(" in response.text
+    assert "loadTimeline()" in response.text
+
+def test_api_declares_timeline_endpoint() -> None:
+    """Timeline endpoint must be part of the frontend API."""
+    response = make_client().get(
+        "/ui/api.js",
+    )
+
+    assert response.status_code == 200
+
+    assert 'TIMELINE: "/api/timeline"' in response.text
+
+def test_timeline_controller_imports_period_model() -> None:
+    """Timeline controller must use the period model."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert 'from "./timeline_period.js"' in response.text
+
+def test_timeline_controller_tracks_periods() -> None:
+    """Timeline controller must synchronize periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+
+    assert "this.periods = []" in response.text
+    assert "updatePeriods()" in response.text
+    assert "TimelinePeriod.fromPayload" in response.text
+
+def test_timeline_controller_exposes_loaded_periods() -> None:
+    """Timeline controller must expose loaded periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+
+    assert "getPeriods()" in response.text
+
+def test_timeline_controller_supports_period_grouping() -> None:
+    """Timeline controller must support grouping periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "groupPeriodsByNode()" in response.text
+
+def test_timeline_controller_supports_period_rendering() -> None:
+    """Timeline controller must support rendering periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+    assert "renderPeriod(" in response.text
+    assert "timeline-period--" in response.text
