@@ -74,10 +74,8 @@
     color: var(--text-primary);
 }
 
-.sidebar-navigation__item span {
-    width: 1rem;
+.sidebar-navigation__icon {
     color: var(--accent);
-    text-align: center;
 }
 
 .sidebar-footer {
@@ -156,10 +154,46 @@
 }
 
 .sidebar-navigation__icon {
-    display: grid;
+    display: block;
     width: 1.5rem;
     height: 1.5rem;
     flex: 0 0 1.5rem;
-    place-items: center;
-    color: currentColor;
+
+    background-color: currentColor;
+
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 1.25rem 1.25rem;
+
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: 1.25rem 1.25rem;
+}
+
+.sidebar-navigation__icon--overview {
+    mask-image:
+        url("../assets/icons/navigation/layout-dashboard.svg");
+    -webkit-mask-image:
+        url("../assets/icons/navigation/layout-dashboard.svg");
+}
+
+.sidebar-navigation__icon--infrastructure {
+    mask-image:
+        url("../assets/icons/navigation/network.svg");
+    -webkit-mask-image:
+        url("../assets/icons/navigation/network.svg");
+}
+
+.sidebar-navigation__icon--timeline {
+    mask-image:
+        url("../assets/icons/navigation/clock-3.svg");
+    -webkit-mask-image:
+        url("../assets/icons/navigation/clock-3.svg");
+}
+
+.sidebar-navigation__icon--observations {
+    mask-image:
+        url("../assets/icons/navigation/eye.svg");
+    -webkit-mask-image:
+        url("../assets/icons/navigation/eye.svg");
 }

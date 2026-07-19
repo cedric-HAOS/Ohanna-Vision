@@ -585,3 +585,74 @@
     background: var(--healthy);
     transition: width 300ms ease;
 }
+
+.topology-control img {
+    width: 16px;
+    height: 16px;
+}
+
+.dashboard-kpi__icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+}
+
+.dashboard-kpi__icon::before {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    background-color: currentColor;
+
+    content: "";
+
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+}
+
+.dashboard-kpi__icon--availability::before {
+    mask-image:
+        url("../assets/icons/observability/gauge.svg");
+    -webkit-mask-image:
+        url("../assets/icons/observability/gauge.svg");
+}
+
+.dashboard-kpi__icon--devices::before {
+    mask-image:
+        url("../assets/icons/infrastructure/network.svg");
+    -webkit-mask-image:
+        url("../assets/icons/infrastructure/network.svg");
+}
+
+.dashboard-kpi__icon--services::before {
+    mask-image:
+        url("../assets/icons/infrastructure/boxes.svg");
+    -webkit-mask-image:
+        url("../assets/icons/infrastructure/boxes.svg");
+}
+
+.dashboard-kpi__icon--capabilities::before {
+    mask-image:
+        url("../assets/icons/infrastructure/layers-3.svg");
+    -webkit-mask-image:
+        url("../assets/icons/infrastructure/layers-3.svg");
+}
+
+.dashboard-kpi__icon--alerts::before {
+    mask-image:
+        url("../assets/icons/observability/bell-ring.svg");
+    -webkit-mask-image:
+        url("../assets/icons/observability/bell-ring.svg");
+}
+
+.dashboard-kpi__icon--observations::before {
+    mask-image:
+        url("../assets/icons/observability/activity.svg");
+    -webkit-mask-image:
+        url("../assets/icons/observability/activity.svg");
+}

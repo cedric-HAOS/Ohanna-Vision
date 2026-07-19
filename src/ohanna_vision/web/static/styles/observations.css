@@ -107,3 +107,7 @@
 .recent-observation:nth-child(4) {
     animation-delay: 105ms;
 }
+
+.recent-observation--unknown {
+    --observation-color: var(--unknown);
+}

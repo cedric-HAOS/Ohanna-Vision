@@ -1,24 +1,38 @@
 :root {
     color-scheme: dark;
 
-    --background: #0b1020;
-    --surface: #121a2e;
-    --surface-elevated: #18233c;
-    --border: #293654;
+    /*
+     * Legacy aliases.
+     *
+     * These variables keep the existing frontend compatible while
+     * progressively adopting the official Ohanna Design System.
+     */
 
-    --text: #f3f6ff;
-    --text-muted: #9ba8c4;
+    --background: var(--ohanna-background-canvas);
+    --surface: var(--ohanna-background-surface);
+    --surface-elevated: var(--ohanna-background-surface-raised);
+    --border: var(--ohanna-border-default);
 
-    --healthy: #47d18c;
-    --degraded: #f6c453;
-    --unhealthy: #ff6b6b;
-    --unknown: #8d99ae;
+    --text: var(--ohanna-text-primary);
+    --text-muted: var(--ohanna-text-secondary);
 
-    --accent: #7da2ff;
-    --accent-hover: #9bb7ff;
+    /*
+    * Health state compatibility aliases.
+    *
+    * Ohanna-Vision uses "unhealthy" as its domain state.
+    * The Design System represents this state visually as "critical".
+    */
 
-    --radius: 14px;
-    --shadow: 0 18px 50px rgb(0 0 0 / 18%);
+    --healthy: var(--ohanna-health-healthy);
+    --degraded: var(--ohanna-health-degraded);
+    --unhealthy: var(--ohanna-health-critical);
+    --unknown: var(--ohanna-health-unknown);
+
+    --accent: var(--ohanna-brand-primary);
+    --accent-hover: var(--ohanna-brand-primary-hover);
+
+    --radius: var(--ohanna-radius-md);
+    --shadow: var(--ohanna-shadow-md);
 }
 
 *,

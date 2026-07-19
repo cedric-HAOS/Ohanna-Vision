@@ -99,6 +99,7 @@ src/ohanna_vision/web/static/apple-touch-icon.png
 src/ohanna_vision/web/static/application.js
 src/ohanna_vision/web/static/application_state.js
 src/ohanna_vision/web/static/dashboard.js
+src/ohanna_vision/web/static/design-system.css
 src/ohanna_vision/web/static/device_details.js
 src/ohanna_vision/web/static/favicon.ico
 src/ohanna_vision/web/static/favicon.svg

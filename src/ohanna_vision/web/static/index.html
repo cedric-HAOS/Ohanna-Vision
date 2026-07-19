@@ -42,33 +42,37 @@
       Supervision
      </p>
      <button class="sidebar-navigation__item" data-navigation-target="overview" type="button">
-      <span aria-hidden="true" class="sidebar-navigation__icon">
-       ◫
-      </span>
+      <span
+    aria-hidden="true"
+    class="sidebar-navigation__icon sidebar-navigation__icon--overview"
+></span>
       <span>
        Vue d’ensemble
       </span>
      </button>
      <button class="sidebar-navigation__item" data-navigation-target="infrastructure" type="button">
-      <span aria-hidden="true" class="sidebar-navigation__icon">
-       ⌘
-      </span>
+      <span
+    aria-hidden="true"
+    class="sidebar-navigation__icon sidebar-navigation__icon--infrastructure"
+></span>
       <span>
        Infrastructure
       </span>
      </button>
      <button class="sidebar-navigation__item" data-navigation-target="timeline" type="button">
-      <span aria-hidden="true" class="sidebar-navigation__icon">
-       ◷
-      </span>
+      <span
+    aria-hidden="true"
+    class="sidebar-navigation__icon sidebar-navigation__icon--timeline"
+></span>
       <span>
        Timeline
       </span>
      </button>
      <button class="sidebar-navigation__item" data-navigation-target="observations" type="button">
-      <span aria-hidden="true" class="sidebar-navigation__icon">
-       ≡
-      </span>
+      <span
+    aria-hidden="true"
+    class="sidebar-navigation__icon sidebar-navigation__icon--observations"
+></span>
       <span>
        Observations
       </span>
@@ -128,9 +132,10 @@
        <section aria-label="Indicateurs principaux" class="dashboard-kpis">
         <article class="dashboard-kpi dashboard-kpi--availability">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           ◉
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--availability"
+></span>
           <span class="dashboard-kpi__trend" id="availability-trend">
            Temps réel
           </span>
@@ -148,9 +153,10 @@
         </article>
         <article class="dashboard-kpi">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           ◇
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--devices"
+></span>
           <span class="dashboard-kpi__hint" id="healthy-devices-count">
            — sain
           </span>
@@ -164,9 +170,10 @@
         </article>
         <article class="dashboard-kpi">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           ⚙
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--services"
+></span>
           <span class="dashboard-kpi__hint">
            Déclarés
           </span>
@@ -180,9 +187,10 @@
         </article>
         <article class="dashboard-kpi">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           ⬡
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--capabilities"
+></span>
           <span class="dashboard-kpi__hint">
            Observées
           </span>
@@ -196,9 +204,10 @@
         </article>
         <article class="dashboard-kpi dashboard-kpi--alerts" id="alerts-kpi">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           △
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--alerts"
+></span>
           <span class="dashboard-kpi__hint" id="alerts-kpi-status">
            Aucun incident
           </span>
@@ -212,9 +221,10 @@
         </article>
         <article class="dashboard-kpi">
          <div class="dashboard-kpi__header">
-          <span aria-hidden="true" class="dashboard-kpi__icon">
-           ↗
-          </span>
+          <span
+    aria-hidden="true"
+    class="dashboard-kpi__icon dashboard-kpi__icon--observations"
+></span>
           <span class="dashboard-kpi__hint">
            Depuis le démarrage
           </span>
@@ -345,9 +355,18 @@
        </div>
        <div class="topology-workspace">
         <div aria-label="Contrôles de la carte" class="topology-controls">
-         <button aria-label="Agrandir la carte" class="topology-control" id="topology-zoom-in" title="Zoom avant" type="button">
-          +
-         </button>
+         <button
+    aria-label="Agrandir la carte"
+    class="topology-control topology-control--zoom-in"
+    id="topology-zoom-in"
+    title="Zoom avant"
+    type="button"
+>
+    <span
+        aria-hidden="true"
+        class="topology-control__icon"
+    ></span>
+</button>
          <button aria-label="Réduire la carte" class="topology-control" id="topology-zoom-out" title="Zoom arrière" type="button">
           −
          </button>

@@ -1578,3 +1578,110 @@ def test_foundation_styles_use_design_system_tokens() -> None:
     assert "var(--ohanna-background-canvas)" in response.text
     assert "var(--ohanna-text-primary)" in response.text
     assert "var(--ohanna-border-focus)" in response.text
+
+def test_health_states_are_supported_by_ui_styles() -> None:
+    """The UI must support every official Ohanna-Vision health state."""
+    client = make_client()
+
+    response = client.get("/ui/styles/observations.css")
+
+    assert response.status_code == 200
+    assert ".recent-observation--healthy" in response.text
+    assert ".recent-observation--degraded" in response.text
+    assert ".recent-observation--unhealthy" in response.text
+    assert ".recent-observation--unknown" in response.text
+
+def test_official_navigation_icon_is_available() -> None:
+    """Official Ohanna navigation icons must be served."""
+    client = make_client()
+
+    response = client.get(
+        "/ui/assets/icons/navigation/layout-dashboard.svg",
+    )
+
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+
+def test_sidebar_uses_official_navigation_icons() -> None:
+    """Sidebar navigation must use official Ohanna icons."""
+    client = make_client()
+
+    html_response = client.get("/ui/")
+    css_response = client.get("/ui/styles/navigation.css")
+
+    assert html_response.status_code == 200
+    assert css_response.status_code == 200
+
+    assert "sidebar-navigation__icon--overview" in html_response.text
+    assert "sidebar-navigation__icon--infrastructure" in html_response.text
+    assert "sidebar-navigation__icon--timeline" in html_response.text
+    assert "sidebar-navigation__icon--observations" in html_response.text
+
+    assert (
+        "../assets/icons/navigation/layout-dashboard.svg"
+        in css_response.text
+    )
+    assert (
+        "../assets/icons/navigation/network.svg"
+        in css_response.text
+    )
+    assert (
+        "../assets/icons/navigation/clock-3.svg"
+        in css_response.text
+    )
+    assert (
+        "../assets/icons/navigation/eye.svg"
+        in css_response.text
+    )
+
+def test_dashboard_kpis_use_official_icons() -> None:
+    """Dashboard KPIs must use official Ohanna icons."""
+    client = make_client()
+
+    html_response = client.get("/ui/")
+    css_response = client.get("/ui/styles/dashboard.css")
+
+    assert html_response.status_code == 200
+    assert css_response.status_code == 200
+
+    expected_classes = [
+        "dashboard-kpi__icon--availability",
+        "dashboard-kpi__icon--devices",
+        "dashboard-kpi__icon--services",
+        "dashboard-kpi__icon--capabilities",
+        "dashboard-kpi__icon--alerts",
+        "dashboard-kpi__icon--observations",
+    ]
+
+    for class_name in expected_classes:
+        assert class_name in html_response.text
+
+    expected_icons = [
+        "../assets/icons/observability/gauge.svg",
+        "../assets/icons/infrastructure/network.svg",
+        "../assets/icons/infrastructure/boxes.svg",
+        "../assets/icons/infrastructure/layers-3.svg",
+        "../assets/icons/observability/bell-ring.svg",
+        "../assets/icons/observability/activity.svg",
+    ]
+
+    for icon_path in expected_icons:
+        assert icon_path in css_response.text
+
+def test_topology_zoom_in_uses_official_icon() -> None:
+    """Topology zoom-in action must use the official Ohanna icon."""
+    client = make_client()
+
+    html_response = client.get("/ui/")
+    css_response = client.get("/ui/styles/topology.css")
+
+    assert html_response.status_code == 200
+    assert css_response.status_code == 200
+
+    assert "topology-control--zoom-in" in html_response.text
+    assert "topology-control__icon" in html_response.text
+
+    assert (
+        "../assets/icons/actions/plus.svg"
+        in css_response.text
+    )
