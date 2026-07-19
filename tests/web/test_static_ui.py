@@ -1119,6 +1119,7 @@ def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
     assert response.status_code == 200
 
     expected_imports = [
+        '@import url("./design-system.css");',
         '@import url("./styles/foundations.css");',
         '@import url("./styles/layout.css");',
         '@import url("./styles/components.css");',
@@ -1543,3 +1544,37 @@ def test_application_routes_timeline_errors_to_the_ui() -> None:
     assert response.status_code == 200
     assert "this.timeline.renderError(" in response.text
     assert "console.error(" not in response.text
+
+def test_design_system_styles_are_available() -> None:
+    """The official Ohanna design tokens must be served."""
+    client = make_client()
+
+    response = client.get("/ui/design-system.css")
+
+    assert response.status_code == 200
+    assert "text/css" in response.headers["content-type"]
+    assert "--ohanna-brand-primary" in response.text
+    assert "--ohanna-background-canvas" in response.text
+    assert "--ohanna-health-healthy" in response.text
+    assert "--ohanna-space-4" in response.text
+
+def test_static_styles_import_design_system() -> None:
+    """The application stylesheet must load the design system."""
+    client = make_client()
+
+    response = client.get("/ui/styles.css")
+
+    assert response.status_code == 200
+    assert '@import url("./design-system.css");' in response.text
+
+def test_foundation_styles_use_design_system_tokens() -> None:
+    """Global foundations must use the official design tokens."""
+    client = make_client()
+
+    response = client.get("/ui/styles/foundations.css")
+
+    assert response.status_code == 200
+    assert "var(--ohanna-font-family-sans)" in response.text
+    assert "var(--ohanna-background-canvas)" in response.text
+    assert "var(--ohanna-text-primary)" in response.text
+    assert "var(--ohanna-border-focus)" in response.text
