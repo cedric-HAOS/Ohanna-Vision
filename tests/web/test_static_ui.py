@@ -1934,3 +1934,117 @@ def test_timeline_renders_period_durations() -> None:
     assert ".timeline-period--open::after {" in stylesheet_response.text
     assert "min-width: 0.5%;" in stylesheet_response.text
     assert "transform: translateY(-50%);" in stylesheet_response.text
+
+def test_overview_reserves_enough_space_for_timeline() -> None:
+    """Overview must not clip the complete infrastructure timeline."""
+    client = make_client()
+
+    layout_response = client.get(
+        "/ui/styles/layout.css",
+    )
+    responsive_response = client.get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert layout_response.status_code == 200
+    assert responsive_response.status_code == 200
+
+    assert "minmax(12rem, auto)" in layout_response.text
+    assert (
+        "data-active-view=\"overview\""
+        in layout_response.text
+    )
+    assert "min-height: 12rem;" in responsive_response.text
+
+def test_timeline_periods_expose_accessible_details() -> None:
+    """Timeline periods must expose status, dates and duration."""
+    client = make_client()
+
+    javascript_response = client.get(
+        "/ui/timeline.js",
+    )
+    stylesheet_response = client.get(
+        "/ui/styles/timeline.css",
+    )
+    responsive_response = client.get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert javascript_response.status_code == 200
+    assert stylesheet_response.status_code == 200
+    assert responsive_response.status_code == 200
+
+    assert (
+        "function formatTimelineDuration("
+        in javascript_response.text
+    )
+    assert "`État : ${statusLabel}`" in javascript_response.text
+    assert "`Début : ${startedAtLabel}`" in javascript_response.text
+    assert "`Fin : ${endedAtLabel}`" in javascript_response.text
+    assert "`Durée : ${durationLabel}`" in javascript_response.text
+
+    assert (
+        'data-period-status="${escapeHtml('
+        in javascript_response.text
+    )
+    assert (
+        'data-period-open="${String('
+        in javascript_response.text
+    )
+
+    assert (
+        ".timeline-period:focus-visible {"
+        in stylesheet_response.text
+    )
+    assert (
+        ".timeline-period:active {"
+        in stylesheet_response.text
+    )
+    assert (
+        ".timeline-period--open::after {"
+        in stylesheet_response.text
+    )
+
+    assert (
+        ".timeline-period:focus-visible,"
+        in responsive_response.text
+    )
+
+def test_timeline_controller_renders_empty_state() -> None:
+    """Timeline must explain when the selected range has no periods."""
+    response = make_client().get(
+        "/ui/timeline.js",
+    )
+
+    assert response.status_code == 200
+
+    assert "renderEmpty(" in response.text
+    assert 'class="timeline-empty"' in response.text
+    assert 'role="status"' in response.text
+    assert "timeline-empty__icon--empty" in response.text
+    assert "Aucune période sur cette plage" in response.text
+
+
+def test_timeline_empty_and_error_states_use_design_system() -> None:
+    """Timeline empty and error states must use official tokens."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+
+    assert ".timeline-empty {" in response.text
+    assert ".timeline-empty__icon {" in response.text
+    assert ".timeline-empty__content {" in response.text
+    assert ".timeline-empty--error {" in response.text
+
+    assert "var(--ohanna-health-unknown)" in response.text
+    assert "var(--ohanna-health-critical)" in response.text
+    assert (
+        "../assets/icons/navigation/clock-3.svg"
+        in response.text
+    )
+    assert (
+        "../assets/icons/observability/activity.svg"
+        in response.text
+    )

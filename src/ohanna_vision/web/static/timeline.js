@@ -11,6 +11,72 @@ import {
     TimelinePeriod,
 } from "./timeline_period.js";
 
+
+/**
+ * Format a duration for timeline tooltips.
+ *
+ * @param {number|null} durationSeconds
+ * @returns {string}
+ */
+function formatTimelineDuration(durationSeconds) {
+    const totalSeconds =
+        Number(durationSeconds);
+
+    if (
+        !Number.isFinite(totalSeconds)
+        || totalSeconds < 0
+    ) {
+        return "En cours";
+    }
+
+    const roundedSeconds =
+        Math.round(totalSeconds);
+
+    const hours =
+        Math.floor(
+            roundedSeconds / 3600,
+        );
+
+    const minutes =
+        Math.floor(
+            (
+                roundedSeconds % 3600
+            ) / 60,
+        );
+
+    const seconds =
+        roundedSeconds % 60;
+
+    const parts = [];
+
+    if (hours > 0) {
+        parts.push(
+            `${hours} h`,
+        );
+    }
+
+    if (
+        minutes > 0
+        || hours > 0
+    ) {
+        parts.push(
+            `${minutes} min`,
+        );
+    }
+
+    if (
+        hours === 0
+        && seconds > 0
+    ) {
+        parts.push(
+            `${seconds} s`,
+        );
+    }
+
+    return parts.join(" ") || "0 s";
+}
+
+
 /**
  * Controls the infrastructure timeline.
  */
@@ -308,11 +374,28 @@ export class TimelineController {
                 endedAt,
             )}
 
-            <p class="timeline-empty">
-                Aucune période disponible durant les
-                ${escapeHtml(hours)}
-                dernières heures.
-            </p>
+            <div
+                class="timeline-empty"
+                role="status"
+            >
+                <span
+                    aria-hidden="true"
+                    class="timeline-empty__icon
+                        timeline-empty__icon--empty"
+                ></span>
+
+                <div class="timeline-empty__content">
+                    <strong>
+                        Aucune période sur cette plage
+                    </strong>
+
+                    <p>
+                        Aucune période n’a été observée durant
+                        les ${escapeHtml(hours)}
+                        dernières heures.
+                    </p>
+                </div>
+            </div>
         `;
     }
 
@@ -329,13 +412,27 @@ export class TimelineController {
         this.renderPeriodCount(0);
 
         this.elements.content.innerHTML = `
-            <p
+            <div
                 class="timeline-empty
                     timeline-empty--error"
                 role="alert"
             >
-                ${escapeHtml(message)}
-            </p>
+                <span
+                    aria-hidden="true"
+                    class="timeline-empty__icon
+                        timeline-empty__icon--error"
+                ></span>
+
+                <div class="timeline-empty__content">
+                    <strong>
+                        Timeline indisponible
+                    </strong>
+
+                    <p>
+                        ${escapeHtml(message)}
+                    </p>
+                </div>
+            </div>
         `;
     }
 
@@ -525,19 +622,48 @@ export class TimelineController {
             );
         }
 
-        const title = [
+        const effectiveDurationSeconds =
+            period.durationSeconds
+            ?? (
+                period.isOpen
+                    ? Math.max(
+                        (
+                            endedAt.getTime()
+                            - period.startedAt.getTime()
+                        ) / 1000,
+                        0,
+                    )
+                    : null
+            );
+
+        const durationLabel =
+            formatTimelineDuration(
+                effectiveDurationSeconds,
+            );
+
+        const statusLabel =
+            healthStatusLabel(
+                period.status,
+            );
+
+        const startedAtLabel =
             formatDate(
                 period.startedAt,
-            ),
+            );
+
+        const endedAtLabel =
             period.endedAt
                 ? formatDate(
                     period.endedAt,
                 )
-                : "En cours",
-            healthStatusLabel(
-                period.status,
-            ),
-        ].join(" · ");
+                : "En cours";
+
+        const title = [
+            `État : ${statusLabel}`,
+            `Début : ${startedAtLabel}`,
+            `Fin : ${endedAtLabel}`,
+            `Durée : ${durationLabel}`,
+        ].join("\n");
 
         return `
             <button
@@ -550,6 +676,12 @@ export class TimelineController {
                 title="${escapeHtml(title)}"
                 aria-label="${escapeHtml(title)}"
                 data-node-id="${escapeHtml(nodeId)}"
+                data-period-status="${escapeHtml(
+                    period.status,
+                )}"
+                data-period-open="${String(
+                    period.isOpen,
+                )}"
             >
                 <span></span>
             </button>

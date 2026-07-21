@@ -74,7 +74,7 @@
         grid-template-rows:
             auto
             minmax(0, 1fr)
-            minmax(8.5rem, auto);
+            minmax(12rem, auto);
         grid-template-areas:
             "kpis kpis"
             "topology right-panel"
@@ -167,7 +167,7 @@
     .application-views[
         data-active-view="overview"
     ] .dashboard-timeline {
-        min-height: 0;
+        min-height: 12rem;
     }
 }
 
@@ -280,9 +280,8 @@
 
     .dashboard-timeline {
         grid-area: timeline;
-        min-height: 10rem;
-        min-height: 0;
-        overflow: hidden;
+        min-height: 12rem;
+        overflow: visible;
     }
 
     .topology-container,
@@ -550,5 +549,11 @@
     .dashboard-kpi--updating
     .dashboard-kpi__value {
         transform: none;
+    }
+
+    .timeline-period:hover,
+    .timeline-period:focus-visible,
+    .timeline-period:active {
+        transform: translateY(-50%);
     }
 }

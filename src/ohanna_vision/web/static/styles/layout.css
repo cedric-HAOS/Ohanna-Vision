@@ -77,8 +77,8 @@
         minmax(18rem, 20rem);
     grid-template-rows:
         auto
-        minmax(30rem, 1fr)
-        10rem;
+        minmax(24rem, 1fr)
+        minmax(12rem, auto);
     grid-template-areas:
         "summary summary"
         "topology side-panel"
@@ -157,8 +157,8 @@
 .application-views[
     data-active-view="overview"
 ] .dashboard-timeline {
-    min-height: 8.5rem;
-    overflow: hidden;
+    min-height: 12rem;
+    overflow: visible;
 }
 
 .application-views[
