@@ -116,6 +116,11 @@ src/ohanna_vision/web/static/topology.js
 src/ohanna_vision/web/static/topology_canvas.js
 src/ohanna_vision/web/static/utils.js
 src/ohanna_vision/web/static/websocket.js
+src/ohanna_vision/web/static/assets/favicons/apple-touch-icon.png
+src/ohanna_vision/web/static/assets/favicons/favicon.ico
+src/ohanna_vision/web/static/assets/favicons/favicon.svg
+src/ohanna_vision/web/static/assets/favicons/icon-192.png
+src/ohanna_vision/web/static/assets/favicons/icon-512.png
 src/ohanna_vision/web/static/styles/components.css
 src/ohanna_vision/web/static/styles/dashboard.css
 src/ohanna_vision/web/static/styles/device-details.css

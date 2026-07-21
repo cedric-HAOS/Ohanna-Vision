@@ -83,16 +83,16 @@ def test_topology_canvas_renders_device_icons() -> None:
     assert "createComputerIcon(" in response.text
 
 
-def test_topology_canvas_renders_link_labels() -> None:
-    """Topology links must expose visual labels."""
+def test_topology_canvas_does_not_render_link_labels() -> None:
+    """Topology links must stay readable without inline labels."""
     client = make_client()
 
     response = client.get("/ui/topology_canvas.js")
 
     assert response.status_code == 200
-    assert "createLinkLabel(" in response.text
-    assert "linkLabel(" in response.text
-    assert "formatBandwidth(" in response.text
+    assert "createLinkLabel(" not in response.text
+    assert "linkLabel(" not in response.text
+    assert '"topology-link__label"' not in response.text
 
 
 def test_topology_canvas_uses_device_metadata() -> None:
@@ -255,13 +255,27 @@ def test_topology_canvas_styles_link_kinds() -> None:
     response = client.get("/ui/styles/topology.css")
 
     assert response.status_code == 200
-    assert ".topology-link--ethernet" in response.text
-    assert ".topology-link--wifi" in response.text
-    assert ".topology-link--wireguard" in response.text
-    assert ".topology-link--mqtt" in response.text
-    assert ".topology-link--usb" in response.text
-    assert ".topology-link--serial" in response.text
+    assert ".topology-link--visual-ethernet" in response.text
+    assert ".topology-link--visual-wifi" in response.text
+    assert ".topology-link--visual-wan" in response.text
+    assert ".topology-link--visual-fiber" in response.text
+    assert ".topology-link--visual-wireguard" in response.text
+    assert ".topology-link--visual-mqtt" in response.text
+    assert ".topology-link--visual-usb" in response.text
+    assert ".topology-link--visual-serial" in response.text
 
+
+
+def test_topology_canvas_derives_wan_visual_style() -> None:
+    """The Internet uplink must receive the dedicated WAN style."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "linkVisualKind(link)" in response.text
+    assert 'link.metadata?.role === "internet_uplink"' in response.text
+    assert '`topology-link--visual-${normalizedVisualKind}`' in response.text
 
 def test_topology_canvas_renders_only_directional_arrows() -> None:
     """Only genuinely directional links must display an arrow."""

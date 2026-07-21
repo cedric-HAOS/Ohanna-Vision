@@ -112,7 +112,7 @@ def test_ohanna_house_topology_has_physical_layout() -> None:
     assert layout is not None
     assert layout.kind is TopologyLayoutKind.PHYSICAL
     assert layout.canvas_width == 1800
-    assert layout.canvas_height == 1150
+    assert layout.canvas_height == 820
 
 
 def test_ohanna_house_layout_positions_every_device() -> None:
@@ -137,3 +137,31 @@ def test_ohanna_house_topology_is_coherent() -> None:
 
     for layout in topology.layouts:
         assert set(layout.positions).issubset(device_ids)
+
+
+def test_ohanna_house_layout_uses_a_regular_grid() -> None:
+    """Device coordinates must follow constant grid spacing."""
+    topology = build_ohanna_house_topology()
+    layout = topology.layout("ohanna-house-physical")
+
+    assert layout is not None
+
+    assert layout.position_for("freebox").x - layout.position_for("internet").x == 300  # type: ignore[union-attr]
+    assert layout.position_for("sw-01").x - layout.position_for("freebox").x == 300  # type: ignore[union-attr]
+    assert layout.position_for("rpi-zwave").y - layout.position_for("ha-green").y == 260  # type: ignore[union-attr]
+
+
+def test_ohanna_house_layout_is_horizontal() -> None:
+    """The network backbone must progress from left to right."""
+    topology = build_ohanna_house_topology()
+    layout = topology.layout("ohanna-house-physical")
+
+    assert layout is not None
+
+    backbone = ("internet", "freebox", "sw-01", "sw-02", "sw-03")
+    x_coordinates = tuple(
+        layout.position_for(device_id).x  # type: ignore[union-attr]
+        for device_id in backbone
+    )
+
+    assert x_coordinates == tuple(sorted(x_coordinates))

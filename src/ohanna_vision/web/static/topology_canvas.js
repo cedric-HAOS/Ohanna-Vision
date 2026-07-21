@@ -789,6 +789,10 @@ class TopologyCanvas {
         const normalizedKind = this.normalizeClassName(
             link.kind,
         );
+        const normalizedVisualKind =
+            this.normalizeClassName(
+                this.linkVisualKind(link),
+            );
         const normalizedHealth =
             this.normalizeHealthStatus(health);
         const normalizedDirection =
@@ -797,6 +801,7 @@ class TopologyCanvas {
         group.classList.add(
             "topology-link",
             `topology-link--${normalizedKind}`,
+            `topology-link--visual-${normalizedVisualKind}`,
             `topology-link--direction-${normalizedDirection}`,
             `topology-link--health-${normalizedHealth}`,
         );
@@ -844,19 +849,22 @@ class TopologyCanvas {
             targetConnector,
         );
 
-        const label = this.linkLabel(link);
+        return group;
+    }
 
-        if (label) {
-            group.append(
-                this.createLinkLabel(
-                    label,
-                    coordinates.labelX,
-                    coordinates.labelY,
-                ),
-            );
+
+    linkVisualKind(link) {
+        if (
+            link.metadata?.role === "internet_uplink"
+        ) {
+            return "wan";
         }
 
-        return group;
+        if (link.metadata?.medium === "fiber") {
+            return "fiber";
+        }
+
+        return link.kind ?? "other";
     }
 
 
@@ -1009,66 +1017,6 @@ class TopologyCanvas {
         connector.setAttribute("r", 6);
 
         return connector;
-    }
-
-    linkLabel(link) {
-        if (link.label) {
-            return link.label;
-        }
-
-        if (link.bandwidth_mbps) {
-            return this.formatBandwidth(
-                link.bandwidth_mbps,
-            );
-        }
-
-        return null;
-    }
-
-    createLinkLabel(text, x, y) {
-        const group = this.createSvgElement("g");
-        const width = Math.max(
-            92,
-            String(text).length * 10 + 30,
-        );
-        const height = 34;
-
-        group.classList.add(
-            "topology-link__label-group",
-        );
-        group.setAttribute(
-            "transform",
-            `translate(${x} ${y})`,
-        );
-
-        const background = this.createSvgElement(
-            "rect",
-        );
-
-        background.classList.add(
-            "topology-link__label-background",
-        );
-        background.setAttribute("x", -width / 2);
-        background.setAttribute("y", -height / 2);
-        background.setAttribute("width", width);
-        background.setAttribute("height", height);
-        background.setAttribute("rx", 17);
-
-        const label = this.createSvgElement("text");
-
-        label.classList.add(
-            "topology-link__label",
-        );
-        label.setAttribute("x", 0);
-        label.setAttribute("y", 1);
-        label.textContent = text;
-
-        group.append(
-            background,
-            label,
-        );
-
-        return group;
     }
 
     renderDevices(svg, devices, positions) {

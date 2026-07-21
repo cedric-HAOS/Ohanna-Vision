@@ -43,9 +43,10 @@ ohanna_vision = [
     "web/static/*.html",
     "web/static/*.css",
     "web/static/*.js",
-    "web/static/*.ico",
+    "web/static/assets/favicons/*.ico",
     "web/static/*.svg",
-    "web/static/*.png",
+    "web/static/assets/favicons/*.svg",
+    "web/static/assets/favicons/*.png",
     "web/static/*.webmanifest",
     "web/static/styles/*.css",
 ]

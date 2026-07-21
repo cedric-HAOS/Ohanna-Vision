@@ -20,6 +20,28 @@ from ohanna_vision.topology.topology_position import (
     TopologyPosition,
 )
 
+_LAYOUT_MARGIN_X = 150
+_LAYOUT_MARGIN_Y = 150
+_LAYOUT_COLUMN_SPACING = 300
+_LAYOUT_ROW_SPACING = 260
+_LAYOUT_COLUMN_COUNT = 6
+_LAYOUT_ROW_COUNT = 3
+
+
+def _grid_position(
+    *,
+    column: int,
+    row: int,
+    pinned: bool = True,
+) -> TopologyPosition:
+    """Convert a logical grid position into canvas coordinates."""
+    return TopologyPosition(
+        x=_LAYOUT_MARGIN_X + column * _LAYOUT_COLUMN_SPACING,
+        y=_LAYOUT_MARGIN_Y + row * _LAYOUT_ROW_SPACING,
+        layer=column,
+        pinned=pinned,
+    )
+
 
 def build_ohanna_house_topology() -> Topology:
     """Build the physical topology of Ohanna-House."""
@@ -227,51 +249,24 @@ def _build_physical_layout() -> TopologyLayout:
         layout_id="ohanna-house-physical",
         label="Carte physique Ohanna-House",
         kind=TopologyLayoutKind.PHYSICAL,
-        canvas_width=1800,
-        canvas_height=1150,
+        canvas_width=(
+            2 * _LAYOUT_MARGIN_X
+            + (_LAYOUT_COLUMN_COUNT - 1) * _LAYOUT_COLUMN_SPACING
+        ),
+        canvas_height=(
+            2 * _LAYOUT_MARGIN_Y
+            + (_LAYOUT_ROW_COUNT - 1) * _LAYOUT_ROW_SPACING
+        ),
         positions={
-            "internet": TopologyPosition(
-                x=900,
-                y=90,
-                pinned=True,
-            ),
-            "freebox": TopologyPosition(
-                x=900,
-                y=250,
-                pinned=True,
-            ),
-            "sw-01": TopologyPosition(
-                x=900,
-                y=430,
-                pinned=True,
-            ),
-            "sw-02": TopologyPosition(
-                x=1250,
-                y=610,
-                pinned=True,
-            ),
-            "sw-03": TopologyPosition(
-                x=1250,
-                y=800,
-                pinned=True,
-            ),
-            "ap-01": TopologyPosition(
-                x=500,
-                y=610,
-                pinned=True,
-            ),
-            "rpi-link": TopologyPosition(
-                x=500,
-                y=850,
-            ),
-            "ha-green": TopologyPosition(
-                x=1050,
-                y=1020,
-            ),
-            "rpi-zwave": TopologyPosition(
-                x=1450,
-                y=1020,
-            ),
+            "internet": _grid_position(column=0, row=1),
+            "freebox": _grid_position(column=1, row=1),
+            "sw-01": _grid_position(column=2, row=1),
+            "ap-01": _grid_position(column=3, row=0),
+            "sw-02": _grid_position(column=3, row=1),
+            "rpi-link": _grid_position(column=4, row=0),
+            "sw-03": _grid_position(column=4, row=1),
+            "ha-green": _grid_position(column=5, row=1),
+            "rpi-zwave": _grid_position(column=5, row=2),
         },
         metadata={
             "description": ("Primary physical infrastructure map."),

@@ -101,43 +101,48 @@
     stroke-width: 4;
 }
 
-.topology-link--ethernet {
-    --link-width: 5;
+/* Link technologies are identified by their stroke pattern.
+ * Health remains the primary colour signal. */
+.topology-link--visual-ethernet {
+    --link-width: 4.5;
 }
 
-.topology-link--wifi .topology-link__path {
-    stroke-dasharray: 14 11;
+.topology-link--visual-wifi .topology-link__path {
+    stroke-dasharray: 2 12;
 }
 
-.topology-link--wireguard .topology-link__path {
-    stroke-dasharray: 4 9;
+.topology-link--visual-wan .topology-link__path {
+    stroke-dasharray: 18 12;
 }
 
-.topology-link--zigbee .topology-link__path,
-.topology-link--zwave .topology-link__path {
-    stroke-dasharray: 2 10;
+.topology-link--visual-fiber {
+    --link-width: 7;
 }
 
-.topology-link--mqtt .topology-link__path,
-.topology-link--logical .topology-link__path {
+.topology-link--visual-wireguard .topology-link__path {
     stroke-dasharray: 8 10;
 }
 
-.topology-link--usb .topology-link__path {
+.topology-link--visual-zigbee .topology-link__path,
+.topology-link--visual-zwave .topology-link__path {
+    stroke-dasharray: 2 10;
+}
+
+.topology-link--visual-mqtt .topology-link__path,
+.topology-link--visual-logical .topology-link__path {
+    stroke-dasharray: 7 9;
+}
+
+.topology-link--visual-usb .topology-link__path {
     stroke-dasharray: 18 6 4 6;
 }
 
-.topology-link--serial .topology-link__path {
+.topology-link--visual-serial .topology-link__path {
     stroke-dasharray: 10 5 2 5;
 }
 
-.topology-link--other .topology-link__path {
+.topology-link--visual-other .topology-link__path {
     stroke-dasharray: 6 8;
-}
-
-.topology-link--direction-undirected
-.topology-link__path {
-    stroke-linecap: square;
 }
 
 .topology-link--health-healthy {
@@ -158,25 +163,6 @@
 .topology-link--health-unknown {
     --link-color: var(--unknown);
     --link-glow: rgb(141 153 174 / 10%);
-}
-
-.topology-link__label-group {
-    pointer-events: none;
-}
-
-.topology-link__label-background {
-    fill: rgb(18 26 46 / 96%);
-    stroke: var(--link-color);
-    stroke-width: 1.5;
-}
-
-.topology-link__label {
-    dominant-baseline: middle;
-    fill: var(--text);
-    font-size: 14px;
-    font-weight: 750;
-    letter-spacing: 0.02em;
-    text-anchor: middle;
 }
 
 .topology-device {

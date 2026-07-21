@@ -48,15 +48,17 @@ def test_pyproject_packages_branding_assets() -> None:
         encoding="utf-8",
     )
 
-    assert '"web/static/*.ico"' in pyproject
-    assert '"web/static/*.svg"' in pyproject
-    assert '"web/static/*.png"' in pyproject
+    assert '"web/static/assets/favicons/*.ico"' in pyproject
+    assert '"web/static/assets/favicons/*.svg"' in pyproject
+    assert '"web/static/assets/favicons/*.png"' in pyproject
     assert '"web/static/*.webmanifest"' in pyproject
 
 
 def test_static_branding_assets_exist() -> None:
     """Required branding assets must exist."""
-    static_directory = Path("src/ohanna_vision/web/static")
+    static_directory = Path(
+        "src/ohanna_vision/web/static/assets/favicons"
+    )
 
     required_files = [
         "favicon.ico",
@@ -64,7 +66,6 @@ def test_static_branding_assets_exist() -> None:
         "apple-touch-icon.png",
         "icon-192.png",
         "icon-512.png",
-        "site.webmanifest",
     ]
 
     for filename in required_files:
@@ -77,8 +78,8 @@ def test_index_declares_branding_assets() -> None:
         encoding="utf-8",
     )
 
-    assert 'href="/ui/favicon.ico"' in index
-    assert 'href="/ui/favicon.svg"' in index
-    assert 'href="/ui/apple-touch-icon.png"' in index
+    assert 'href="/ui/assets/favicons/favicon.ico"' in index
+    assert 'href="/ui/assets/favicons/favicon.svg"' in index
+    assert 'href="/ui/assets/favicons/apple-touch-icon.png"' in index
     assert 'href="/ui/site.webmanifest"' in index
     assert 'content="#18C5E8"' in index
