@@ -246,3 +246,159 @@ def test_topology_canvas_can_fit_content_to_viewport() -> None:
     assert "fitContentToViewport(" in response.text
     assert "getBoundingClientRect(" in response.text
     assert "requestAnimationFrame(" in response.text
+
+
+def test_topology_canvas_styles_link_kinds() -> None:
+    """Topology links must expose protocol-specific styles."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert ".topology-link--ethernet" in response.text
+    assert ".topology-link--wifi" in response.text
+    assert ".topology-link--wireguard" in response.text
+    assert ".topology-link--mqtt" in response.text
+    assert ".topology-link--usb" in response.text
+    assert ".topology-link--serial" in response.text
+
+
+def test_topology_canvas_renders_only_directional_arrows() -> None:
+    """Only genuinely directional links must display an arrow."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "createDirectionMarker(" in response.text
+    assert "applyLinkDirection(" in response.text
+    assert 'direction === "source_to_target"' in response.text
+    assert '"marker-end"' in response.text
+    assert '"marker-start"' not in response.text
+    assert "Bidirectional links intentionally have no arrow." in response.text
+
+
+def test_topology_canvas_applies_derived_link_health() -> None:
+    """Rendered links must receive their derived endpoint health."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "this.linkHealth(link)" in response.text
+
+
+def test_topology_canvas_renders_health_halos() -> None:
+    """Device cards must expose a health halo layer."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "createDeviceHalo(" in response.text
+    assert '"topology-device__halo"' in response.text
+
+
+def test_topology_canvas_focuses_connected_path() -> None:
+    """Selecting a device must highlight its direct topology path."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "sourceDeviceId" in response.text
+    assert "targetDeviceId" in response.text
+    assert '"topology-link--focused"' in response.text
+    assert '"topology-link--dimmed"' in response.text
+    assert '"topology-device--connected"' in response.text
+    assert '"topology-device--dimmed"' in response.text
+
+
+def test_topology_styles_animate_attention_states_accessibly() -> None:
+    """Degraded and unhealthy halos must respect reduced motion."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert "@keyframes topology-halo-pulse" in response.text
+    assert "@keyframes topology-halo-alert" in response.text
+    assert "prefers-reduced-motion: reduce" in response.text
+
+
+def test_topology_canvas_staggers_animation_order() -> None:
+    """Topology elements must expose a stable animation order."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert '"--topology-order"' in response.text
+    assert "links.entries()" in response.text
+    assert "devices.entries()" in response.text
+
+
+def test_topology_styles_use_discreet_motion() -> None:
+    """Topology motion must be contextual and unobtrusive."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert "@keyframes topology-device-enter" in response.text
+    assert "@keyframes topology-link-enter" in response.text
+    assert "@keyframes topology-link-flow" in response.text
+    assert "@keyframes topology-connector-pulse" in response.text
+    assert ".topology-link--focused" in response.text
+
+
+def test_topology_device_entry_animation_preserves_svg_position() -> None:
+    """Device entry motion must not override the SVG positioning transform."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    animation = response.text.split(
+        "@keyframes topology-device-enter",
+        maxsplit=1,
+    )[1].split("@keyframes topology-link-enter", maxsplit=1)[0]
+    assert "transform:" not in animation
+
+
+def test_topology_canvas_supports_pinch_zoom() -> None:
+    """Touch users must be able to zoom with two pointers."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "activePointers" in response.text
+    assert "currentPinchDistance(" in response.text
+    assert "handlePinchZoom(" in response.text
+    assert "Math.hypot(" in response.text
+
+
+def test_topology_canvas_has_no_fixed_minimum_width() -> None:
+    """The SVG must scale to narrow responsive viewports."""
+    client = make_client()
+
+    topology = client.get("/ui/styles/topology.css")
+    responsive = client.get("/ui/styles/responsive.css")
+
+    assert topology.status_code == 200
+    assert responsive.status_code == 200
+    assert "min-width: 64rem" not in topology.text
+    assert "min-width: 48rem" not in responsive.text
+    assert "min-width: 0" in topology.text
+
+
+def test_topology_controls_keep_touch_sized_targets() -> None:
+    """Map controls must remain comfortably usable by touch."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert "min-width: 2.75rem" in response.text
+    assert "height: 2.75rem" in response.text

@@ -4,7 +4,8 @@
 
 .topology-container {
     position: relative;
-    min-height: 42rem;
+    height: clamp(32rem, 68vh, 52rem);
+    min-height: 32rem;
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -53,120 +54,110 @@
     z-index: 1;
     display: block;
     width: 100%;
-    min-width: 64rem;
-    height: auto;
-    min-height: 42rem;
+    min-width: 0;
+    height: 100%;
+    min-height: 0;
 }
 
 .topology-canvas__links {
     pointer-events: none;
 }
 
+.topology-link {
+    --link-color: var(--unknown);
+    --link-glow: rgb(141 153 174 / 10%);
+    --link-width: 4;
+    opacity: 0;
+    animation:
+        topology-link-enter 300ms ease-out forwards;
+    animation-delay:
+        calc(var(--topology-order, 0) * 30ms + 40ms);
+    transition: opacity 180ms ease;
+}
+
 .topology-link__glow,
 .topology-link__path {
     fill: none;
     stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .topology-link__glow {
-    stroke: rgb(125 162 255 / 12%);
+    stroke: var(--link-glow);
     stroke-width: 14;
 }
 
 .topology-link__path {
-    stroke: var(--accent);
-    stroke-width: 4;
+    stroke: var(--link-color);
+    stroke-width: var(--link-width);
+    transition:
+        opacity 180ms ease,
+        stroke-width 180ms ease;
 }
 
 .topology-link__connector {
     fill: var(--surface);
-    stroke: var(--accent);
+    stroke: var(--link-color);
     stroke-width: 4;
 }
 
+.topology-link--ethernet {
+    --link-width: 5;
+}
+
 .topology-link--wifi .topology-link__path {
-    stroke: var(--degraded);
-    stroke-dasharray: 12 12;
-}
-
-.topology-link--wifi .topology-link__glow {
-    stroke: rgb(246 196 83 / 12%);
-}
-
-.topology-link--wifi .topology-link__connector {
-    stroke: var(--degraded);
+    stroke-dasharray: 14 11;
 }
 
 .topology-link--wireguard .topology-link__path {
-    stroke: #b184ff;
-    stroke-dasharray: 5 10;
+    stroke-dasharray: 4 9;
+}
+
+.topology-link--zigbee .topology-link__path,
+.topology-link--zwave .topology-link__path {
+    stroke-dasharray: 2 10;
 }
 
 .topology-link--mqtt .topology-link__path,
-
-.topology-link--health-healthy
-.topology-link__path {
-    stroke: var(--healthy);
-}
-
-.topology-link--health-healthy
-.topology-link__glow {
-    stroke: rgb(71 209 140 / 12%);
-}
-
-.topology-link--health-healthy
-.topology-link__connector {
-    stroke: var(--healthy);
-}
-
-.topology-link--health-degraded
-.topology-link__path {
-    stroke: var(--degraded);
-}
-
-.topology-link--health-degraded
-.topology-link__glow {
-    stroke: rgb(246 196 83 / 12%);
-}
-
-.topology-link--health-degraded
-.topology-link__connector {
-    stroke: var(--degraded);
-}
-
-.topology-link--health-unhealthy
-.topology-link__path {
-    stroke: var(--unhealthy);
-}
-
-.topology-link--health-unhealthy
-.topology-link__glow {
-    stroke: rgb(255 107 107 / 14%);
-}
-
-.topology-link--health-unhealthy
-.topology-link__connector {
-    stroke: var(--unhealthy);
-}
-
-.topology-link--health-unknown
-.topology-link__path {
-    stroke: var(--unknown);
-}
-
-.topology-link--health-unknown
-.topology-link__glow {
-    stroke: rgb(141 153 174 / 10%);
-}
-
-.topology-link--health-unknown
-.topology-link__connector {
-    stroke: var(--unknown);
-}
-
 .topology-link--logical .topology-link__path {
-    stroke: #58d4e8;
     stroke-dasharray: 8 10;
+}
+
+.topology-link--usb .topology-link__path {
+    stroke-dasharray: 18 6 4 6;
+}
+
+.topology-link--serial .topology-link__path {
+    stroke-dasharray: 10 5 2 5;
+}
+
+.topology-link--other .topology-link__path {
+    stroke-dasharray: 6 8;
+}
+
+.topology-link--direction-undirected
+.topology-link__path {
+    stroke-linecap: square;
+}
+
+.topology-link--health-healthy {
+    --link-color: var(--healthy);
+    --link-glow: rgb(71 209 140 / 12%);
+}
+
+.topology-link--health-degraded {
+    --link-color: var(--degraded);
+    --link-glow: rgb(246 196 83 / 12%);
+}
+
+.topology-link--health-unhealthy {
+    --link-color: var(--unhealthy);
+    --link-glow: rgb(255 107 107 / 14%);
+}
+
+.topology-link--health-unknown {
+    --link-color: var(--unknown);
+    --link-glow: rgb(141 153 174 / 10%);
 }
 
 .topology-link__label-group {
@@ -175,15 +166,15 @@
 
 .topology-link__label-background {
     fill: rgb(18 26 46 / 96%);
-    stroke: var(--border);
-    stroke-width: 2;
+    stroke: var(--link-color);
+    stroke-width: 1.5;
 }
 
 .topology-link__label {
     dominant-baseline: middle;
-    fill: var(--text-muted);
-    font-size: 15px;
-    font-weight: 700;
+    fill: var(--text);
+    font-size: 14px;
+    font-weight: 750;
     letter-spacing: 0.02em;
     text-anchor: middle;
 }
@@ -193,16 +184,38 @@
     --device-health: var(--unknown);
     --device-health-background:
         rgb(141 153 174 / 12%);
-    cursor: default;
+    --device-halo: rgb(141 153 174 / 18%);
+    cursor: pointer;
+    opacity: 0;
     outline: none;
+    animation:
+        topology-device-enter 360ms ease-out forwards;
+    animation-delay:
+        calc(var(--topology-order, 0) * 35ms + 80ms);
+    transition: opacity 180ms ease;
+}
+
+.topology-device__halo {
+    fill: none;
+    stroke: var(--device-health);
+    stroke-width: 5;
+    opacity: 0.18;
+    filter: blur(7px);
+    pointer-events: none;
+    transform-box: fill-box;
+    transform-origin: center;
 }
 
 .topology-device__card {
     fill: rgb(24 35 60 / 97%);
     stroke: var(--device-health);
     stroke-width: 2.5;
+    filter: url("#device-shadow");
+    transform-box: fill-box;
+    transform-origin: center;
     transition:
         stroke 160ms ease,
+        stroke-width 160ms ease,
         filter 160ms ease,
         transform 160ms ease;
 }
@@ -215,6 +228,11 @@
     fill: rgb(125 162 255 / 10%);
     stroke: var(--device-accent);
     stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+        stroke-width 160ms ease,
+        transform 160ms ease;
 }
 
 .topology-device__icon {
@@ -223,6 +241,9 @@
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 160ms ease;
 }
 
 .topology-device__icon circle,
@@ -250,10 +271,24 @@
     font-size: 14px;
 }
 
-.topology-device:hover .topology-device__card {
-    stroke: var(--device-health);
+.topology-device:hover .topology-device__card,
+.topology-device:focus-visible .topology-device__card {
+    stroke: var(--accent-hover);
     stroke-width: 4;
-    filter: url("#device-shadow");
+    transform: translateY(-2px);
+}
+
+.topology-device:hover .topology-device__icon,
+.topology-device:focus-visible .topology-device__icon {
+    transform: scale(1.06);
+}
+
+.topology-device:focus {
+    outline: none;
+}
+
+.topology-device:focus-visible .topology-device__halo {
+    opacity: 0.42;
 }
 
 .topology-device--internet {
@@ -305,24 +340,36 @@
     --device-health: var(--healthy);
     --device-health-background:
         rgb(71 209 140 / 12%);
+    --device-halo: rgb(71 209 140 / 24%);
 }
 
 .topology-device--health-degraded {
     --device-health: var(--degraded);
     --device-health-background:
         rgb(246 196 83 / 12%);
+    --device-halo: rgb(246 196 83 / 28%);
 }
 
 .topology-device--health-unhealthy {
     --device-health: var(--unhealthy);
     --device-health-background:
         rgb(255 107 107 / 12%);
+    --device-halo: rgb(255 107 107 / 32%);
 }
 
 .topology-device--health-unknown {
     --device-health: var(--unknown);
     --device-health-background:
         rgb(141 153 174 / 12%);
+    --device-halo: rgb(141 153 174 / 18%);
+}
+
+.topology-device--health-degraded .topology-device__halo {
+    animation: topology-halo-pulse 2.8s ease-in-out infinite;
+}
+
+.topology-device--health-unhealthy .topology-device__halo {
+    animation: topology-halo-alert 1.8s ease-in-out infinite;
 }
 
 .topology-device__health {
@@ -353,29 +400,93 @@
     grid-template-columns: minmax(0, 1fr);
 }
 
-.topology-device {
-    cursor: pointer;
+.topology-device--selected .topology-device__halo {
+    opacity: 0.52;
 }
 
-.topology-device:focus {
-    outline: none;
-}
-
-.topology-device:focus .topology-device__card {
-    stroke: var(--accent-hover);
-    stroke-width: 4;
-}
-
-.topology-device--selected
-.topology-device__card {
+.topology-device--selected .topology-device__card {
     stroke: var(--accent-hover);
     stroke-width: 5;
-    filter: url("#device-shadow");
+    transform: translateY(-3px) scale(1.015);
 }
 
-.topology-device--selected
-.topology-device__icon-background {
+.topology-device--selected .topology-device__icon-background {
     stroke-width: 3;
+    transform: scale(1.05);
+}
+
+.topology-device--selected .topology-device__icon {
+    transform: scale(1.08);
+}
+
+.topology-device--connected .topology-device__card {
+    stroke-width: 3.5;
+}
+
+.topology-device--dimmed {
+    opacity: 0.3;
+}
+
+.topology-link--focused .topology-link__path {
+    stroke-width: calc(var(--link-width) + 1.5);
+    animation: topology-link-flow 2.4s linear infinite;
+}
+
+.topology-link--focused .topology-link__connector {
+    animation: topology-connector-pulse 1.8s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.topology-link--dimmed {
+    opacity: 0.16;
+}
+
+@keyframes topology-device-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes topology-link-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes topology-link-flow {
+    to {
+        stroke-dashoffset: -48;
+    }
+}
+
+@keyframes topology-connector-pulse {
+    50% {
+        opacity: 0.72;
+        transform: scale(1.22);
+    }
+}
+
+@keyframes topology-halo-pulse {
+    50% {
+        opacity: 0.4;
+        transform: scale(1.025);
+    }
+}
+
+@keyframes topology-halo-alert {
+    50% {
+        opacity: 0.58;
+        transform: scale(1.04);
+    }
 }
 
 .topology-controls {
@@ -389,8 +500,8 @@
 
 .topology-control {
     display: grid;
-    min-width: 2.5rem;
-    height: 2.5rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
     place-items: center;
     padding-inline: 0.7rem;
     border: 1px solid var(--border);
@@ -438,11 +549,12 @@
 }
 
 .dashboard-primary .topology-container {
-    min-height: 37rem;
+    height: clamp(32rem, 68vh, 52rem);
+    min-height: 32rem;
 }
 
 .dashboard-primary .topology-canvas {
-    min-height: 37rem;
+    min-height: 100%;
 }
 
 .dashboard-primary--topology {
@@ -609,128 +721,6 @@
     min-height: 0;
 }
 
-.topology-device__card {
-    fill: rgb(17 27 47 / 96%);
-    stroke-width: 2.2;
-}
-
-.topology-device__label {
-    font-size: 23px;
-    font-weight: 800;
-}
-
-.topology-device__kind {
-    font-size: 12px;
-}
-
-.topology-device__detail {
-    font-size: 13px;
-}
-
-.topology-device__icon-background {
-    fill: rgb(255 255 255 / 2%);
-}
-
-.topology-device:hover
-.topology-device__card {
-    filter:
-        url("#device-shadow")
-        drop-shadow(
-            0 0 12px
-            rgb(65 189 245 / 14%)
-        );
-}
-
-.topology-device--health-healthy
-.topology-device__card {
-    filter:
-        url("#device-shadow")
-        drop-shadow(
-            0 0 8px
-            rgb(71 209 140 / 10%)
-        );
-}
-
-.topology-device--health-degraded
-.topology-device__card {
-    filter:
-        url("#device-shadow")
-        drop-shadow(
-            0 0 9px
-            rgb(246 196 83 / 13%)
-        );
-}
-
-.topology-device--health-unhealthy
-.topology-device__card {
-    filter:
-        url("#device-shadow")
-        drop-shadow(
-            0 0 11px
-            rgb(255 107 107 / 16%)
-        );
-}
-
-.topology-device--selected
-.topology-device__card {
-    stroke: #8ec8ff;
-    stroke-width: 4;
-    filter:
-        url("#device-shadow")
-        drop-shadow(
-            0 0 18px
-            rgb(65 189 245 / 22%)
-        );
-}
-
-.topology-link__glow {
-    stroke-width: 16;
-    opacity: 0.55;
-}
-
-.topology-link__path {
-    stroke-width: 3.5;
-}
-
-.topology-link__connector {
-    r: 5;
-}
-
-.topology-link__label-background {
-    fill: rgb(12 20 36 / 94%);
-    stroke: rgb(71 87 124 / 75%);
-}
-
-.topology-link__label {
-    font-size: 13px;
-}
-
-.topology-link--health-healthy
-.topology-link__path {
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgb(71 209 140 / 22%)
-        );
-}
-
-.topology-link--health-degraded
-.topology-link__path {
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgb(246 196 83 / 22%)
-        );
-}
-
-.topology-link--health-unhealthy
-.topology-link__path {
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgb(255 107 107 / 28%)
-        );
-}
 
 .dashboard-primary--topology
 .topology-controls {
@@ -769,4 +759,150 @@
         url("../assets/icons/actions/plus.svg");
     -webkit-mask-image:
         url("../assets/icons/actions/plus.svg");
+}
+/* 3.7.1 — Official equipment icons and cards. */
+.topology-device {
+    cursor: pointer;
+}
+
+.topology-device__halo {
+    fill: none;
+    stroke: var(--device-health);
+    stroke-width: 5;
+    opacity: 0.18;
+    filter: blur(7px);
+    pointer-events: none;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.topology-device__card {
+    fill: rgb(17 27 47 / 97%);
+    stroke: color-mix(
+        in srgb,
+        var(--device-health) 72%,
+        var(--border)
+    );
+}
+
+.topology-device__icon-background {
+    fill: color-mix(
+        in srgb,
+        var(--device-accent) 12%,
+        transparent
+    );
+    stroke: color-mix(
+        in srgb,
+        var(--device-accent) 54%,
+        transparent
+    );
+}
+
+.topology-device__icon {
+    overflow: visible;
+    pointer-events: none;
+}
+
+.topology-device__official-icon {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-color: var(--device-accent);
+    mask-image: var(--topology-device-icon);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 26px 26px;
+    -webkit-mask-image: var(--topology-device-icon);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: 26px 26px;
+}
+
+.topology-device__kind,
+.topology-device__label,
+.topology-device__detail,
+.topology-device__health {
+    pointer-events: none;
+}
+
+.topology-device__kind {
+    letter-spacing: 0.1em;
+}
+
+.topology-device__label {
+    fill: var(--text);
+}
+
+.topology-device__detail {
+    fill: var(--text-muted);
+}
+
+.topology-device:hover .topology-device__icon-background,
+.topology-device:focus-visible .topology-device__icon-background {
+    fill: color-mix(
+        in srgb,
+        var(--device-accent) 19%,
+        transparent
+    );
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+    .topology-device,
+    .topology-link,
+    .topology-device__halo,
+    .topology-link__path,
+    .topology-link__connector {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .topology-device,
+    .topology-link {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1000px) {
+    .dashboard-primary .topology-container {
+        height: clamp(30rem, 62vh, 42rem);
+        min-height: 30rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .topology-container,
+    .dashboard-primary .topology-container {
+        height: min(68vh, 36rem);
+        min-height: 26rem;
+        border-radius: 12px;
+    }
+
+    .topology-controls {
+        gap: 0.35rem;
+    }
+
+    .topology-control {
+        min-width: 2.75rem;
+        height: 2.75rem;
+        padding-inline: 0.65rem;
+    }
+}
+
+@media (max-width: 460px) {
+    .topology-container,
+    .dashboard-primary .topology-container {
+        height: 62vh;
+        min-height: 24rem;
+    }
+
+    .topology-controls {
+        top: 0.65rem;
+        left: 0.65rem;
+    }
+
+    .topology-control--reset {
+        font-size: 0.7rem;
+    }
 }

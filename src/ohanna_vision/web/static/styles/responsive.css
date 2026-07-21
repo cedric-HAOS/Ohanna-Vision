@@ -1,10 +1,8 @@
 @media (max-width: 900px) {
-    .topology-container {
-        overflow-x: auto;
-    }
-
+    .topology-container,
     .topology-canvas {
-        width: 64rem;
+        width: 100%;
+        min-width: 0;
     }
 
     .device-details {
@@ -19,6 +17,17 @@
 
     .device-details__properties {
         grid-template-columns: 1fr;
+    }
+
+    #timeline-content {
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-gutter: stable;
+    }
+
+    .observations-view,
+    .side-panel-card--observations {
+        min-width: 0;
     }
 }
 
@@ -284,9 +293,31 @@
         overflow: visible;
     }
 
-    .topology-container,
+    .topology-container {
+        min-height: 30rem;
+    }
+
     .topology-canvas {
-        min-height: 32rem;
+        min-width: 0;
+        min-height: 100%;
+    }
+
+    .panel-heading,
+    .side-panel-card__heading {
+        min-width: 0;
+    }
+
+    .observations-view {
+        padding: 0.8rem;
+    }
+
+    .recent-observation {
+        min-width: 0;
+    }
+
+    .timeline-header,
+    .timeline-legend {
+        min-width: 0;
     }
 
     .application-views[
@@ -365,14 +396,20 @@
     }
 
     .sidebar-navigation__item {
+        min-height: 2.75rem;
         flex: 0 0 auto;
         gap: 0.4rem;
-        padding: 0.55rem 0.7rem;
-        font-size: 0.67rem;
+        padding: 0.55rem 0.75rem;
+        font-size: 0.72rem;
+        scroll-snap-align: start;
+    }
+
+    .sidebar-navigation {
+        scroll-snap-type: inline proximity;
     }
 
     .sidebar-navigation__item span {
-        font-size: 0.8rem;
+        font-size: 0.82rem;
     }
 
     .dashboard-header {
@@ -383,7 +420,12 @@
 
     .dashboard-header__actions {
         width: 100%;
+        flex-wrap: wrap;
         justify-content: space-between;
+    }
+
+    .dashboard-header__actions .button {
+        min-height: 2.75rem;
     }
 
     .dashboard-header__refresh {
@@ -432,20 +474,14 @@
         left: 0.5rem;
     }
 
-    .topology-control {
-        min-width: 2rem;
-        height: 2rem;
-        padding-inline: 0.5rem;
-    }
-
     .topology-container {
         overflow: hidden;
     }
 
     .topology-canvas {
         width: 100%;
-        min-width: 48rem;
-        min-height: 26rem;
+        min-width: 0;
+        min-height: 100%;
     }
 
     .dashboard-right-panel {
@@ -482,11 +518,44 @@
     }
 
     .timeline-range {
-        align-self: flex-start;
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-self: stretch;
+    }
+
+    .timeline-range__button {
+        min-height: 2.75rem;
     }
 
     .timeline-legend {
+        flex-wrap: nowrap;
         overflow-x: auto;
+        overscroll-behavior-inline: contain;
+    }
+
+    .timeline-legend__count {
+        margin-left: 0;
+    }
+
+    .recent-observation {
+        grid-template-columns:
+            0.5rem
+            minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .recent-observation__meta {
+        grid-column: 2;
+        grid-template-columns: auto auto;
+        justify-content: space-between;
+        justify-items: start;
+        width: 100%;
+    }
+
+    .side-panel-card__heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
     }
 
     .application-views[
@@ -512,6 +581,24 @@
 @media (max-width: 460px) {
     .dashboard-kpis {
         grid-template-columns: 1fr;
+    }
+
+    .dashboard-header__actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .dashboard-header__refresh {
+        max-width: none;
+    }
+
+    .panel-heading,
+    .timeline-header {
+        padding-inline: 0.75rem;
+    }
+
+    .recent-observations {
+        padding: 0.5rem;
     }
 
     .dashboard-kpi {

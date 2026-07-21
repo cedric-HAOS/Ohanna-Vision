@@ -36,6 +36,8 @@ class TopologyCanvas {
         this.dragging = false;
         this.dragStart = null;
         this.dragViewBoxStart = null;
+        this.activePointers = new Map();
+        this.pinchDistance = null;
 
         this.container = container;
         this.layoutLabel = layoutLabel;
@@ -471,33 +473,64 @@ class TopologyCanvas {
     }
 
     handlePointerDown(event) {
-        if (
-            event.button !== 0
-            || event.target.closest(".topology-device")
-        ) {
+        if (event.button !== 0) {
             return;
         }
 
-        this.dragging = true;
-
-        this.dragStart = {
-            x: event.clientX,
-            y: event.clientY,
-        };
-
-        this.dragViewBoxStart = {
-            ...this.viewBox,
-        };
+        this.activePointers.set(
+            event.pointerId,
+            {
+                x: event.clientX,
+                y: event.clientY,
+            },
+        );
 
         this.svg.setPointerCapture(
             event.pointerId,
         );
+
+        if (this.activePointers.size === 2) {
+            this.dragging = false;
+            this.dragStart = null;
+            this.dragViewBoxStart = null;
+            this.pinchDistance =
+                this.currentPinchDistance();
+            return;
+        }
+
+        if (event.target.closest(".topology-device")) {
+            return;
+        }
+
+        this.dragging = true;
+        this.dragStart = {
+            x: event.clientX,
+            y: event.clientY,
+        };
+        this.dragViewBoxStart = {
+            ...this.viewBox,
+        };
         this.svg.classList.add(
             "topology-canvas--dragging",
         );
     }
 
     handlePointerMove(event) {
+        if (this.activePointers.has(event.pointerId)) {
+            this.activePointers.set(
+                event.pointerId,
+                {
+                    x: event.clientX,
+                    y: event.clientY,
+                },
+            );
+        }
+
+        if (this.activePointers.size === 2) {
+            this.handlePinchZoom();
+            return;
+        }
+
         if (
             !this.dragging
             || !this.dragStart
@@ -537,10 +570,8 @@ class TopologyCanvas {
     }
 
     handlePointerUp(event) {
-        if (!this.dragging) {
-            return;
-        }
-
+        this.activePointers.delete(event.pointerId);
+        this.pinchDistance = null;
         this.dragging = false;
         this.dragStart = null;
         this.dragViewBoxStart = null;
@@ -558,6 +589,50 @@ class TopologyCanvas {
         this.svg.classList.remove(
             "topology-canvas--dragging",
         );
+    }
+
+    currentPinchDistance() {
+        const pointers = [
+            ...this.activePointers.values(),
+        ];
+
+        if (pointers.length !== 2) {
+            return null;
+        }
+
+        return Math.hypot(
+            pointers[1].x - pointers[0].x,
+            pointers[1].y - pointers[0].y,
+        );
+    }
+
+    handlePinchZoom() {
+        const pointers = [
+            ...this.activePointers.values(),
+        ];
+        const distance = this.currentPinchDistance();
+
+        if (
+            pointers.length !== 2
+            || !distance
+            || !this.pinchDistance
+        ) {
+            this.pinchDistance = distance;
+            return;
+        }
+
+        const midpoint = this.clientPointToSvg(
+            (pointers[0].x + pointers[1].x) / 2,
+            (pointers[0].y + pointers[1].y) / 2,
+        );
+        const factor = distance / this.pinchDistance;
+
+        this.zoomAtPoint(
+            factor,
+            midpoint.x,
+            midpoint.y,
+        );
+        this.pinchDistance = distance;
     }
 
     handleDoubleClick(event) {
@@ -631,9 +706,41 @@ class TopologyCanvas {
         );
 
         filter.append(shadow);
-        definitions.append(filter);
+        definitions.append(
+            filter,
+            this.createDirectionMarker(
+                "topology-arrow-end",
+            ),
+        );
 
         return definitions;
+    }
+
+
+    createDirectionMarker(markerId) {
+        const marker = this.createSvgElement("marker");
+
+        marker.setAttribute("id", markerId);
+        marker.setAttribute("viewBox", "0 0 10 10");
+        marker.setAttribute("refX", "8");
+        marker.setAttribute("refY", "5");
+        marker.setAttribute("markerWidth", "7");
+        marker.setAttribute("markerHeight", "7");
+        marker.setAttribute("orient", "auto-start-reverse");
+        marker.setAttribute("markerUnits", "strokeWidth");
+
+        const arrow = this.createSvgElement("path");
+
+        arrow.classList.add("topology-link__arrow");
+        arrow.setAttribute(
+            "d",
+            "M 1 1 L 9 5 L 1 9 z",
+        );
+        arrow.setAttribute("fill", "context-stroke");
+
+        marker.append(arrow);
+
+        return marker;
     }
 
     createLayer(className) {
@@ -649,7 +756,7 @@ class TopologyCanvas {
             ".topology-canvas__links",
         );
 
-        for (const link of links) {
+        for (const [order, link] of links.entries()) {
             const sourcePosition =
                 positions[link.source_device_id];
             const targetPosition =
@@ -664,6 +771,8 @@ class TopologyCanvas {
                     link,
                     sourcePosition,
                     targetPosition,
+                    this.linkHealth(link),
+                    order,
                 ),
             );
         }
@@ -674,6 +783,7 @@ class TopologyCanvas {
         sourcePosition,
         targetPosition,
         health,
+        order = 0,
     ) {
         const group = this.createSvgElement("g");
         const normalizedKind = this.normalizeClassName(
@@ -681,13 +791,24 @@ class TopologyCanvas {
         );
         const normalizedHealth =
             this.normalizeHealthStatus(health);
+        const normalizedDirection =
+            this.normalizeClassName(link.direction);
 
         group.classList.add(
             "topology-link",
             `topology-link--${normalizedKind}`,
+            `topology-link--direction-${normalizedDirection}`,
             `topology-link--health-${normalizedHealth}`,
         );
         group.dataset.linkId = link.link_id;
+        group.dataset.sourceDeviceId =
+            link.source_device_id;
+        group.dataset.targetDeviceId =
+            link.target_device_id;
+        group.style.setProperty(
+            "--topology-order",
+            order,
+        );
 
         const coordinates = this.linkCoordinates(
             sourcePosition,
@@ -703,6 +824,7 @@ class TopologyCanvas {
 
         path.classList.add("topology-link__path");
         path.setAttribute("d", coordinates.path);
+        this.applyLinkDirection(path, link.direction);
 
         const sourceConnector =
             this.createLinkConnector(
@@ -735,6 +857,21 @@ class TopologyCanvas {
         }
 
         return group;
+    }
+
+
+    applyLinkDirection(path, direction) {
+        if (direction === "source_to_target") {
+            path.setAttribute(
+                "marker-end",
+                "url(#topology-arrow-end)",
+            );
+            return;
+        }
+
+        // Bidirectional links intentionally have no arrow.
+        // Their two-way nature is the topology default and
+        // adding markers would overload the physical view.
     }
 
     linkHealth(link) {
@@ -939,7 +1076,7 @@ class TopologyCanvas {
             ".topology-canvas__devices",
         );
 
-        for (const device of devices) {
+        for (const [order, device] of devices.entries()) {
             const position = positions[device.device_id];
 
             if (!position) {
@@ -950,12 +1087,13 @@ class TopologyCanvas {
                 this.createDevice(
                     device,
                     position,
+                    order,
                 ),
             );
         }
     }
 
-    createDevice(device, position) {
+    createDevice(device, position, order = 0) {
         const width = TopologyCanvas.DEVICE_WIDTH;
         const height = TopologyCanvas.DEVICE_HEIGHT;
         const normalizedKind = this.normalizeClassName(
@@ -971,6 +1109,10 @@ class TopologyCanvas {
             `topology-device--health-${health}`,
         );
         group.dataset.deviceId = device.device_id;
+        group.style.setProperty(
+            "--topology-order",
+            order,
+        );
         group.setAttribute("tabindex", "0");
 
         if (device.device_id === this.selectedDeviceId) {
@@ -997,6 +1139,10 @@ class TopologyCanvas {
             ].join(", "),
         );
 
+        const halo = this.createDeviceHalo(
+            width,
+            height,
+        );
         const card = this.createDeviceCard(
             width,
             height,
@@ -1016,6 +1162,7 @@ class TopologyCanvas {
             this.createHealthIndicator(health);
 
         group.append(
+            halo,
             card,
             accent,
             iconBackground,
@@ -1025,12 +1172,9 @@ class TopologyCanvas {
             detail,
             healthIndicator,
         );
-        group.addEventListener("click", () => {
+        group.addEventListener("click", (event) => {
+            event.stopPropagation();
             this.selectDevice(device.device_id);
-            group.addEventListener("click", (event) => {
-                event.stopPropagation();
-                this.selectDevice(device.device_id);
-            });
         });
 
         group.addEventListener("keydown", (event) => {
@@ -1039,15 +1183,11 @@ class TopologyCanvas {
                 || event.key === " "
             ) {
                 event.preventDefault();
+                event.stopPropagation();
                 this.selectDevice(device.device_id);
             }
-            group.addEventListener(
-                "pointerdown",
-                (event) => {
-                    event.stopPropagation();
-                },
-            );
         });
+
         group.addEventListener(
             "pointerdown",
             (event) => {
@@ -1055,6 +1195,20 @@ class TopologyCanvas {
             },
         );
         return group;
+    }
+
+    createDeviceHalo(width, height) {
+        const halo = this.createSvgElement("rect");
+
+        halo.classList.add("topology-device__halo");
+        halo.setAttribute("x", -8);
+        halo.setAttribute("y", -8);
+        halo.setAttribute("width", width + 16);
+        halo.setAttribute("height", height + 16);
+        halo.setAttribute("rx", 24);
+        halo.setAttribute("ry", 24);
+
+        return halo;
     }
 
     createDeviceCard(width, height) {
@@ -1271,48 +1425,72 @@ class TopologyCanvas {
     }
 
     createDeviceIcon(kind) {
-        const group = this.createSvgElement("g");
+        const foreignObject = this.createSvgElement(
+            "foreignObject",
+        );
+        const icon = document.createElement("span");
+        const iconPath = this.deviceIconPath(kind);
 
-        group.classList.add("topology-device__icon");
-        group.setAttribute(
-            "transform",
-            "translate(27 33)",
+        foreignObject.classList.add(
+            "topology-device__icon",
+        );
+        foreignObject.setAttribute("x", 27);
+        foreignObject.setAttribute("y", 33);
+        foreignObject.setAttribute("width", 30);
+        foreignObject.setAttribute("height", 30);
+        foreignObject.setAttribute(
+            "aria-hidden",
+            "true",
         );
 
+        icon.classList.add(
+            "topology-device__official-icon",
+        );
+        icon.style.setProperty(
+            "--topology-device-icon",
+            `url("${iconPath}")`,
+        );
+
+        foreignObject.append(icon);
+
+        return foreignObject;
+    }
+
+    deviceIconPath(kind) {
+        const iconPaths = {
+            internet:
+                "/ui/assets/icons/network/globe-2.svg",
+            router:
+                "/ui/assets/icons/network/router.svg",
+            switch:
+                "/ui/assets/icons/infrastructure/network.svg",
+            access_point:
+                "/ui/assets/icons/network/wifi.svg",
+            server:
+                "/ui/assets/icons/infrastructure/server.svg",
+            raspberry_pi:
+                "/ui/assets/icons/hardware/cpu.svg",
+            home_assistant:
+                "/ui/assets/icons/hardware/house.svg",
+            camera:
+                "/ui/assets/icons/hardware/camera.svg",
+            smart_device:
+                "/ui/assets/icons/hardware/plug-zap.svg",
+            solar:
+                "/ui/assets/icons/hardware/battery-charging.svg",
+            computer:
+                "/ui/assets/icons/containers-cloud/monitor-cog.svg",
+            storage:
+                "/ui/assets/icons/hardware/hard-drive.svg",
+            other:
+                "/ui/assets/icons/infrastructure/boxes.svg",
+        };
         const normalizedKind = String(
             kind ?? "other",
         ).toLowerCase();
 
-        const iconBuilders = {
-            internet: () => this.createInternetIcon(),
-            router: () => this.createRouterIcon(),
-            switch: () => this.createSwitchIcon(),
-            access_point: () => (
-                this.createAccessPointIcon()
-            ),
-            raspberry_pi: () => (
-                this.createComputerIcon()
-            ),
-            home_assistant: () => (
-                this.createHomeIcon()
-            ),
-            server: () => this.createServerIcon(),
-            storage: () => this.createStorageIcon(),
-            camera: () => this.createCameraIcon(),
-            smart_device: () => (
-                this.createSmartDeviceIcon()
-            ),
-            solar: () => this.createSolarIcon(),
-            computer: () => this.createComputerIcon(),
-        };
-
-        const builder =
-            iconBuilders[normalizedKind]
-            ?? (() => this.createGenericIcon());
-
-        group.append(builder());
-
-        return group;
+        return iconPaths[normalizedKind]
+            ?? iconPaths.other;
     }
 
     createInternetIcon() {
@@ -1679,14 +1857,53 @@ class TopologyCanvas {
         const devices = this.container.querySelectorAll(
             ".topology-device",
         );
+        const links = this.container.querySelectorAll(
+            ".topology-link",
+        );
+        const connectedDeviceIds = new Set([deviceId]);
+
+        for (const link of links) {
+            const connected =
+                link.dataset.sourceDeviceId === deviceId
+                || link.dataset.targetDeviceId === deviceId;
+
+            link.classList.toggle(
+                "topology-link--focused",
+                connected,
+            );
+            link.classList.toggle(
+                "topology-link--dimmed",
+                !connected,
+            );
+
+            if (connected) {
+                connectedDeviceIds.add(
+                    link.dataset.sourceDeviceId,
+                );
+                connectedDeviceIds.add(
+                    link.dataset.targetDeviceId,
+                );
+            }
+        }
 
         for (const device of devices) {
             const selected =
                 device.dataset.deviceId === deviceId;
+            const connected = connectedDeviceIds.has(
+                device.dataset.deviceId,
+            );
 
             device.classList.toggle(
                 "topology-device--selected",
                 selected,
+            );
+            device.classList.toggle(
+                "topology-device--connected",
+                connected && !selected,
+            );
+            device.classList.toggle(
+                "topology-device--dimmed",
+                !connected,
             );
 
             device.setAttribute(

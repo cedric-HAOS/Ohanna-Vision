@@ -2048,3 +2048,62 @@ def test_timeline_empty_and_error_states_use_design_system() -> None:
         "../assets/icons/observability/activity.svg"
         in response.text
     )
+
+def test_topology_uses_official_equipment_icons() -> None:
+    """Topology cards must map device kinds to local official icons."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "deviceIconPath" in response.text
+    assert "/ui/assets/icons/network/globe-2.svg" in response.text
+    assert "/ui/assets/icons/network/router.svg" in response.text
+    assert "/ui/assets/icons/infrastructure/network.svg" in response.text
+    assert "/ui/assets/icons/hardware/cpu.svg" in response.text
+    assert "/ui/assets/icons/hardware/house.svg" in response.text
+
+
+def test_topology_styles_official_equipment_cards() -> None:
+    """Topology styles must expose the official masked icon treatment."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert ".topology-device__official-icon" in response.text
+    assert "mask-image: var(--topology-device-icon)" in response.text
+    assert ".topology-device:focus-visible" in response.text
+
+
+def test_responsive_stylesheet_does_not_restore_fixed_topology_width() -> None:
+    """Global responsive rules must preserve the fluid topology canvas."""
+    response = make_client().get("/ui/styles/responsive.css")
+
+    assert response.status_code == 200
+    assert "width: 64rem" not in response.text
+    assert "min-width: 48rem" not in response.text
+    assert ".topology-container," in response.text
+    assert ".topology-canvas {" in response.text
+
+
+def test_responsive_stylesheet_preserves_touch_targets() -> None:
+    """Mobile overrides must not shrink interactive controls below 44 px."""
+    response = make_client().get("/ui/styles/responsive.css")
+
+    assert response.status_code == 200
+    assert "min-width: 2rem" not in response.text
+    assert "height: 2rem" not in response.text
+    assert "min-height: 2.75rem" in response.text
+
+
+def test_responsive_stylesheet_adapts_timeline_and_observations() -> None:
+    """Dense realtime views must remain usable on narrow screens."""
+    response = make_client().get("/ui/styles/responsive.css")
+
+    assert response.status_code == 200
+    assert "#timeline-content" in response.text
+    assert "overscroll-behavior-inline: contain;" in response.text
+    assert ".timeline-range__button" in response.text
+    assert ".recent-observation__meta" in response.text
+    assert "grid-column: 2;" in response.text
