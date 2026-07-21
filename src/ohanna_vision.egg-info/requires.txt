@@ -1,6 +1,6 @@
-fastapi
-pydantic
-PyYAML
+fastapi>=0.116
+pydantic>=2.11
+PyYAML>=6.0
 uvicorn[standard]
 
 [dev]

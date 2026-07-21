@@ -1,15 +1,15 @@
 Metadata-Version: 2.4
 Name: ohanna-vision
-Version: 0.1.0
+Version: 1.0.0
 Summary: Interface web et portail d'administration de l'écosystème Ohanna
 Author: Cédric Harnois
 License: MIT
 Requires-Python: >=3.13
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: fastapi
-Requires-Dist: pydantic
-Requires-Dist: PyYAML
+Requires-Dist: fastapi>=0.116
+Requires-Dist: pydantic>=2.11
+Requires-Dist: PyYAML>=6.0
 Requires-Dist: uvicorn[standard]
 Provides-Extra: dev
 Requires-Dist: build; extra == "dev"

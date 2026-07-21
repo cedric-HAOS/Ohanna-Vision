@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import logging
 from collections.abc import Sequence
+from importlib.metadata import version
 from pathlib import Path
 
 import uvicorn
@@ -14,6 +15,8 @@ from ohanna_vision.configuration import (
     ConfigurationLoader,
 )
 from ohanna_vision.web.bootstrap import build_application
+
+APPLICATION_VERSION = version("ohanna-vision")
 
 DEFAULT_CONFIGURATION_PATH = Path("config/vision.yaml")
 
@@ -33,6 +36,11 @@ def create_argument_parser() -> argparse.ArgumentParser:
         help=(
             f"Application configuration file (default: {DEFAULT_CONFIGURATION_PATH})."
         ),
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {APPLICATION_VERSION}",
     )
 
     return parser

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ohanna-vision"
-version = "0.1.0"
+version = "1.0.0"
 description = "Interface web et portail d'administration de l'écosystème Ohanna"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -13,22 +13,14 @@ authors = [
     { name = "Cédric Harnois" }
 ]
 dependencies = [
-    "fastapi",
-    "pydantic",
-    "PyYAML",
+    "fastapi>=0.116",
+    "pydantic>=2.11",
+    "PyYAML>=6.0",
     "uvicorn[standard]",
 ]
 
 [project.scripts]
 ohanna-vision = "ohanna_vision.main:main"
-
-[dependency-groups]
-dev = [
-    "build",
-    "httpx",
-    "pytest",
-    "ruff",
-]
 
 [project.optional-dependencies]
 dev = [
