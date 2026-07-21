@@ -1703,3 +1703,68 @@ def test_dashboard_header_uses_official_refresh_icon() -> None:
         "../assets/icons/administration/refresh-cw.svg"
         in css_response.text
     )
+
+def test_sidebar_uses_official_brand_asset() -> None:
+    """Sidebar brand must use the existing official Ohanna asset."""
+    response = make_client().get("/ui/")
+
+    assert response.status_code == 200
+    assert 'src="/ui/favicon.svg"' in response.text
+    assert 'class="sidebar-brand__icon"' in response.text
+
+
+def test_sidebar_styles_define_modern_navigation_states() -> None:
+    """Sidebar must expose hover, active and keyboard states."""
+    response = make_client().get(
+        "/ui/styles/navigation.css",
+    )
+
+    assert response.status_code == 200
+    assert ".sidebar-navigation__item:hover {" in response.text
+    assert ".sidebar-navigation__item.is-active {" in response.text
+    assert (
+        ".sidebar-navigation__item.is-active::before {"
+        in response.text
+    )
+    assert ".sidebar-navigation__item:focus-visible {" in response.text
+    assert "var(--ohanna-border-focus)" in response.text
+
+def test_connection_status_uses_official_health_states() -> None:
+    """Realtime connection states must use official health tokens."""
+    client = make_client()
+
+    response = client.get("/ui/styles.css")
+
+    assert response.status_code == 200
+
+    assert ".connection-status--online {" in response.text
+    assert ".connection-status--connecting {" in response.text
+    assert ".connection-status--offline {" in response.text
+
+    assert "var(--ohanna-health-healthy)" in response.text
+    assert "var(--ohanna-health-degraded)" in response.text
+    assert "var(--ohanna-health-critical)" in response.text
+    assert "@keyframes connection-status-pulse" in response.text
+
+def test_sidebar_exposes_product_version() -> None:
+    """Sidebar footer must expose the product and its version."""
+    response = make_client().get("/ui/")
+
+    assert response.status_code == 200
+    assert "sidebar-version__product" in response.text
+    assert "sidebar-version__number" in response.text
+    assert "Ohanna-Vision" in response.text
+    assert "v0.1.0" in response.text
+
+
+def test_sidebar_version_uses_discrete_footer_styles() -> None:
+    """Product version must use dedicated sidebar footer styles."""
+    response = make_client().get(
+        "/ui/styles/navigation.css",
+    )
+
+    assert response.status_code == 200
+    assert ".sidebar-version {" in response.text
+    assert ".sidebar-version__product {" in response.text
+    assert ".sidebar-version__number {" in response.text
+    assert "var(--ohanna-font-family-mono)" in response.text

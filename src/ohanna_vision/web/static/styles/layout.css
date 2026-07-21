@@ -30,17 +30,24 @@
 
 .application-sidebar {
     position: sticky;
+    overflow: hidden;
     top: 0;
     z-index: 20;
+
     display: flex;
     height: 100vh;
     flex-direction: column;
-    border-right: 1px solid var(--border);
+
+    border-right:
+        var(--ohanna-border-width-thin)
+        solid
+        var(--ohanna-border-subtle);
+
     background:
         linear-gradient(
             180deg,
-            rgb(10 17 31 / 99%),
-            rgb(8 14 26 / 99%)
+            var(--ohanna-background-sidebar),
+            var(--ohanna-background-canvas)
         );
 }
 

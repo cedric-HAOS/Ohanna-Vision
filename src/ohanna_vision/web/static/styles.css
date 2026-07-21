@@ -13,42 +13,95 @@
 .connection-status {
     display: inline-flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.7rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--text-muted);
-    background: var(--surface);
+    gap: var(--ohanna-space-2);
+
+    padding:
+        var(--ohanna-space-3)
+        var(--ohanna-space-4);
+
+    border:
+        var(--ohanna-border-width-thin)
+        solid
+        var(--ohanna-border-default);
+    border-radius: var(--ohanna-radius-round);
+
+    color: var(--ohanna-text-muted);
+    background: var(--ohanna-background-surface);
+
+    font-weight: var(--ohanna-font-weight-medium);
     white-space: nowrap;
+
+    transition:
+        color var(--ohanna-duration-fast)
+            var(--ohanna-easing-standard);
 }
 
 .connection-status__indicator {
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: var(--unknown);
-    box-shadow: 0 0 0 0.3rem rgb(141 153 174 / 12%);
-}
+    width: 0.65rem;
+    height: 0.65rem;
+    flex: 0 0 0.65rem;
 
-.connection-status--online .connection-status__indicator {
-    background: var(--healthy);
-    box-shadow: 0 0 0 0.3rem rgb(71 209 140 / 12%);
+    border-radius: var(--ohanna-radius-round);
+
+    background: var(--ohanna-health-unknown);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohanna-health-unknown-soft);
+
+    transition:
+        background-color var(--ohanna-duration-fast)
+            var(--ohanna-easing-standard),
+        box-shadow var(--ohanna-duration-fast)
+            var(--ohanna-easing-standard);
 }
 
 .connection-status--online {
-    color: var(--healthy);
+    color: var(--ohanna-health-healthy);
 }
 
-.connection-status--connecting .connection-status__indicator {
-    background: var(--degraded);
+.connection-status--online
+.connection-status__indicator {
+    background: var(--ohanna-health-healthy);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohanna-health-healthy-soft);
 }
 
 .connection-status--connecting {
-    color: var(--degraded);
+    color: var(--ohanna-health-degraded);
+}
+
+.connection-status--connecting
+.connection-status__indicator {
+    background: var(--ohanna-health-degraded);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohanna-health-degraded-soft);
+
+    animation:
+        connection-status-pulse
+        1.2s
+        var(--ohanna-easing-standard)
+        infinite;
 }
 
 .connection-status--offline {
-    color: var(--text-muted);
+    color: var(--ohanna-health-critical);
+}
+
+.connection-status--offline
+.connection-status__indicator {
+    background: var(--ohanna-health-critical);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohanna-health-critical-soft);
+}
+
+@keyframes connection-status-pulse {
+    50% {
+        opacity: 0.45;
+        transform: scale(0.82);
+    }
 }
 
 .node-card {

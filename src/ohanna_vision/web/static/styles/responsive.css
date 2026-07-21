@@ -542,3 +542,10 @@
         transition-duration: 1ms !important;
     }
 }
+
+@media (prefers-reduced-motion: reduce) {
+    .connection-status--connecting
+    .connection-status__indicator {
+        animation: none;
+    }
+}
