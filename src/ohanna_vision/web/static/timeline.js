@@ -484,12 +484,46 @@ export class TimelineController {
         startedAt,
         endedAt,
     ) {
-        const position =
-            this.timelinePosition(
-                period.startedAt,
+        const visiblePeriod =
+            period.clippedTo(
                 startedAt,
                 endedAt,
             );
+
+        if (!visiblePeriod) {
+            return "";
+        }
+
+        const left =
+            this.timelinePosition(
+                visiblePeriod.startedAt,
+                startedAt,
+                endedAt,
+            );
+
+        const right =
+            this.timelinePosition(
+                visiblePeriod.endedAt,
+                startedAt,
+                endedAt,
+            );
+
+        const width =
+            Math.max(
+                right - left,
+                0.5,
+            );
+
+        const classes = [
+            "timeline-period",
+            `timeline-period--${period.status}`,
+        ];
+
+        if (period.isOpen) {
+            classes.push(
+                "timeline-period--open",
+            );
+        }
 
         const title = [
             formatDate(
@@ -507,10 +541,12 @@ export class TimelineController {
 
         return `
             <button
-                class="timeline-period
-                    timeline-period--${period.status}"
+                class="${classes.join(" ")}"
                 type="button"
-                style="left: ${position}%"
+                style="
+                    left: ${left}%;
+                    width: ${width}%;
+                "
                 title="${escapeHtml(title)}"
                 aria-label="${escapeHtml(title)}"
                 data-node-id="${escapeHtml(nodeId)}"

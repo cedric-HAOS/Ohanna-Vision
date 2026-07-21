@@ -1866,3 +1866,71 @@ def test_dashboard_cards_define_interactive_states() -> None:
         in responsive_response.text
     )
     assert "transform: none;" in responsive_response.text
+
+
+def test_timeline_header_uses_design_system_tokens() -> None:
+    """Timeline controls and legend must use the Design System."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+
+    assert ".timeline-header {" in response.text
+    assert ".timeline-range {" in response.text
+    assert ".timeline-range__button--active {" in response.text
+    assert ".timeline-range__button:focus-visible {" in response.text
+    assert ".timeline-legend {" in response.text
+
+    assert "var(--ohanna-brand-primary-soft)" in response.text
+    assert "var(--ohanna-health-healthy-soft)" in response.text
+    assert "var(--ohanna-health-degraded-soft)" in response.text
+    assert "var(--ohanna-health-critical-soft)" in response.text
+    assert "var(--ohanna-health-unknown-soft)" in response.text
+
+def test_timeline_axis_and_rows_use_design_system() -> None:
+    """Timeline axis and rows must use the Design System."""
+    response = make_client().get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert response.status_code == 200
+
+    assert ".timeline-axis {" in response.text
+    assert ".timeline-axis__labels {" in response.text
+    assert ".timeline-row {" in response.text
+    assert ".timeline-row__node:focus-visible {" in response.text
+    assert ".timeline-row__track {" in response.text
+    assert "#timeline-content {" in response.text
+
+    assert "var(--ohanna-font-family-mono)" in response.text
+    assert "var(--ohanna-background-canvas)" in response.text
+    assert "var(--ohanna-border-subtle)" in response.text
+    assert "var(--ohanna-health-healthy-soft)" in response.text
+    assert "var(--ohanna-health-degraded-soft)" in response.text
+    assert "var(--ohanna-health-critical-soft)" in response.text
+    assert "var(--ohanna-health-unknown-soft)" in response.text
+
+def test_timeline_renders_period_durations() -> None:
+    """Timeline periods must render as duration segments."""
+    client = make_client()
+
+    javascript_response = client.get(
+        "/ui/timeline.js",
+    )
+    stylesheet_response = client.get(
+        "/ui/styles/timeline.css",
+    )
+
+    assert javascript_response.status_code == 200
+    assert stylesheet_response.status_code == 200
+
+    assert "period.clippedTo(" in javascript_response.text
+    assert "right - left" in javascript_response.text
+    assert "width: ${width}%;" in javascript_response.text
+    assert '"timeline-period--open"' in javascript_response.text
+
+    assert ".timeline-period--open {" in stylesheet_response.text
+    assert ".timeline-period--open::after {" in stylesheet_response.text
+    assert "min-width: 0.5%;" in stylesheet_response.text
+    assert "transform: translateY(-50%);" in stylesheet_response.text
