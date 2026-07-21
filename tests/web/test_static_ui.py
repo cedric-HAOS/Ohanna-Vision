@@ -1685,3 +1685,21 @@ def test_topology_zoom_in_uses_official_icon() -> None:
         "../assets/icons/actions/plus.svg"
         in css_response.text
     )
+
+def test_dashboard_header_uses_official_refresh_icon() -> None:
+    """Dashboard header refresh action must use the official Ohanna icon."""
+    client = make_client()
+
+    html_response = client.get("/ui/")
+    css_response = client.get("/ui/styles/dashboard.css")
+
+    assert html_response.status_code == 200
+    assert css_response.status_code == 200
+
+    assert "dashboard-header__refresh-button" in html_response.text
+    assert "dashboard-header__refresh-icon" in html_response.text
+
+    assert (
+        "../assets/icons/administration/refresh-cw.svg"
+        in css_response.text
+    )
