@@ -14,19 +14,17 @@
 }
 
 .sidebar-brand__icon {
+    display: grid;
     width: 2.75rem;
     height: 2.75rem;
     flex: 0 0 2.75rem;
-    overflow: hidden;
-
-    border-radius: var(--ohanna-radius-md);
-    box-shadow: var(--ohanna-shadow-sm);
+    place-items: center;
 }
 
 .sidebar-brand__icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 2.4rem;
+    height: 2.4rem;
+    object-fit: contain;
 }
 
 .sidebar-brand > div:last-child {

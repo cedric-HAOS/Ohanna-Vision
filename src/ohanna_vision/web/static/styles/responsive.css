@@ -74,7 +74,7 @@
         grid-template-rows:
             auto
             minmax(0, 1fr)
-            6rem;
+            minmax(8.5rem, auto);
         grid-template-areas:
             "kpis kpis"
             "topology right-panel"
@@ -541,11 +541,14 @@
         animation-iteration-count: 1 !important;
         transition-duration: 1ms !important;
     }
-}
 
-@media (prefers-reduced-motion: reduce) {
     .connection-status--connecting
     .connection-status__indicator {
         animation: none;
+    }
+
+    .dashboard-kpi--updating
+    .dashboard-kpi__value {
+        transform: none;
     }
 }

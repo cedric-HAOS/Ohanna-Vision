@@ -1705,11 +1705,14 @@ def test_dashboard_header_uses_official_refresh_icon() -> None:
     )
 
 def test_sidebar_uses_official_brand_asset() -> None:
-    """Sidebar brand must use the existing official Ohanna asset."""
+    """Sidebar brand must use the official Ohanna symbol."""
     response = make_client().get("/ui/")
 
     assert response.status_code == 200
-    assert 'src="/ui/favicon.svg"' in response.text
+    assert (
+        'src="/ui/assets/logos/symbol.svg"'
+        in response.text
+    )
     assert 'class="sidebar-brand__icon"' in response.text
 
 
@@ -1768,3 +1771,98 @@ def test_sidebar_version_uses_discrete_footer_styles() -> None:
     assert ".sidebar-version__product {" in response.text
     assert ".sidebar-version__number {" in response.text
     assert "var(--ohanna-font-family-mono)" in response.text
+
+def test_official_sidebar_symbol_is_available() -> None:
+    """The official Ohanna symbol must be served."""
+    response = make_client().get(
+        "/ui/assets/logos/symbol.svg",
+    )
+
+    assert response.status_code == 200
+    assert "image/svg+xml" in response.headers["content-type"]
+
+
+def test_dashboard_cards_use_design_system_surfaces() -> None:
+    """Dashboard cards must use official Design System surfaces."""
+    client = make_client()
+
+    dashboard_response = client.get("/ui/styles/dashboard.css")
+    components_response = client.get("/ui/styles/components.css")
+
+    assert dashboard_response.status_code == 200
+    assert components_response.status_code == 200
+
+    assert "var(--ohanna-background-surface)" in dashboard_response.text
+    assert "var(--ohanna-border-subtle)" in dashboard_response.text
+    assert "var(--ohanna-radius-md)" in dashboard_response.text
+    assert "var(--ohanna-shadow-sm)" in dashboard_response.text
+
+    assert "var(--ohanna-health-critical-soft)" in components_response.text
+
+
+def test_dashboard_kpis_use_design_system_tokens() -> None:
+    """Dashboard KPIs must use the official Design System tokens."""
+    response = make_client().get(
+        "/ui/styles/dashboard.css",
+    )
+
+    assert response.status_code == 200
+
+    assert ".dashboard-kpi {" in response.text
+    assert "var(--ohanna-background-surface-raised)" in response.text
+    assert "var(--ohanna-border-subtle)" in response.text
+    assert "var(--ohanna-shadow-sm)" in response.text
+    assert "var(--ohanna-health-healthy)" in response.text
+    assert "var(--ohanna-health-degraded)" in response.text
+    assert "var(--ohanna-health-critical)" in response.text
+    assert "font-variant-numeric: tabular-nums;" in response.text
+
+
+def test_side_panel_cards_use_design_system_tokens() -> None:
+    """Side panel cards must use official Design System tokens."""
+    response = make_client().get(
+        "/ui/styles/dashboard.css",
+    )
+
+    assert response.status_code == 200
+
+    assert ".side-panel-card {" in response.text
+    assert ".active-alert {" in response.text
+    assert ".processing-indicator {" in response.text
+
+    assert "var(--ohanna-background-surface-raised)" in response.text
+    assert "var(--ohanna-health-healthy-soft)" in response.text
+    assert "var(--ohanna-health-degraded)" in response.text
+    assert "var(--ohanna-health-critical)" in response.text
+    assert "font-variant-numeric: tabular-nums;" in response.text
+
+def test_dashboard_cards_define_interactive_states() -> None:
+    """Dashboard cards must expose consistent interaction states."""
+    client = make_client()
+
+    dashboard_response = client.get(
+        "/ui/styles/dashboard.css",
+    )
+    responsive_response = client.get(
+        "/ui/styles/responsive.css",
+    )
+
+    assert dashboard_response.status_code == 200
+    assert responsive_response.status_code == 200
+
+    assert ".dashboard-kpi--updating {" in dashboard_response.text
+    assert ".dashboard-kpi--warning {" in dashboard_response.text
+    assert ".dashboard-kpi--critical {" in dashboard_response.text
+
+    assert ".active-alert:hover {" in dashboard_response.text
+    assert ".active-alert:focus-visible {" in dashboard_response.text
+    assert ".active-alert:active {" in dashboard_response.text
+
+    assert ".processing-indicator--error {" in dashboard_response.text
+    assert "var(--ohanna-health-critical-soft)" in dashboard_response.text
+
+    assert (
+        ".dashboard-kpi--updating"
+        in responsive_response.text
+    )
+    assert "transform: none;" in responsive_response.text

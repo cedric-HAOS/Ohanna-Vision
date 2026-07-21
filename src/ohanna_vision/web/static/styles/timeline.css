@@ -254,30 +254,24 @@
 }
 
 .dashboard-timeline {
-    animation-delay: 200ms;
-}
+    display: grid;
+    min-width: 0;
+    min-height: 8.5rem;
+    grid-column: 1 / -1;
+    grid-template-rows:
+        auto
+        auto
+        minmax(2rem, 1fr);
 
-.dashboard-timeline {
+    padding: 0;
+    overflow: hidden;
+
     animation:
         dashboard-enter
         var(--transition-slow)
         var(--easing-standard)
         both;
-}
-
-.dashboard-timeline {
-    display: grid;
-    min-width: 0;
-    min-height: 14rem;
-    grid-template-rows: auto auto minmax(0, 1fr);
-    padding: 0;
-    overflow: hidden;
-}
-
-.dashboard-timeline {
-    grid-column: 1 / -1;
-    min-height: 10rem;
-    padding: 0.8rem;
+    animation-delay: 200ms;
 }
 
 .timeline-empty--error {
