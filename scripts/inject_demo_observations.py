@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -113,6 +114,70 @@ def build_observation(
     }
 
 
+def load_observations_file(path: Path) -> list[dict[str, Any]]:
+    """Load deterministic demonstration observations from JSON."""
+    with path.open(encoding="utf-8") as stream:
+        payload = json.load(stream)
+
+    if not isinstance(payload, list):
+        raise ValueError("Le fichier de démonstration doit contenir une liste JSON.")
+
+    now = datetime.now(UTC)
+    observations: list[dict[str, Any]] = []
+
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            raise ValueError(f"Observation #{index + 1} invalide.")
+
+        observation = dict(item)
+        age_minutes = observation.pop("age_minutes", None)
+
+        if age_minutes is not None:
+            observation["observed_at"] = (
+                now - timedelta(minutes=float(age_minutes))
+            ).isoformat()
+
+        if "observed_at" not in observation:
+            raise ValueError(
+                f"Observation #{index + 1}: observed_at ou age_minutes requis."
+            )
+
+        observations.append(observation)
+
+    return observations
+
+
+def inject_observations_from_file(
+    *,
+    base_url: str,
+    path: Path,
+) -> None:
+    """Inject the observations declared in one JSON fixture."""
+    observations_url = f"{base_url}/api/observations"
+    observations = load_observations_file(path)
+
+    print("Injection du scénario de démonstration")
+    print("-------------------------------------")
+    print(f"Serveur : {base_url}")
+    print(f"Fichier : {path}")
+    print()
+
+    for observation in sorted(
+        observations,
+        key=lambda item: item["observed_at"],
+    ):
+        status_code = post_json(observations_url, observation)
+        print(
+            f"[{status_code}] "
+            f"{observation['node_id']:<20} "
+            f"{observation['status']:<12} "
+            f"{observation['capability_id']}"
+        )
+
+    print()
+    print(f"{len(observations)} observations injectées.")
+
+
 def inject_observations(
     *,
     base_url: str,
@@ -187,6 +252,15 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--file",
+        type=Path,
+        help=(
+            "Fichier JSON d’observations déterministes. "
+            "Les entrées peuvent utiliser age_minutes à la place de observed_at."
+        ),
+    )
+
+    parser.add_argument(
         "--observations-per-node",
         type=int,
         default=5,
@@ -206,10 +280,16 @@ def main() -> None:
         )
 
     try:
-        inject_observations(
-            base_url=arguments.base_url.rstrip("/"),
-            observations_per_node=(arguments.observations_per_node),
-        )
+        if arguments.file is not None:
+            inject_observations_from_file(
+                base_url=arguments.base_url.rstrip("/"),
+                path=arguments.file,
+            )
+        else:
+            inject_observations(
+                base_url=arguments.base_url.rstrip("/"),
+                observations_per_node=(arguments.observations_per_node),
+            )
     except HTTPError as error:
         detail = error.read().decode(
             "utf-8",

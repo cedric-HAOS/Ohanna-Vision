@@ -48,6 +48,9 @@ class TopologyCanvas {
         this.layout = null;
         this.deviceIndex = new Map();
         this.deviceHealth = {};
+        this.toolsPanelCollapsed = Boolean(
+            window.matchMedia?.("(max-width: 1199px)").matches,
+        );
         this.resizeObserver = new ResizeObserver(() => {
             if (!this.svg || !this.viewBox) {
                 return;
@@ -97,7 +100,9 @@ class TopologyCanvas {
             positions,
         );
 
-        this.container.replaceChildren(svg);
+        const toolsPanel = this.createToolsPanel();
+
+        this.container.replaceChildren(svg, toolsPanel);
 
         this.resizeObserver.disconnect();
         this.resizeObserver.observe(this.container);
@@ -111,6 +116,129 @@ class TopologyCanvas {
                 );
             }
         });
+    }
+
+
+    createToolsPanel() {
+        const panel = document.createElement("aside");
+        const controls = this.findTopologyControls();
+        const header = document.createElement("div");
+        const toggle = document.createElement("button");
+        const help = document.createElement("div");
+
+        panel.className = "topology-tools-panel";
+        panel.setAttribute(
+            "aria-label",
+            "Outils et aide à la lecture de la topologie",
+        );
+
+        if (this.toolsPanelCollapsed) {
+            panel.classList.add("topology-tools-panel--collapsed");
+        }
+
+        header.className = "topology-tools-panel__header";
+
+        if (controls) {
+            header.append(controls);
+        }
+
+        toggle.className = "topology-tools-panel__toggle";
+        toggle.type = "button";
+        toggle.setAttribute(
+            "aria-label",
+            this.toolsPanelCollapsed
+                ? "Afficher l’aide à la lecture"
+                : "Masquer l’aide à la lecture",
+        );
+        toggle.setAttribute(
+            "aria-expanded",
+            String(!this.toolsPanelCollapsed),
+        );
+        toggle.innerHTML = `
+            <span aria-hidden="true">⌄</span>
+        `;
+        toggle.addEventListener("click", () => {
+            this.toggleToolsPanel(panel, toggle);
+        });
+        header.append(toggle);
+
+        help.className = "topology-tools-panel__help";
+        help.innerHTML = `
+            <strong class="topology-tools-panel__title">
+                Aide à la lecture
+            </strong>
+            <div class="topology-tools-panel__sections">
+                <section class="topology-tools-panel__section">
+                    <span class="topology-tools-panel__heading">
+                        Liaisons
+                    </span>
+                    <ul class="topology-tools-panel__list">
+                        <li>
+                            <span class="topology-tools-panel__line topology-tools-panel__line--fiber"></span>
+                            Fibre
+                        </li>
+                        <li>
+                            <span class="topology-tools-panel__line topology-tools-panel__line--wifi"></span>
+                            Wi-Fi
+                        </li>
+                        <li>
+                            <span class="topology-tools-panel__line topology-tools-panel__line--ethernet-1g"></span>
+                            Ethernet 1 Gb/s
+                        </li>
+                        <li>
+                            <span class="topology-tools-panel__line topology-tools-panel__line--ethernet-2-5g"></span>
+                            Ethernet 2,5 Gb/s
+                        </li>
+                        <li>
+                            <span class="topology-tools-panel__line topology-tools-panel__line--ethernet-10g"></span>
+                            Ethernet 10 Gb/s
+                        </li>
+                    </ul>
+                </section>
+                <section class="topology-tools-panel__section">
+                    <span class="topology-tools-panel__heading">
+                        États
+                    </span>
+                    <ul class="topology-tools-panel__list">
+                        <li><span class="topology-tools-panel__state topology-tools-panel__state--healthy"></span>Sain</li>
+                        <li><span class="topology-tools-panel__state topology-tools-panel__state--degraded"></span>Dégradé</li>
+                        <li><span class="topology-tools-panel__state topology-tools-panel__state--unhealthy"></span>Critique</li>
+                        <li><span class="topology-tools-panel__state topology-tools-panel__state--unknown"></span>Inconnu</li>
+                    </ul>
+                </section>
+            </div>
+        `;
+
+        panel.append(header, help);
+
+        return panel;
+    }
+
+    findTopologyControls() {
+        return (
+            this.container
+                .closest(".topology-workspace")
+                ?.querySelector(".topology-controls")
+            ?? document.querySelector(".topology-controls")
+        );
+    }
+
+    toggleToolsPanel(panel, toggle) {
+        this.toolsPanelCollapsed = !this.toolsPanelCollapsed;
+        panel.classList.toggle(
+            "topology-tools-panel--collapsed",
+            this.toolsPanelCollapsed,
+        );
+        toggle.setAttribute(
+            "aria-expanded",
+            String(!this.toolsPanelCollapsed),
+        );
+        toggle.setAttribute(
+            "aria-label",
+            this.toolsPanelCollapsed
+                ? "Afficher l’aide à la lecture"
+                : "Masquer l’aide à la lecture",
+        );
     }
 
     renderError(message) {
@@ -278,13 +406,36 @@ class TopologyCanvas {
             width = height * viewportRatio;
         }
 
+        const mobileViewport = Boolean(
+            window.matchMedia?.("(max-width: 620px)").matches,
+        );
+        const compactViewport = Boolean(
+            window.matchMedia?.("(max-width: 1199px)").matches,
+        );
+        const compactMaximumWidth = mobileViewport
+            ? 960
+            : 1800;
+
+        if (
+            compactViewport
+            && width > compactMaximumWidth
+        ) {
+            width = compactMaximumWidth;
+            height = width / viewportRatio;
+        }
+
         const centerX =
             content.x + content.width / 2;
         const centerY =
             content.y + content.height / 2;
+        const alignFromNetworkEntry =
+            compactViewport
+            && width < content.width + padding * 2;
 
         this.viewBox = {
-            x: centerX - width / 2,
+            x: alignFromNetworkEntry
+                ? content.x - padding
+                : centerX - width / 2,
             y: centerY - height / 2,
             width,
             height,
@@ -810,6 +961,18 @@ class TopologyCanvas {
             link.source_device_id;
         group.dataset.targetDeviceId =
             link.target_device_id;
+        group.dataset.visualKind =
+            normalizedVisualKind;
+
+        const bandwidth = Number(
+            link.bandwidth_mbps,
+        );
+
+        if (Number.isFinite(bandwidth)) {
+            group.dataset.bandwidthMbps =
+                String(bandwidth);
+        }
+
         group.style.setProperty(
             "--topology-order",
             order,
@@ -856,12 +1019,27 @@ class TopologyCanvas {
     linkVisualKind(link) {
         if (
             link.metadata?.role === "internet_uplink"
+            || link.metadata?.medium === "fiber"
         ) {
-            return "wan";
+            return "fiber";
         }
 
-        if (link.metadata?.medium === "fiber") {
-            return "fiber";
+        if (link.kind === "ethernet") {
+            const bandwidth = Number(
+                link.bandwidth_mbps ?? 0,
+            );
+
+            if (bandwidth >= 10000) {
+                return "ethernet-10g";
+            }
+
+            if (bandwidth >= 2500) {
+                return "ethernet-2-5g";
+            }
+
+            if (bandwidth >= 1000) {
+                return "ethernet-1g";
+            }
         }
 
         return link.kind ?? "other";
@@ -1061,6 +1239,10 @@ class TopologyCanvas {
             "--topology-order",
             order,
         );
+        group.style.setProperty(
+            "--topology-motion-delay",
+            `${this.deviceMotionDelay(device.device_id)}s`,
+        );
         group.setAttribute("tabindex", "0");
 
         if (device.device_id === this.selectedDeviceId) {
@@ -1075,7 +1257,6 @@ class TopologyCanvas {
             + `${position.y - height / 2}`
             + `)`,
         );
-        group.setAttribute("role", "group");
         group.setAttribute("role", "button");
         group.setAttribute("aria-selected", "false");
         group.setAttribute(
@@ -1087,6 +1268,10 @@ class TopologyCanvas {
             ].join(", "),
         );
 
+        const title = this.createDeviceTitle(
+            device,
+            health,
+        );
         const halo = this.createDeviceHalo(
             width,
             height,
@@ -1095,7 +1280,6 @@ class TopologyCanvas {
             width,
             height,
         );
-        const accent = this.createDeviceAccent(height);
         const iconBackground =
             this.createIconBackground();
         const icon = this.createDeviceIcon(
@@ -1110,9 +1294,9 @@ class TopologyCanvas {
             this.createHealthIndicator(health);
 
         group.append(
+            title,
             halo,
             card,
-            accent,
             iconBackground,
             icon,
             kind,
@@ -1145,6 +1329,33 @@ class TopologyCanvas {
         return group;
     }
 
+    deviceMotionDelay(deviceId) {
+        const normalizedId = String(deviceId ?? "");
+        let seed = 0;
+
+        for (const character of normalizedId) {
+            seed = (seed + character.codePointAt(0)) % 5;
+        }
+
+        return -(seed * 0.45);
+    }
+
+
+    createDeviceTitle(device, health) {
+        const title = this.createSvgElement("title");
+        const details = [
+            device.label,
+            this.formatKind(device.kind),
+            this.deviceRole(device),
+            this.deviceTechnicalDetail(device),
+            this.formatHealthStatus(health),
+        ].filter(Boolean);
+
+        title.textContent = details.join(" — ");
+
+        return title;
+    }
+
     createDeviceHalo(width, height) {
         const halo = this.createSvgElement("rect");
 
@@ -1173,21 +1384,6 @@ class TopologyCanvas {
         );
 
         return card;
-    }
-
-    createDeviceAccent(height) {
-        const accent = this.createSvgElement("rect");
-
-        accent.classList.add(
-            "topology-device__accent",
-        );
-        accent.setAttribute("x", 0);
-        accent.setAttribute("y", 18);
-        accent.setAttribute("width", 5);
-        accent.setAttribute("height", height - 36);
-        accent.setAttribute("rx", 2.5);
-
-        return accent;
     }
 
     createIconBackground() {
@@ -1239,6 +1435,22 @@ class TopologyCanvas {
     }
 
     deviceDetail(device) {
+        return this.deviceTechnicalDetail(device)
+            ?? this.deviceRole(device)
+            ?? device.device_id;
+    }
+
+    deviceRole(device) {
+        if (!device.metadata?.role) {
+            return null;
+        }
+
+        return this.formatMetadataLabel(
+            device.metadata.role,
+        );
+    }
+
+    deviceTechnicalDetail(device) {
         if (device.address) {
             return device.address;
         }
@@ -1251,13 +1463,7 @@ class TopologyCanvas {
             return device.node_id;
         }
 
-        if (device.metadata?.role) {
-            return this.formatMetadataLabel(
-                device.metadata.role,
-            );
-        }
-
-        return device.device_id;
+        return null;
     }
 
     deviceStatus(device) {
@@ -1277,6 +1483,13 @@ class TopologyCanvas {
             status ?? "unknown",
         ).toLowerCase();
 
+        const aliases = {
+            unavailable: "unhealthy",
+            stale: "degraded",
+        };
+        const visualStatus = aliases[normalized]
+            ?? normalized;
+
         const supportedStatuses = new Set([
             "healthy",
             "degraded",
@@ -1284,8 +1497,8 @@ class TopologyCanvas {
             "unknown",
         ]);
 
-        return supportedStatuses.has(normalized)
-            ? normalized
+        return supportedStatuses.has(visualStatus)
+            ? visualStatus
             : "unknown";
     }
 

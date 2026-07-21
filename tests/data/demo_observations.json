@@ -1,0 +1,65 @@
+[
+  {
+    "age_minutes": 180,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "rpi-link",
+    "status": "degraded",
+    "latency_ms": 145.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 120,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "rpi-link",
+    "status": "healthy",
+    "latency_ms": 12.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 180,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "ha-green",
+    "status": "healthy",
+    "latency_ms": 9.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 75,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "ha-green",
+    "status": "degraded",
+    "latency_ms": 220.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 30,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "ha-green",
+    "status": "unavailable",
+    "latency_ms": null,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 180,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "rpi-zwave",
+    "status": "healthy",
+    "latency_ms": 16.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  },
+  {
+    "age_minutes": 45,
+    "capability_id": "system.health",
+    "service_id": "host-monitoring",
+    "node_id": "rpi-zwave",
+    "status": "degraded",
+    "latency_ms": 185.0,
+    "metadata": {"source": "demo", "scenario": "quiet-monitoring"}
+  }
+]

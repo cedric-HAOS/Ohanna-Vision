@@ -64,8 +64,8 @@
 }
 
 .topology-link {
-    --link-color: var(--unknown);
-    --link-glow: rgb(141 153 174 / 10%);
+    --link-color: #8fa4b8;
+    --link-glow: rgb(143 164 184 / 12%);
     --link-width: 4;
     opacity: 0;
     animation:
@@ -101,22 +101,48 @@
     stroke-width: 4;
 }
 
-/* Link technologies are identified by their stroke pattern.
- * Health remains the primary colour signal. */
+/* Link technology is identified by its stroke pattern.
+ * Negotiated capacity is identified primarily by colour and
+ * secondarily by a restrained width progression. Device health
+ * remains visible on equipment cards and never recolours links. */
 .topology-link--visual-ethernet {
-    --link-width: 4.5;
+    --link-color: #8fa4b8;
+    --link-glow: rgb(143 164 184 / 12%);
+    --link-width: 3.25;
+}
+
+.topology-link--visual-ethernet-1g {
+    --link-color: #8fa4b8;
+    --link-glow: rgb(143 164 184 / 12%);
+    --link-width: 3.25;
+}
+
+.topology-link--visual-ethernet-2-5g {
+    --link-color: #5ba8ff;
+    --link-glow: rgb(91 168 255 / 14%);
+    --link-width: 4;
+}
+
+.topology-link--visual-ethernet-10g {
+    --link-color: #28d7c0;
+    --link-glow: rgb(40 215 192 / 16%);
+    --link-width: 5;
+}
+
+.topology-link--visual-wifi {
+    --link-color: #38bdf8;
+    --link-glow: rgb(56 189 248 / 14%);
+    --link-width: 3.5;
 }
 
 .topology-link--visual-wifi .topology-link__path {
     stroke-dasharray: 2 12;
 }
 
-.topology-link--visual-wan .topology-link__path {
-    stroke-dasharray: 18 12;
-}
-
 .topology-link--visual-fiber {
-    --link-width: 7;
+    --link-color: #a78bfa;
+    --link-glow: rgb(167 139 250 / 16%);
+    --link-width: 5.5;
 }
 
 .topology-link--visual-wireguard .topology-link__path {
@@ -145,28 +171,8 @@
     stroke-dasharray: 6 8;
 }
 
-.topology-link--health-healthy {
-    --link-color: var(--healthy);
-    --link-glow: rgb(71 209 140 / 12%);
-}
-
-.topology-link--health-degraded {
-    --link-color: var(--degraded);
-    --link-glow: rgb(246 196 83 / 12%);
-}
-
-.topology-link--health-unhealthy {
-    --link-color: var(--unhealthy);
-    --link-glow: rgb(255 107 107 / 14%);
-}
-
-.topology-link--health-unknown {
-    --link-color: var(--unknown);
-    --link-glow: rgb(141 153 174 / 10%);
-}
-
 .topology-device {
-    --device-accent: var(--unknown);
+    --device-accent: var(--accent);
     --device-health: var(--unknown);
     --device-health-background:
         rgb(141 153 174 / 12%);
@@ -206,10 +212,6 @@
         transform 160ms ease;
 }
 
-.topology-device__accent {
-    fill: var(--device-health);
-}
-
 .topology-device__icon-background {
     fill: rgb(125 162 255 / 10%);
     stroke: var(--device-accent);
@@ -240,21 +242,27 @@
 
 .topology-device__kind {
     fill: var(--device-accent);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.11em;
     text-transform: uppercase;
 }
 
 .topology-device__label {
     fill: var(--text);
-    font-size: 22px;
-    font-weight: 750;
+    font-size: 21px;
+    font-weight: 760;
+    letter-spacing: -0.01em;
 }
 
 .topology-device__detail {
-    fill: var(--text-muted);
-    font-size: 14px;
+    fill: color-mix(
+        in srgb,
+        var(--text-muted) 92%,
+        var(--device-accent)
+    );
+    font-size: 13px;
+    font-weight: 500;
 }
 
 .topology-device:hover .topology-device__card,
@@ -275,51 +283,6 @@
 
 .topology-device:focus-visible .topology-device__halo {
     opacity: 0.42;
-}
-
-.topology-device--internet {
-    --device-accent: #58a6ff;
-}
-
-.topology-device--router {
-    --device-accent: #8d7dff;
-}
-
-.topology-device--switch {
-    --device-accent: #47d18c;
-}
-
-.topology-device--access-point {
-    --device-accent: #f6c453;
-}
-
-.topology-device--raspberry-pi {
-    --device-accent: #f2769a;
-}
-
-.topology-device--home-assistant {
-    --device-accent: #41bdf5;
-}
-
-.topology-device--server,
-.topology-device--storage {
-    --device-accent: #58d4e8;
-}
-
-.topology-device--camera {
-    --device-accent: #c393ff;
-}
-
-.topology-device--smart-device {
-    --device-accent: #ff9966;
-}
-
-.topology-device--solar {
-    --device-accent: #ffd35a;
-}
-
-.topology-device--computer {
-    --device-accent: #7da2ff;
 }
 
 .topology-device--health-healthy {
@@ -350,12 +313,28 @@
     --device-halo: rgb(141 153 174 / 18%);
 }
 
+.topology-device--health-healthy .topology-device__halo {
+    animation:
+        topology-halo-breathe 5s ease-in-out infinite;
+    animation-delay: var(--topology-motion-delay, 0s);
+}
+
 .topology-device--health-degraded .topology-device__halo {
-    animation: topology-halo-pulse 2.8s ease-in-out infinite;
+    animation:
+        topology-halo-pulse 2s ease-in-out infinite;
+    animation-delay: var(--topology-motion-delay, 0s);
 }
 
 .topology-device--health-unhealthy .topology-device__halo {
-    animation: topology-halo-alert 1.8s ease-in-out infinite;
+    animation:
+        topology-halo-alert 900ms ease-in-out infinite;
+    animation-delay: var(--topology-motion-delay, 0s);
+}
+
+.topology-device:hover .topology-device__halo,
+.topology-device:focus-visible .topology-device__halo,
+.topology-device--selected .topology-device__halo {
+    animation-play-state: paused;
 }
 
 .topology-device__health {
@@ -363,9 +342,13 @@
 }
 
 .topology-device__health-background {
-    fill: var(--device-health-background);
+    fill: color-mix(
+        in srgb,
+        var(--device-health-background) 88%,
+        rgb(8 15 28 / 76%)
+    );
     stroke: var(--device-health);
-    stroke-width: 1;
+    stroke-width: 1.25;
 }
 
 .topology-device__health-indicator {
@@ -376,8 +359,8 @@
     dominant-baseline: middle;
     fill: var(--device-health);
     font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
+    font-weight: 850;
+    letter-spacing: 0.055em;
 }
 
 .topology-workspace {
@@ -461,17 +444,24 @@
     }
 }
 
+@keyframes topology-halo-breathe {
+    50% {
+        opacity: 0.28;
+        transform: scale(1.012);
+    }
+}
+
 @keyframes topology-halo-pulse {
     50% {
-        opacity: 0.4;
+        opacity: 0.42;
         transform: scale(1.025);
     }
 }
 
 @keyframes topology-halo-alert {
     50% {
-        opacity: 0.58;
-        transform: scale(1.04);
+        opacity: 0.62;
+        transform: scale(1.045);
     }
 }
 
@@ -763,10 +753,10 @@
 }
 
 .topology-device__card {
-    fill: rgb(17 27 47 / 97%);
+    fill: rgb(17 27 47 / 98%);
     stroke: color-mix(
         in srgb,
-        var(--device-health) 72%,
+        var(--device-health) 68%,
         var(--border)
     );
 }
@@ -892,3 +882,241 @@
         font-size: 0.7rem;
     }
 }
+
+/* 3.8.2.6.1 — Unified topology tools panel. */
+.topology-tools-panel {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 7;
+    width: min(17rem, calc(100% - 1.5rem));
+    overflow: hidden;
+    border: 1px solid rgb(91 113 148 / 48%);
+    border-radius: 14px;
+    background: rgb(11 19 34 / 92%);
+    box-shadow: 0 14px 34px rgb(0 0 0 / 28%);
+    color: var(--text-muted);
+    backdrop-filter: blur(10px);
+}
+
+.topology-tools-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.55rem;
+}
+
+.topology-tools-panel .topology-controls {
+    position: static;
+    display: flex;
+    flex: 1 1 auto;
+    gap: 0.4rem;
+}
+
+.topology-tools-panel .topology-control {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    padding-inline: 0.6rem;
+    box-shadow: none;
+}
+
+.topology-tools-panel__toggle {
+    display: grid;
+    flex: 0 0 2.2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgb(71 87 124 / 75%);
+    border-radius: 10px;
+    color: var(--text-muted);
+    background: rgb(12 20 36 / 88%);
+    cursor: pointer;
+    font: inherit;
+}
+
+.topology-tools-panel__toggle:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface-elevated);
+}
+
+.topology-tools-panel__toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.topology-tools-panel__toggle span {
+    display: block;
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform var(--transition-normal, 250ms) ease;
+}
+
+.topology-tools-panel__help {
+    max-height: 18rem;
+    padding: 0.75rem 0.85rem 0.85rem;
+    border-top: 1px solid rgb(91 113 148 / 30%);
+    opacity: 1;
+    transition:
+        max-height var(--transition-normal, 250ms) ease,
+        padding var(--transition-normal, 250ms) ease,
+        border-color var(--transition-normal, 250ms) ease,
+        opacity var(--transition-fast, 150ms) ease;
+}
+
+.topology-tools-panel--collapsed .topology-tools-panel__help {
+    max-height: 0;
+    padding-block: 0;
+    border-color: transparent;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.topology-tools-panel--collapsed .topology-tools-panel__toggle span {
+    transform: rotate(-90deg);
+}
+
+.topology-tools-panel__title,
+.topology-tools-panel__heading {
+    display: block;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.topology-tools-panel__title {
+    margin-bottom: 0.7rem;
+    font-size: 0.72rem;
+}
+
+.topology-tools-panel__sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.topology-tools-panel__section + .topology-tools-panel__section {
+    padding-left: 0.8rem;
+    border-left: 1px solid rgb(91 113 148 / 30%);
+}
+
+.topology-tools-panel__heading {
+    margin-bottom: 0.45rem;
+    color: var(--text-muted);
+    font-size: 0.62rem;
+}
+
+.topology-tools-panel__list {
+    display: grid;
+    gap: 0.38rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.68rem;
+}
+
+.topology-tools-panel__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.topology-tools-panel__line {
+    display: inline-block;
+    flex: 0 0 2rem;
+    height: 3px;
+    border-radius: 999px;
+    background: #8fa4b8;
+}
+
+.topology-tools-panel__line--fiber {
+    height: 5.5px;
+    background: #a78bfa;
+}
+
+.topology-tools-panel__line--wifi {
+    height: 0;
+    border-top: 3px dotted #38bdf8;
+    background: none;
+}
+
+.topology-tools-panel__line--ethernet-1g {
+    height: 3.25px;
+    background: #8fa4b8;
+}
+
+.topology-tools-panel__line--ethernet-2-5g {
+    height: 4px;
+    background: #5ba8ff;
+}
+
+.topology-tools-panel__line--ethernet-10g {
+    height: 5px;
+    background: #28d7c0;
+}
+
+.topology-tools-panel__state {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 0.68rem;
+    height: 0.68rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: color-mix(in srgb, currentColor 20%, transparent);
+}
+
+.topology-tools-panel__state--healthy {
+    color: var(--status-healthy, #2dd4bf);
+}
+
+.topology-tools-panel__state--degraded {
+    color: var(--status-degraded, #f6bd45);
+}
+
+.topology-tools-panel__state--unhealthy {
+    color: var(--status-unhealthy, #ff5e66);
+}
+
+.topology-tools-panel__state--unknown {
+    color: var(--status-unknown, #7f93a8);
+}
+
+@media (max-width: 620px) {
+    .topology-tools-panel {
+        top: 0.65rem;
+        left: 0.65rem;
+        width: min(15.5rem, calc(100% - 1.3rem));
+    }
+
+    .topology-tools-panel__header {
+        padding: 0.45rem;
+    }
+
+    .topology-tools-panel__help {
+        padding: 0.65rem 0.7rem 0.75rem;
+    }
+
+    .topology-tools-panel__sections {
+        gap: 0.6rem;
+    }
+
+    .topology-tools-panel__section + .topology-tools-panel__section {
+        padding-left: 0.6rem;
+    }
+
+    .topology-tools-panel__list {
+        font-size: 0.64rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .topology-tools-panel__help,
+    .topology-tools-panel__toggle span {
+        transition: none;
+    }
+}
+

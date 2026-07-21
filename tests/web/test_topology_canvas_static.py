@@ -256,8 +256,10 @@ def test_topology_canvas_styles_link_kinds() -> None:
 
     assert response.status_code == 200
     assert ".topology-link--visual-ethernet" in response.text
+    assert ".topology-link--visual-ethernet-1g" in response.text
+    assert ".topology-link--visual-ethernet-2-5g" in response.text
+    assert ".topology-link--visual-ethernet-10g" in response.text
     assert ".topology-link--visual-wifi" in response.text
-    assert ".topology-link--visual-wan" in response.text
     assert ".topology-link--visual-fiber" in response.text
     assert ".topology-link--visual-wireguard" in response.text
     assert ".topology-link--visual-mqtt" in response.text
@@ -266,8 +268,8 @@ def test_topology_canvas_styles_link_kinds() -> None:
 
 
 
-def test_topology_canvas_derives_wan_visual_style() -> None:
-    """The Internet uplink must receive the dedicated WAN style."""
+def test_topology_canvas_derives_fiber_and_bandwidth_styles() -> None:
+    """Links must expose fibre and negotiated Ethernet capacities."""
     client = make_client()
 
     response = client.get("/ui/topology_canvas.js")
@@ -275,7 +277,35 @@ def test_topology_canvas_derives_wan_visual_style() -> None:
     assert response.status_code == 200
     assert "linkVisualKind(link)" in response.text
     assert 'link.metadata?.role === "internet_uplink"' in response.text
+    assert 'return "fiber"' in response.text
+    assert 'return "ethernet-1g"' in response.text
+    assert 'return "ethernet-2-5g"' in response.text
+    assert 'return "ethernet-10g"' in response.text
     assert '`topology-link--visual-${normalizedVisualKind}`' in response.text
+    assert "group.dataset.visualKind" in response.text
+    assert "group.dataset.bandwidthMbps" in response.text
+
+
+def test_topology_links_use_capacity_colours() -> None:
+    """Link colours must communicate technology and bandwidth."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert ".topology-link--visual-fiber" in response.text
+    assert "--link-color: #a78bfa;" in response.text
+    assert ".topology-link--visual-wifi" in response.text
+    assert "--link-color: #38bdf8;" in response.text
+    assert ".topology-link--visual-ethernet-1g" in response.text
+    assert "--link-color: #8fa4b8;" in response.text
+    assert ".topology-link--visual-ethernet-2-5g" in response.text
+    assert "--link-color: #5ba8ff;" in response.text
+    assert ".topology-link--visual-ethernet-10g" in response.text
+    assert "--link-color: #28d7c0;" in response.text
+    assert ".topology-link--health-healthy {" not in response.text
+    assert ".topology-link--health-degraded {" not in response.text
+    assert ".topology-link--health-unhealthy {" not in response.text
 
 def test_topology_canvas_renders_only_directional_arrows() -> None:
     """Only genuinely directional links must display an arrow."""
@@ -416,3 +446,154 @@ def test_topology_controls_keep_touch_sized_targets() -> None:
     assert response.status_code == 200
     assert "min-width: 2.75rem" in response.text
     assert "height: 2.75rem" in response.text
+
+
+def test_topology_canvas_assigns_stable_motion_delay() -> None:
+    """Device halos must receive a stable desynchronisation delay."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "deviceMotionDelay(deviceId)" in response.text
+    assert "device.device_id" in response.text
+    assert '"--topology-motion-delay"' in response.text
+
+
+def test_topology_css_implements_quiet_monitoring() -> None:
+    """Only health halos must carry the quiet monitoring motion."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert "topology-halo-breathe 5s" in response.text
+    assert "topology-halo-pulse 2s" in response.text
+    assert "topology-halo-alert 900ms" in response.text
+    assert "animation-play-state: paused" in response.text
+    assert "prefers-reduced-motion: reduce" in response.text
+
+
+def test_topology_canvas_maps_domain_health_statuses_to_visual_states() -> None:
+    """Domain unavailable and stale states must use visible topology styles."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert 'unavailable: "unhealthy"' in response.text
+    assert 'stale: "degraded"' in response.text
+
+
+def test_topology_canvas_renders_premium_device_cards() -> None:
+    """Equipment cards must expose a rich but compact hierarchy."""
+    client = make_client()
+
+    javascript = client.get("/ui/topology_canvas.js")
+    stylesheet = client.get("/ui/styles/topology.css")
+
+    assert javascript.status_code == 200
+    assert stylesheet.status_code == 200
+    assert "createDeviceTitle(" in javascript.text
+    assert "deviceRole(device)" in javascript.text
+    assert "deviceTechnicalDetail(device)" in javascript.text
+    assert 'group.setAttribute("role", "button")' in javascript.text
+    assert "createDeviceAccent(" not in javascript.text
+    assert "--device-accent: var(--accent);" in stylesheet.text
+    assert ".topology-device--router {" not in stylesheet.text
+    assert "letter-spacing: -0.01em;" in stylesheet.text
+
+
+def test_topology_device_title_preserves_complete_information() -> None:
+    """Compact cards must retain full details in their SVG title."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert 'const title = this.createSvgElement("title")' in response.text
+    assert 'details.join(" — ")' in response.text
+
+
+
+def test_topology_canvas_preserves_card_readability_on_compact_screens() -> None:
+    """Compact screens must start with a readable, pannable viewport."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert 'window.matchMedia?.("(max-width: 620px)").matches' in response.text
+    assert 'window.matchMedia?.("(max-width: 1199px)").matches' in response.text
+    assert "compactMaximumWidth = mobileViewport" in response.text
+    assert "? 960" in response.text
+    assert ": 1800" in response.text
+    assert "alignFromNetworkEntry" in response.text
+    assert "content.x - padding" in response.text
+
+def test_topology_canvas_renders_unified_tools_panel() -> None:
+    """The topology must expose one unified controls and help panel."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "createToolsPanel()" in response.text
+    assert 'className = "topology-tools-panel"' in response.text
+    assert "findTopologyControls()" in response.text
+    assert 'closest(".topology-workspace")' in response.text
+    assert "Aide à la lecture" in response.text
+    assert "Liaisons" in response.text
+    assert "États" in response.text
+    assert "Fibre" in response.text
+    assert "Ethernet 1 Gb/s" in response.text
+    assert "Ethernet 2,5 Gb/s" in response.text
+    assert "Ethernet 10 Gb/s" in response.text
+    assert "WAN" not in response.text
+    assert "Équipements" not in response.text
+    assert "replaceChildren(svg, toolsPanel)" in response.text
+
+
+def test_topology_tools_panel_can_collapse() -> None:
+    """The reading help must be collapsible without hiding map controls."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert "toolsPanelCollapsed" in response.text
+    assert 'window.matchMedia?.("(max-width: 1199px)").matches' in response.text
+    assert "toggleToolsPanel(panel, toggle)" in response.text
+    assert '"aria-expanded"' in response.text
+    assert '"topology-tools-panel--collapsed"' in response.text
+    assert "Afficher l’aide à la lecture" in response.text
+    assert "Masquer l’aide à la lecture" in response.text
+
+
+def test_topology_tools_panel_is_fixed_and_responsive() -> None:
+    """The tools panel must remain fixed outside the zoomed SVG."""
+    client = make_client()
+
+    response = client.get("/ui/styles/topology.css")
+
+    assert response.status_code == 200
+    assert ".topology-tools-panel" in response.text
+    assert "position: absolute;" in response.text
+    assert "top: 0.75rem;" in response.text
+    assert "left: 0.75rem;" in response.text
+    assert ".topology-tools-panel .topology-controls" in response.text
+    assert "position: static;" in response.text
+    assert ".topology-tools-panel__line--fiber" in response.text
+    assert ".topology-tools-panel__line--wifi" in response.text
+    assert ".topology-tools-panel__line--ethernet-1g" in response.text
+    assert ".topology-tools-panel__line--ethernet-2-5g" in response.text
+    assert ".topology-tools-panel__line--ethernet-10g" in response.text
+    assert "background: #a78bfa;" in response.text
+    assert "border-top: 3px dotted #38bdf8;" in response.text
+    assert "background: #8fa4b8;" in response.text
+    assert "background: #5ba8ff;" in response.text
+    assert "background: #28d7c0;" in response.text
+    assert ".topology-tools-panel__line--wan" not in response.text
+    assert ".topology-tools-panel--collapsed" in response.text
+    assert "@media (max-width: 620px)" in response.text
+
