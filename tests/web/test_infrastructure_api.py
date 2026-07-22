@@ -196,3 +196,87 @@ def test_infrastructure_api_replaces_previous_projection(
 
     assert not topology.contains_device("first")
     assert topology.contains_device("second")
+
+def make_complete_topology_payload() -> dict[str, object]:
+    """Build an infrastructure payload with a complete topology."""
+    payload = make_payload()
+    payload["topology"] = {
+        "devices": [
+            {
+                "device_id": "internet",
+                "label": "Internet",
+                "kind": "internet",
+                "node_id": None,
+                "address": None,
+                "metadata": {},
+            },
+            {
+                "device_id": "infra-device",
+                "label": "INFRA-01",
+                "kind": "raspberry_pi",
+                "node_id": "infra-01",
+                "address": None,
+                "metadata": {},
+            },
+        ],
+        "links": [
+            {
+                "link_id": "internet-infra",
+                "source_device_id": "internet",
+                "target_device_id": "infra-device",
+                "kind": "ethernet",
+                "direction": "bidirectional",
+                "label": "WAN",
+                "bandwidth_mbps": 1000,
+                "metadata": {},
+            }
+        ],
+        "layouts": [
+            {
+                "layout_id": "physical",
+                "label": "Physical",
+                "kind": "physical",
+                "positions": {
+                    "internet": {
+                        "column": 0,
+                        "row": 1,
+                    },
+                    "infra-device": {
+                        "column": 1,
+                        "row": 1,
+                    },
+                },
+                "metadata": {},
+            }
+        ],
+        "metadata": {},
+    }
+    return payload
+
+
+def test_infrastructure_api_projects_complete_topology() -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.put(
+        "/api/infrastructure",
+        json=make_complete_topology_payload(),
+    )
+
+    assert response.status_code == 200
+
+    topology = client.get("/api/topology").json()
+
+    assert [
+        device["device_id"]
+        for device in topology["devices"]
+    ] == ["internet", "infra-device"]
+    assert topology["links"][0]["link_id"] == "internet-infra"
+    assert topology["layouts"][0]["positions"]["internet"] == {
+        "x": 150.0,
+        "y": 410.0,
+        "layer": 0,
+        "pinned": True,
+    }
+    assert topology["layouts"][0]["canvas_width"] == 600.0
+    assert topology["layouts"][0]["canvas_height"] == 560.0

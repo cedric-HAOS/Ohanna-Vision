@@ -5,11 +5,11 @@ from fastapi import APIRouter, Request, status
 from ohanna_vision.web.infrastructure_ingestion_response import (
     InfrastructureIngestionResponse,
 )
-from ohanna_vision.web.infrastructure_request import (
-    InfrastructureRequest,
-)
 from ohanna_vision.web.infrastructure_mapper import (
     InfrastructureMapper,
+)
+from ohanna_vision.web.infrastructure_request import (
+    InfrastructureRequest,
 )
 
 router = APIRouter(
