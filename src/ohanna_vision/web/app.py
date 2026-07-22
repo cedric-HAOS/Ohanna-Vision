@@ -46,6 +46,7 @@ def create_app(
     )
 
     app.state.configuration = resolved_configuration
+    app.state.infrastructure_snapshot = None
 
     if context is not None:
         app.state.context = context

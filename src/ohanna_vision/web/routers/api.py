@@ -12,6 +12,10 @@ from ohanna_vision.web.routers.timeline import (
     router as timeline_router,
 )
 
+from ohanna_vision.web.routers.infrastructure import (
+    router as infrastructure_router,
+)
+
 router = APIRouter(
     prefix="/api",
     tags=["api"],
@@ -33,3 +37,4 @@ def api_status() -> dict[str, str]:
 router.include_router(runtime_router)
 router.include_router(observations_router)
 router.include_router(timeline_router)
+router.include_router(infrastructure_router)

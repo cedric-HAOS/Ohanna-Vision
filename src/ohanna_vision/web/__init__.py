@@ -23,6 +23,16 @@ from ohanna_vision.web.observation_ingestion_response import (
 from ohanna_vision.web.observation_mapper import ObservationMapper
 from ohanna_vision.web.observation_request import ObservationRequest
 from ohanna_vision.web.websocket_hub import WebSocketHub
+from ohanna_vision.web.infrastructure_ingestion_response import (
+    InfrastructureIngestionResponse,
+)
+from ohanna_vision.web.infrastructure_request import (
+    InfrastructureEndpointRequest,
+    InfrastructureMetadataRequest,
+    InfrastructureNodeRequest,
+    InfrastructureRequest,
+    InfrastructureServiceRequest,
+)
 
 __all__ = [
     "ApplicationContext",
@@ -44,4 +54,10 @@ __all__ = [
     "get_observation_processor",
     "get_timer",
     "ObservationIngestionResponse",
+    "InfrastructureEndpointRequest",
+    "InfrastructureIngestionResponse",
+    "InfrastructureMetadataRequest",
+    "InfrastructureNodeRequest",
+    "InfrastructureRequest",
+    "InfrastructureServiceRequest",
 ]
