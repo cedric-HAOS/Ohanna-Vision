@@ -8,6 +8,9 @@ from ohanna_vision.web.infrastructure_ingestion_response import (
 from ohanna_vision.web.infrastructure_request import (
     InfrastructureRequest,
 )
+from ohanna_vision.web.infrastructure_mapper import (
+    InfrastructureMapper,
+)
 
 router = APIRouter(
     prefix="/infrastructure",
@@ -24,10 +27,18 @@ async def ingest_infrastructure(
     request: Request,
     infrastructure_request: InfrastructureRequest,
 ) -> InfrastructureIngestionResponse:
-    """Store the latest complete infrastructure snapshot."""
+    """Store and project the latest infrastructure snapshot."""
+    topology = InfrastructureMapper.to_topology(
+        infrastructure_request,
+        base_topology=(
+            request.app.state.base_topology
+        ),
+    )
+
     request.app.state.infrastructure_snapshot = (
         infrastructure_request
     )
+    request.app.state.topology = topology
 
     await request.app.state.websocket_hub.broadcast(
         {

@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from ohanna_vision.configuration import (
     ApplicationConfiguration,
 )
+from ohanna_vision.topology import Topology
 from ohanna_vision.web.api.topology_router import (
     router as topology_router,
 )
@@ -30,11 +31,14 @@ def create_app(
     *,
     configuration: ApplicationConfiguration | None = None,
     websocket_hub: WebSocketHub | None = None,
+    topology: Topology | None = None,
 ) -> FastAPI:
     """Create and configure the Ohanna-Vision application."""
     resolved_configuration = configuration or ApplicationConfiguration()
 
-    documentation_enabled = resolved_configuration.web.documentation_enabled
+    documentation_enabled = (
+        resolved_configuration.web.documentation_enabled
+    )
 
     app = FastAPI(
         title=resolved_configuration.name,
@@ -42,10 +46,21 @@ def create_app(
         debug=resolved_configuration.debug,
         docs_url="/docs" if documentation_enabled else None,
         redoc_url="/redoc" if documentation_enabled else None,
-        openapi_url=("/openapi.json" if documentation_enabled else None),
+        openapi_url=(
+            "/openapi.json"
+            if documentation_enabled
+            else None
+        ),
+    )
+
+    resolved_topology = topology or Topology(
+        topology_id="ohanna-house",
+        label="Ohanna-House",
     )
 
     app.state.configuration = resolved_configuration
+    app.state.base_topology = resolved_topology
+    app.state.topology = resolved_topology
     app.state.infrastructure_snapshot = None
 
     if context is not None:

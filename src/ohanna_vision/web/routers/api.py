@@ -2,6 +2,9 @@
 
 from fastapi import APIRouter
 
+from ohanna_vision.web.routers.infrastructure import (
+    router as infrastructure_router,
+)
 from ohanna_vision.web.routers.observations import (
     router as observations_router,
 )
@@ -10,10 +13,6 @@ from ohanna_vision.web.routers.runtime import (
 )
 from ohanna_vision.web.routers.timeline import (
     router as timeline_router,
-)
-
-from ohanna_vision.web.routers.infrastructure import (
-    router as infrastructure_router,
 )
 
 router = APIRouter(

@@ -138,3 +138,61 @@ def test_infrastructure_api_rejects_post() -> None:
     )
 
     assert response.status_code == 405
+
+def test_infrastructure_api_projects_snapshot_to_topology(
+) -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    response = client.put(
+        "/api/infrastructure",
+        json=make_payload(),
+    )
+
+    assert response.status_code == 200
+
+    topology_response = client.get(
+        "/api/topology"
+    )
+
+    assert topology_response.status_code == 200
+
+    topology = topology_response.json()
+
+    assert topology["topology_id"] == "ohanna-house"
+    assert len(topology["devices"]) == 1
+    assert len(topology["layouts"]) == 1
+
+    device = topology["devices"][0]
+
+    assert device["device_id"] == "infra-01"
+    assert device["node_id"] == "infra-01"
+    assert device["address"] == "192.168.1.10"
+
+def test_infrastructure_api_replaces_previous_projection(
+) -> None:
+    app = create_app()
+    client = TestClient(app)
+
+    first_payload = make_payload()
+    first_payload["nodes"][0]["node_id"] = "first"
+    first_payload["services"] = []
+
+    second_payload = make_payload()
+    second_payload["nodes"][0]["node_id"] = "second"
+    second_payload["services"] = []
+
+    assert client.put(
+        "/api/infrastructure",
+        json=first_payload,
+    ).status_code == 200
+
+    assert client.put(
+        "/api/infrastructure",
+        json=second_payload,
+    ).status_code == 200
+
+    topology = app.state.topology
+
+    assert not topology.contains_device("first")
+    assert topology.contains_device("second")

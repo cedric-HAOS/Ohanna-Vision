@@ -76,6 +76,8 @@ src/ohanna_vision/web/app.py
 src/ohanna_vision/web/application_context.py
 src/ohanna_vision/web/bootstrap.py
 src/ohanna_vision/web/dependencies.py
+src/ohanna_vision/web/infrastructure_ingestion_response.py
+src/ohanna_vision/web/infrastructure_request.py
 src/ohanna_vision/web/observation_ingestion_response.py
 src/ohanna_vision/web/observation_mapper.py
 src/ohanna_vision/web/observation_request.py
@@ -88,6 +90,7 @@ src/ohanna_vision/web/api/topology_router.py
 src/ohanna_vision/web/api/topology_schemas.py
 src/ohanna_vision/web/routers/__init__.py
 src/ohanna_vision/web/routers/api.py
+src/ohanna_vision/web/routers/infrastructure.py
 src/ohanna_vision/web/routers/observations.py
 src/ohanna_vision/web/routers/root.py
 src/ohanna_vision/web/routers/runtime.py

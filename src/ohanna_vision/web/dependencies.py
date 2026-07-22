@@ -16,12 +16,28 @@ from ohanna_vision.web.websocket_hub import WebSocketHub
 """FastAPI dependencies used by Ohanna-Vision."""
 
 
-def get_topology() -> Topology:
-    """Return the configured infrastructure topology."""
-    return Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+def get_topology(
+    request: Request,
+) -> Topology:
+    """Return the current infrastructure topology."""
+    topology = getattr(
+        request.app.state,
+        "topology",
+        None,
     )
+
+    if topology is None:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_503_SERVICE_UNAVAILABLE
+            ),
+            detail=(
+                "Infrastructure topology "
+                "is not configured"
+            ),
+        )
+
+    return cast(Topology, topology)
 
 
 def get_application_context(request: Request) -> ApplicationContext:

@@ -17,12 +17,6 @@ from ohanna_vision.web.dependencies import (
     get_timer,
     get_websocket_hub,
 )
-from ohanna_vision.web.observation_ingestion_response import (
-    ObservationIngestionResponse,
-)
-from ohanna_vision.web.observation_mapper import ObservationMapper
-from ohanna_vision.web.observation_request import ObservationRequest
-from ohanna_vision.web.websocket_hub import WebSocketHub
 from ohanna_vision.web.infrastructure_ingestion_response import (
     InfrastructureIngestionResponse,
 )
@@ -33,8 +27,18 @@ from ohanna_vision.web.infrastructure_request import (
     InfrastructureRequest,
     InfrastructureServiceRequest,
 )
+from ohanna_vision.web.observation_ingestion_response import (
+    ObservationIngestionResponse,
+)
+from ohanna_vision.web.observation_mapper import ObservationMapper
+from ohanna_vision.web.observation_request import ObservationRequest
+from ohanna_vision.web.websocket_hub import WebSocketHub
+from ohanna_vision.web.infrastructure_mapper import (
+    InfrastructureMapper,
+)
 
 __all__ = [
+    "InfrastructureMapper",
     "ApplicationContext",
     "ApplicationContextDependency",
     "ObservationStoreDependency",

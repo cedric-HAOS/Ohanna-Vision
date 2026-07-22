@@ -16,7 +16,6 @@ from ohanna_vision.topology import (
 )
 from ohanna_vision.web.app import create_app
 from ohanna_vision.web.application_context import ApplicationContext
-from ohanna_vision.web.dependencies import get_topology
 
 
 def build_application_context() -> ApplicationContext:
@@ -55,14 +54,11 @@ def build_application(
     context = build_application_context()
     topology = build_ohanna_house_topology()
 
-    application = create_app(
+    return create_app(
         context=context,
         configuration=resolved_configuration,
+        topology=topology,
     )
-
-    application.dependency_overrides[get_topology] = lambda: topology
-
-    return application
 
 
 app = build_application()
