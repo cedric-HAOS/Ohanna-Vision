@@ -8,15 +8,18 @@ Sa mission est de transformer les observations produites par **Ohanna-Agent** en
 
 Contrairement à un outil de supervision classique, Ohanna-Vision ne collecte aucune donnée directement.
 
-Il reconstruit l'état de l'infrastructure exclusivement à partir des observations qui lui sont fournies.
+Il reçoit d'Ohanna-Agent un snapshot complet de l'infrastructure ainsi que les observations qui décrivent son fonctionnement.
+
+Le snapshot fournit la structure de référence ; les observations alimentent l'état courant, la santé et l'historique.
 
 ---
 
 # Principes d'architecture
 
-L'architecture repose sur quatre principes fondamentaux :
+L'architecture repose sur cinq principes fondamentaux :
 
-* les observations constituent la source de vérité ;
+* Ohanna-Agent possède la définition de l'infrastructure ;
+* les observations constituent la source de vérité de l'état mesuré ;
 * chaque moteur possède une responsabilité unique ;
 * les objets métier sont immuables ;
 * les couches supérieures ne modifient jamais les couches inférieures.
@@ -28,29 +31,48 @@ Cette séparation garantit une architecture simple, testable et évolutive.
 # Vue d'ensemble
 
 ```text
-                    Observations
-                           │
-                           ▼
-                  ObservationStore
-                    │           │
-                    │           │
-                    ▼           ▼
-          ProjectionEngine   TimelineEngine
-                    │           │
-                    ▼           ▼
-       InfrastructureState  InfrastructureTimeline
-                    │
-                    ▼
-               HealthEngine
-                    │
-                    ▼
-                HealthReport
-                    │
-                    ▼
-        Backend REST / Interface Web
+       Snapshot d'infrastructure       Observations
+                    │                       │
+                    ▼                       ▼
+       InfrastructureMapper        ObservationStore
+                    │                 │           │
+                    ▼                 ▼           ▼
+                Topology      ProjectionEngine  TimelineEngine
+                                      │           │
+                                      ▼           ▼
+                         InfrastructureState  InfrastructureTimeline
+                                      │
+                                      ▼
+                                 HealthEngine
+                                      │
+                                      ▼
+                                  HealthReport
+                                      │
+                                      ▼
+                          Backend REST / Interface Web
 ```
 
 Chaque composant possède une responsabilité clairement définie.
+
+---
+
+
+# Infrastructure Mapper
+
+Le `InfrastructureMapper` transforme le contrat reçu par `PUT /api/infrastructure` en modèles de topologie utilisés par Vision.
+
+Il valide notamment :
+
+* les identifiants uniques ;
+* les références entre services et nœuds ;
+* les références entre équipements et nœuds ;
+* les extrémités des liaisons ;
+* les équipements positionnés dans les layouts ;
+* l'unicité des cellules de grille.
+
+Les positions `column` / `row` sont ensuite converties en coordonnées de présentation par Vision. L'Agent ne connaît ni les marges, ni les espacements, ni les dimensions du canvas.
+
+Le snapshot courant est remplacé atomiquement. Avant sa réception, Vision expose une topologie vide.
 
 ---
 
@@ -147,11 +169,17 @@ Toutes reposent sur le même objet métier :
 
 Le domaine s'articule autour de plusieurs objets fondamentaux.
 
+## Infrastructure Snapshot
+
+Le snapshot représente la structure déclarée par Ohanna-Agent : nœuds, services, équipements, liaisons et layouts.
+
+Il constitue la source de vérité de la topologie affichée.
+
 ## Observation
 
 Une observation représente un fait technique observé à un instant donné.
 
-Elle constitue la seule source de vérité du système.
+Elle constitue la source de vérité de l'état mesuré.
 
 ---
 
@@ -217,6 +245,8 @@ Responsable de la reconstruction temporelle.
 Les dépendances entre moteurs sont strictement unidirectionnelles.
 
 ```text
+InfrastructureMapper ───────────────► Topology
+
 ObservationStore
         │
         ├──────────────┐
@@ -238,64 +268,71 @@ Cette indépendance permet de les utiliser séparément selon les besoins.
 
 # Backend REST
 
-La future API REST exposera les objets métier produits par les différents moteurs.
+L'API REST expose les contrats d'ingestion et les objets projetés par le backend.
 
-Elle ne contiendra aucune logique métier.
+Elle ne déplace aucune logique métier dans les routeurs. Ceux-ci assurent principalement :
 
-Son rôle sera uniquement de publier :
-
-* les projections ;
-* les rapports de santé ;
-* les timelines ;
-* les fonctions d'administration.
+* la validation des requêtes ;
+* l'ingestion du snapshot d'infrastructure ;
+* l'ingestion des observations ;
+* la publication de la topologie ;
+* la publication des projections, rapports de santé et timelines ;
+* l'exposition de l'état du runtime.
 
 ---
 
 # Interface Web
 
-L'interface web consommera exclusivement l'API REST.
+L'interface web consomme exclusivement les API REST et le WebSocket de Vision.
 
-Elle proposera notamment :
+Elle propose actuellement :
 
 * un tableau de bord temps réel ;
-* l'historique des capacités ;
-* la visualisation des services ;
+* la topologie dynamique ;
+* la visualisation des services et des équipements ;
 * la santé globale ;
-* l'administration de l'infrastructure ;
-* la gestion des plugins ;
-* la gestion des baux DHCP ;
-* la configuration des politiques de santé.
+* les observations ;
+* la timeline des périodes métier.
 
-La logique métier restera entièrement dans le backend.
+Les fonctions d'administration, de gestion des plugins et d'actions contrôlées restent des évolutions futures. La logique métier demeure dans le backend et, pour les opérations sur l'infrastructure, dans Ohanna-Agent.
 
 ---
 
 # Relation avec Ohanna-Agent
 
-Ohanna-Agent et Ohanna-Vision sont volontairement découplés.
+Ohanna-Agent et Ohanna-Vision sont découplés par des contrats HTTP versionnés.
 
-Le premier produit des observations.
+L'Agent :
 
-Le second les interprète.
+* possède la configuration de l'infrastructure ;
+* transmet le snapshot complet ;
+* exécute les observations ;
+* suspend leur production lorsque Vision n'est plus synchronisé.
 
-Cette séparation permet :
+Vision :
 
-* de faire évoluer les deux projets indépendamment ;
-* de connecter plusieurs agents à une même instance de Vision ;
-* de préserver une architecture modulaire.
+* valide et projette le snapshot ;
+* conserve les observations ;
+* calcule les états, la santé et les périodes ;
+* expose les résultats à l'interface.
+
+Cette séparation permet de faire évoluer les deux projets indépendamment tout en conservant une source de vérité unique.
 
 ---
 
 # État actuel de l'architecture
 
-À l'issue de la Phase 1, le cœur métier est entièrement opérationnel.
-
-Les composants disponibles sont :
+La version 1.1.0 dispose notamment de :
 
 * Domain Model ;
+* Infrastructure Mapper ;
+* Topology Models ;
 * Observation Store ;
 * Projection Engine ;
 * Health Engine ;
-* Timeline Engine.
+* Timeline Engine ;
+* API REST ;
+* WebSocket ;
+* frontend modulaire et responsive.
 
-Le projet dispose actuellement de **119 tests unitaires**, tous validés, garantissant la cohérence du modèle métier avant le développement du backend et de l'interface web.
+La suite complète contient **745 tests validés**. Les scénarios réels de démarrage dans les deux ordres, de perte de Vision et d'arrêt pendant la resynchronisation ont également été vérifiés.

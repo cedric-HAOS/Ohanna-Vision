@@ -5,18 +5,18 @@ from __future__ import annotations
 import argparse
 import logging
 from collections.abc import Sequence
-from importlib.metadata import version
 from pathlib import Path
 
 import uvicorn
 
+from ohanna_vision import __version__
 from ohanna_vision.configuration import (
     ConfigurationError,
     ConfigurationLoader,
 )
 from ohanna_vision.web.bootstrap import build_application
 
-APPLICATION_VERSION = version("ohanna-vision")
+APPLICATION_VERSION = __version__
 
 DEFAULT_CONFIGURATION_PATH = Path("config/vision.yaml")
 

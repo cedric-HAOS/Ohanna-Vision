@@ -2,92 +2,141 @@
 
 ## Vision
 
-Ohanna-Vision est l'interface de visualisation d'Ohanna.
+Ohanna-Vision transforme les données produites par Ohanna-Agent en une représentation lisible, temps réel et historique de l'infrastructure.
 
-Son objectif est de représenter l'état réel des capacités d'une infrastructure, leur évolution dans le temps et leurs dépendances.
-
-Le frontend est volontairement simple.
-
-Toute la logique métier est calculée par le backend.
+Ohanna-Agent reste propriétaire de la configuration et de l'exécution des observations. Vision valide, projette et présente les snapshots et observations reçus.
 
 ---
 
-# Phase 3 — Dashboard interactif
+# Socle de visualisation
 
-## 3.1
+## Phase 3.1 — Domaine backend
 
-- Domaine Web
 - Observation Store
 - Projection Engine
 - Health Engine
 - Timeline Engine
+- objets métier immuables
 
 **Statut :** ✅ Terminé
 
----
+## Phase 3.2 — Runtime et API
 
-## 3.2
-
-- Runtime Backend
 - Observation Processor
 - API REST
 - WebSocket
+- runtime applicatif
 
 **Statut :** ✅ Terminé
 
----
+## Phase 3.3 — Dashboard
 
-## 3.3
-
-- Dashboard
-- KPI
-- Runtime
-- Alertes
+- indicateurs principaux
+- alertes
+- état du runtime
+- observations temps réel
 
 **Statut :** ✅ Terminé
 
----
+## Phase 3.4 — Topologie interactive
 
-## 3.4
-
-- Topologie interactive
-- Sélection des équipements
-- Panneau de détails
+- équipements et liaisons
+- sélection d'un équipement
+- panneau de détails
+- projection des états de santé
 
 **Statut :** ✅ Terminé
 
----
+## Phase 3.5 — Frontend modulaire
 
-## 3.5
-
-- Navigation
-- Frontend modulaire
+- navigation
+- modules JavaScript spécialisés
 - CSS modulaire
-- Timeline fondée sur les périodes métier
-- Responsive
-- Audit frontend
+- timeline fondée sur les périodes métier
+- responsive
+- audit frontend
 
 **Statut :** ✅ Terminé
 
 ---
 
-# Phase 4 — Administration
+# Version 1.1.0 — Infrastructure pilotée par Agent
 
-L'objectif de cette phase est de permettre l'administration de l'infrastructure depuis Ohanna-Vision.
+## 3.6.1 — Contrat d'infrastructure
+
+- modèle Pydantic strict et versionné
+- ingestion par `PUT /api/infrastructure`
+- validation des nœuds et services
+- remplacement atomique du snapshot
+
+**Statut :** ✅ Terminé
+
+## 3.6.2 — Topologie complète
+
+- équipements
+- liaisons
+- layouts
+- références vers les nœuds
+- métadonnées topologiques
+
+**Statut :** ✅ Terminé
+
+## 3.6.3 — Grille horizontale
+
+- positions logiques `column` / `row`
+- conversion réalisée uniquement par Vision
+- calcul du canvas et des couches
+- rejet des cellules dupliquées
+
+**Statut :** ✅ Terminé
+
+## 3.6.4 — Source de vérité unique
+
+- suppression de la topologie codée en dur du bootstrap de production
+- état vide avant synchronisation
+- projection complète après réception du snapshot
+- événement WebSocket `infrastructure.updated`
+
+**Statut :** ✅ Terminé
+
+## 3.6.5 — Résilience Agent ↔ Vision
+
+- synchronisation obligatoire avant les observations
+- retry Agent toutes les 10 secondes
+- refresh toutes les 5 minutes
+- suspension des observations en cas de désynchronisation
+- reprise automatique après retour de Vision
+
+**Statut :** ✅ Terminé
+
+## 3.6.6 — Validation
+
+- quatre scénarios d'intégration réels
+- cohérence des versions CLI et OpenAPI
+- hygiène du dépôt
+- 745 tests
+
+**Statut :** ✅ Terminé
+
+---
+
+# Phase 4 — Administration contrôlée
+
+L'administration reste exécutée par Ohanna-Agent. Vision ne fera qu'exposer les commandes et résultats à travers des contrats publics.
 
 ## 4.1 Infrastructure
 
-- consultation de la configuration
-- modification des nœuds
-- modification des services
-- validation de configuration
+- consultation détaillée de la configuration reçue
+- comparaison entre snapshots
+- validation avant application
+- affichage des changements
 
 ## 4.2 Capacités
 
-- vue détaillée d'une capacité
-- historique complet
+- vue détaillée
 - dépendances
 - statistiques
+- historique complet
 
 ## 4.3 Observations
 
@@ -97,21 +146,21 @@ L'objectif de cette phase est de permettre l'administration de l'infrastructure 
 
 ## 4.4 Plugins
 
-- liste des plugins installés
-- informations
-- configuration
+- liste et état des plugins
+- configuration exposée par Agent
+- diagnostics
 
 ## 4.5 Runtime
 
-- informations système
 - santé des composants
-- diagnostics
+- informations système
+- journaux et diagnostics
 
 ---
 
-# Phase 5 — Historique
+# Phase 5 — Historique et rapports
 
-## 5.1 Timeline
+## 5.1 Timeline avancée
 
 - zoom temporel
 - navigation
@@ -120,64 +169,46 @@ L'objectif de cette phase est de permettre l'administration de l'infrastructure 
 ## 5.2 Historique
 
 - recherche
-- comparaison
+- comparaison de périodes
 - évolution d'une capacité
+- historique des snapshots d'infrastructure
 
 ## 5.3 Rapports
 
 - disponibilité
 - SLA
-- export PDF
 - export CSV
+- export PDF
 
 ---
 
-# Phase 6 — Administration avancée
-
-## 6.1 Utilisateurs
+# Phase 6 — Sécurité et utilisateurs
 
 - authentification
-- rôles
-- permissions
-
-## 6.2 Configuration
-
-- paramètres globaux
+- rôles et permissions
 - préférences utilisateur
-
-## 6.3 Notifications
-
-- événements
-- alertes
-- Webhooks
+- audit des actions
+- notifications et Webhooks
 
 ---
 
 # Phase 7 — Écosystème Ohanna
 
-## 7.1 Ohanna-Agent
+## 7.1 Multi-agents
 
-- supervision multi-agents
+- enregistrement de plusieurs Agents
+- vues par site
 - vue consolidée
+- gestion des conflits d'identifiants
 
-## 7.2 Ohanna-SDK
+## 7.2 SDK et plugins
 
-- informations plugins
 - documentation intégrée
+- contrats des plugins
+- informations de capacités
 
-## 7.3 Ohanna-CLI
+## 7.3 Actions contrôlées
 
-- intégration des diagnostics
-- lancement d'actions
-
----
-
-# Objectif v1.0
-
-La version 1.0 sera atteinte lorsque Ohanna-Vision permettra :
-
-- de visualiser l'état courant d'une infrastructure ;
-- d'explorer son historique ;
-- d'administrer sa configuration ;
-- d'analyser les capacités supervisées ;
-- de fonctionner entièrement avec Ohanna-Agent.
+- diagnostics à la demande
+- opérations d'administration
+- suivi de l'exécution

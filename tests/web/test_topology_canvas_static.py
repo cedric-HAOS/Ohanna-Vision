@@ -56,6 +56,19 @@ def test_topology_canvas_prefers_physical_layout() -> None:
     assert 'layout.kind === "physical"' in response.text
 
 
+def test_topology_canvas_waits_for_agent_configuration() -> None:
+    """The empty topology must explain that Agent has not synchronized yet."""
+    client = make_client()
+
+    response = client.get("/ui/topology_canvas.js")
+
+    assert response.status_code == 200
+    assert (
+        "En attente de la configuration transmise par Ohanna-Agent."
+        in response.text
+    )
+
+
 def test_topology_canvas_skips_unpositioned_elements() -> None:
     """Elements without layout positions must be safely ignored."""
     client = make_client()

@@ -5,18 +5,24 @@ from unittest.mock import Mock
 
 import pytest
 
+from ohanna_vision import __version__
 from ohanna_vision.configuration import (
     ApplicationConfiguration,
     Environment,
     ServerConfiguration,
 )
 from ohanna_vision.main import (
+    APPLICATION_VERSION,
     DEFAULT_CONFIGURATION_PATH,
     configure_logging,
     main,
     parse_arguments,
     run,
 )
+
+
+def test_cli_uses_package_version() -> None:
+    assert __version__ == APPLICATION_VERSION
 
 
 def test_parse_arguments_uses_default_configuration() -> None:

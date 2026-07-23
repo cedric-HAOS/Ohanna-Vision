@@ -58,9 +58,11 @@ Il ne dialogue pas avec les équipements.
 
 Il ne réalise aucun diagnostic réseau.
 
-Il reçoit les observations produites par Ohanna-Agent.
+Il reçoit d'Ohanna-Agent la définition complète de l'infrastructure ainsi que les observations produites dans le temps.
 
-À partir de ces observations, il construit une représentation cohérente de l'état de l'infrastructure.
+La définition décrit les nœuds, services, équipements, liaisons et positions logiques. Les observations décrivent leur état réel.
+
+À partir de ces deux contrats, Vision construit une représentation cohérente de l'infrastructure et de son fonctionnement.
 
 Cette séparation garantit que les responsabilités de chaque projet restent parfaitement définies.
 
@@ -68,13 +70,13 @@ Cette séparation garantit que les responsabilités de chaque projet restent par
 
 # Les principes fondamentaux
 
-## Les observations sont des faits
+## La configuration et les observations ont des rôles distincts
 
-Une observation décrit un événement mesuré.
+Le snapshot d'infrastructure décrit ce qui existe. Il est possédé par Ohanna-Agent et remplace atomiquement la définition précédente dans Vision.
 
-Elle n'est ni interprétée ni modifiée.
+Une observation décrit un fait mesuré à un instant donné. Elle n'est ni interprétée ni modifiée lors de son ingestion.
 
-Ohanna-Vision conserve les observations telles qu'elles sont produites.
+Vision ne maintient aucune seconde copie métier de la configuration de l'Agent.
 
 ---
 
@@ -115,6 +117,18 @@ Il est de présenter les informations réellement utiles à la compréhension de
 Chaque écran doit privilégier la simplicité, la cohérence et la rapidité de lecture.
 
 ---
+
+---
+
+# La topologie pilotée par Agent
+
+Ohanna-Agent transmet les équipements, les liaisons et les positions logiques de la topologie.
+
+Les positions sont exprimées sur une grille avec `column` et `row`. Vision reste responsable de la conversion en coordonnées graphiques, du canvas et du responsive.
+
+Avant la première synchronisation, Vision présente un état vide. Les observations ne commencent qu'après acceptation du snapshot complet, ce qui garantit que chaque fait reçu peut être rattaché à une infrastructure connue.
+
+En cas de redémarrage de Vision, l'Agent retransmet périodiquement la configuration et suspend temporairement ses observations jusqu'à la resynchronisation.
 
 # Ce qu'Ohanna-Vision n'est pas
 

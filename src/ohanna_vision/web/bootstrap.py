@@ -11,9 +11,6 @@ from ohanna_vision.configuration import (
 from ohanna_vision.domain import ObservationStore
 from ohanna_vision.runtime import BackendRuntime
 from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.topology import (
-    build_ohanna_house_topology,
-)
 from ohanna_vision.web.app import create_app
 from ohanna_vision.web.application_context import ApplicationContext
 
@@ -52,12 +49,9 @@ def build_application(
         resolved_configuration = ApplicationConfiguration()
 
     context = build_application_context()
-    topology = build_ohanna_house_topology()
-
     return create_app(
         context=context,
         configuration=resolved_configuration,
-        topology=topology,
     )
 
 

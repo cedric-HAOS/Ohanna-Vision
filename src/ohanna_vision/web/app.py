@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from ohanna_vision import __version__
 from ohanna_vision.configuration import (
     ApplicationConfiguration,
 )
@@ -21,7 +22,6 @@ from ohanna_vision.web.routers import (
 from ohanna_vision.web.websocket_hub import WebSocketHub
 
 APPLICATION_NAME = "Ohanna Vision"
-APPLICATION_VERSION = "0.1.0"
 
 STATIC_DIRECTORY = Path(__file__).parent / "static"
 
@@ -42,7 +42,7 @@ def create_app(
 
     app = FastAPI(
         title=resolved_configuration.name,
-        version=APPLICATION_VERSION,
+        version=__version__,
         debug=resolved_configuration.debug,
         docs_url="/docs" if documentation_enabled else None,
         redoc_url="/redoc" if documentation_enabled else None,
@@ -54,8 +54,8 @@ def create_app(
     )
 
     resolved_topology = topology or Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="unconfigured",
+        label="Infrastructure non configurée",
     )
 
     app.state.configuration = resolved_configuration

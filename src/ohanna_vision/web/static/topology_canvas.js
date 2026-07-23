@@ -72,7 +72,7 @@ class TopologyCanvas {
 
         if (!this.layout) {
             this.renderEmpty(
-                "Aucune disposition topologique disponible.",
+                "En attente de la configuration transmise par Ohanna-Agent.",
             );
             return;
         }

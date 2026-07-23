@@ -198,8 +198,8 @@ def test_topology_api_returns_empty_default_topology() -> None:
 
     payload = response.json()
 
-    assert payload["topology_id"] == "ohanna-house"
-    assert payload["label"] == "Ohanna-House"
+    assert payload["topology_id"] == "unconfigured"
+    assert payload["label"] == "Infrastructure non configurée"
     assert payload["devices"] == []
     assert payload["links"] == []
     assert payload["layouts"] == []

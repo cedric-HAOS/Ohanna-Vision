@@ -107,8 +107,8 @@ def test_bootstrapped_timeline_api_is_available() -> None:
     }
 
 
-def test_bootstrapped_application_exposes_ohanna_house_topology() -> None:
-    """The complete application must expose the real topology."""
+def test_bootstrapped_application_waits_for_agent_topology() -> None:
+    """The complete application must start without a local topology."""
     client = TestClient(build_application())
 
     response = client.get("/api/topology")
@@ -117,31 +117,11 @@ def test_bootstrapped_application_exposes_ohanna_house_topology() -> None:
 
     payload = response.json()
 
-    assert payload["topology_id"] == "ohanna-house"
-    assert len(payload["devices"]) == 9
-    assert len(payload["links"]) == 8
-    assert len(payload["layouts"]) == 1
-
-
-def test_bootstrapped_topology_contains_current_devices() -> None:
-    """The complete application must expose current house devices."""
-    client = TestClient(build_application())
-
-    response = client.get("/api/topology")
-
-    device_ids = {device["device_id"] for device in response.json()["devices"]}
-
-    assert device_ids == {
-        "internet",
-        "freebox",
-        "sw-01",
-        "sw-02",
-        "sw-03",
-        "ap-01",
-        "rpi-link",
-        "ha-green",
-        "rpi-zwave",
-    }
+    assert payload["topology_id"] == "unconfigured"
+    assert payload["label"] == "Infrastructure non configurée"
+    assert payload["devices"] == []
+    assert payload["links"] == []
+    assert payload["layouts"] == []
 
 
 def test_build_application_accepts_configuration() -> None:

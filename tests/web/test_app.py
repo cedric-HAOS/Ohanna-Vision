@@ -5,6 +5,7 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from ohanna_vision import __version__
 from ohanna_vision.configuration import (
     ApplicationConfiguration,
     Environment,
@@ -15,6 +16,11 @@ from ohanna_vision.runtime import BackendRuntime
 from ohanna_vision.timeline import TimelineEngine
 from ohanna_vision.web import ApplicationContext, WebSocketHub, create_app
 
+
+def test_application_exposes_package_version() -> None:
+    app = create_app()
+
+    assert app.version == __version__
 
 def make_client() -> TestClient:
     """Create an Ohanna-Vision application client."""
@@ -63,7 +69,7 @@ def test_openapi_schema_is_available() -> None:
     assert response.status_code == 200
     assert response.json()["info"] == {
         "title": "Ohanna Vision",
-        "version": "0.1.0",
+        "version": "1.1.0",
     }
 
 

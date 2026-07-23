@@ -69,3 +69,9 @@ temp/
 
 *.bak
 *.old
+
+# Python packaging metadata
+*.egg-info/
+
+# Temporary topology exports
+/actual_topology.json
