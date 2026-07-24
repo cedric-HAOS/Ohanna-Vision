@@ -51,6 +51,8 @@ def test_pyproject_packages_branding_assets() -> None:
     assert '"web/static/assets/favicons/*.ico"' in pyproject
     assert '"web/static/assets/favicons/*.svg"' in pyproject
     assert '"web/static/assets/favicons/*.png"' in pyproject
+    assert '"web/static/assets/icons/*/*.svg"' in pyproject
+    assert '"web/static/assets/logos/*.svg"' in pyproject
     assert '"web/static/*.webmanifest"' in pyproject
 
 
@@ -68,6 +70,14 @@ def test_static_branding_assets_exist() -> None:
 
     for filename in required_files:
         assert (static_directory / filename).is_file()
+
+    assert Path("src/ohana_vision/web/static/site.webmanifest").is_file()
+    assert Path(
+        "src/ohana_vision/web/static/assets/logos/symbol.svg"
+    ).is_file()
+    assert Path(
+        "src/ohana_vision/web/static/assets/icons/navigation/layout-dashboard.svg"
+    ).is_file()
 
 
 def test_index_declares_branding_assets() -> None:

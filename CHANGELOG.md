@@ -6,6 +6,17 @@ Le projet suit les principes de Semantic Versioning.
 
 ---
 
+# v1.1.2 — Ressources graphiques installables
+
+## Corrigé
+
+- Inclusion des icônes et logos de l'interface dans les artefacts Python.
+- Ajout du manifeste web référencé par l'interface.
+- Redirection de l'URL racine vers `/ui/`.
+- Ajout de contrôles de packaging pour éviter une nouvelle release incomplète.
+
+---
+
 # v1.1.1 — Nommage Ohana cohérent
 
 ## Modifié

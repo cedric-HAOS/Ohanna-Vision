@@ -14,14 +14,14 @@ def make_client() -> TestClient:
     return TestClient(app)
 
 
-def test_root_router_exposes_application_status() -> None:
-    """The root router must expose the application status."""
+def test_root_router_redirects_to_web_interface() -> None:
+    """The application root must open the web interface."""
     client = make_client()
 
-    response = client.get("/")
+    response = client.get(
+        "/",
+        follow_redirects=False,
+    )
 
-    assert response.status_code == 200
-    assert response.json() == {
-        "name": "Ohana Vision",
-        "status": "running",
-    }
+    assert response.status_code == 307
+    assert response.headers["location"] == "/ui/"

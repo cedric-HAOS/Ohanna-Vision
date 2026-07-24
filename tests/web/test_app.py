@@ -35,17 +35,17 @@ def test_create_app_returns_fastapi_application() -> None:
     assert isinstance(app, FastAPI)
 
 
-def test_root_endpoint_returns_application_status() -> None:
-    """The application must expose its root status endpoint."""
+def test_root_endpoint_opens_web_interface() -> None:
+    """The application root must redirect to the rendered interface."""
     client = TestClient(create_app())
 
-    response = client.get("/")
+    response = client.get(
+        "/",
+        follow_redirects=False,
+    )
 
-    assert response.status_code == 200
-    assert response.json() == {
-        "name": "Ohana Vision",
-        "status": "running",
-    }
+    assert response.status_code == 307
+    assert response.headers["location"] == "/ui/"
 
 
 def test_api_endpoint_returns_api_status() -> None:
