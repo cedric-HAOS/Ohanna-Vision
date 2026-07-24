@@ -69,7 +69,7 @@ def test_openapi_schema_is_available() -> None:
     assert response.status_code == 200
     assert response.json()["info"] == {
         "title": "Ohana Vision",
-        "version": "1.1.0",
+        "version": __version__,
     }
 
 

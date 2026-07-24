@@ -3,6 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from ohana_vision import __version__
 from ohana_vision.web import create_app
 
 
@@ -1757,7 +1758,7 @@ def test_sidebar_exposes_product_version() -> None:
     assert "sidebar-version__product" in response.text
     assert "sidebar-version__number" in response.text
     assert "Ohana-Vision" in response.text
-    assert "v0.1.0" in response.text
+    assert f"v{__version__}" in response.text
 
 
 def test_sidebar_version_uses_discrete_footer_styles() -> None:

@@ -6,6 +6,18 @@ Le projet suit les principes de Semantic Versioning.
 
 ---
 
+# v1.1.1 — Nommage Ohana cohérent
+
+## Modifié
+
+- Harmonisation du nom du projet, du package et des commandes avec `Ohana`.
+- Préparation d'artefacts `ohana_vision` distincts de la release `v1.1.0`
+  publiée avec l'ancien nom.
+- Alignement de la version affichée dans l'interface sur la version du package.
+- Modernisation des métadonnées de licence du package.
+
+---
+
 # v1.1.0 — Infrastructure dynamique pilotée par Ohana-Agent
 
 ## Ajouté
