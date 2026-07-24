@@ -1,4 +1,4 @@
-"""Tests for the Ohanna-Vision timeline API router."""
+"""Tests for the Ohana-Vision timeline API router."""
 
 from datetime import UTC, datetime
 from typing import cast
@@ -6,17 +6,17 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.domain import (
+from ohana_vision.domain import (
     HealthStatus,
     Observation,
     ObservationStore,
 )
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web.dependencies import (
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web.dependencies import (
     get_observation_store,
     get_timeline_engine,
 )
-from ohanna_vision.web.routers import timeline_router
+from ohana_vision.web.routers import timeline_router
 
 
 def make_observation(

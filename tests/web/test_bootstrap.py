@@ -1,4 +1,4 @@
-"""Tests for the Ohanna-Vision application bootstrap."""
+"""Tests for the Ohana-Vision application bootstrap."""
 
 from pathlib import Path
 
@@ -6,16 +6,16 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.configuration import (
+from ohana_vision.configuration import (
     ApplicationConfiguration,
     Environment,
 )
-from ohanna_vision.domain import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web.app import create_app
-from ohanna_vision.web.application_context import ApplicationContext
-from ohanna_vision.web.bootstrap import (
+from ohana_vision.domain import ObservationStore
+from ohana_vision.runtime import BackendRuntime
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web.app import create_app
+from ohana_vision.web.application_context import ApplicationContext
+from ohana_vision.web.bootstrap import (
     build_application,
     build_application_context,
 )
@@ -170,7 +170,7 @@ web:
 
 def test_module_application_uses_default_configuration() -> None:
     """The module-level application must be importable without a file."""
-    from ohanna_vision.web.bootstrap import app
+    from ohana_vision.web.bootstrap import app
 
     assert isinstance(
         app.state.configuration,

@@ -1,0 +1,149 @@
+:root {
+    color-scheme: dark;
+
+    /*
+     * Legacy aliases.
+     *
+     * These variables keep the existing frontend compatible while
+     * progressively adopting the official Ohana Design System.
+     */
+
+    --background: var(--ohana-background-canvas);
+    --surface: var(--ohana-background-surface);
+    --surface-elevated: var(--ohana-background-surface-raised);
+    --border: var(--ohana-border-default);
+
+    --text: var(--ohana-text-primary);
+    --text-muted: var(--ohana-text-secondary);
+
+    /*
+    * Health state compatibility aliases.
+    *
+    * Ohana-Vision uses "unhealthy" as its domain state.
+    * The Design System represents this state visually as "critical".
+    */
+
+    --healthy: var(--ohana-health-healthy);
+    --degraded: var(--ohana-health-degraded);
+    --unhealthy: var(--ohana-health-critical);
+    --unknown: var(--ohana-health-unknown);
+
+    --accent: var(--ohana-brand-primary);
+    --accent-hover: var(--ohana-brand-primary-hover);
+
+    --radius: var(--ohana-radius-md);
+    --shadow: var(--ohana-shadow-md);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    background: var(--ohana-background-canvas);
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+
+    font-family: var(--ohana-font-family-sans);
+    font-size: var(--ohana-font-size-md);
+    font-weight: var(--ohana-font-weight-regular);
+    line-height: var(--ohana-line-height-normal);
+
+    color: var(--ohana-text-primary);
+    background: var(--ohana-background-canvas);
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    color: inherit;
+}
+
+a {
+    color: inherit;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--ohana-text-primary);
+    line-height: var(--ohana-line-height-tight);
+}
+
+p {
+    color: var(--ohana-text-secondary);
+}
+
+::selection {
+    color: var(--ohana-text-on-accent);
+    background: var(--ohana-brand-primary);
+}
+
+:focus-visible {
+    outline:
+        var(--ohana-border-width-medium)
+        solid
+        var(--ohana-border-focus);
+    outline-offset: 2px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visually-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+}

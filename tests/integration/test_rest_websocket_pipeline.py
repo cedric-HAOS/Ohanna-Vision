@@ -7,10 +7,10 @@ from typing import cast
 
 from fastapi.testclient import TestClient
 
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.runtime import ObservationProcessor
-from ohanna_vision.web.app import create_app
-from ohanna_vision.web.dependencies import get_observation_processor
+from ohana_vision.domain.observation import Observation
+from ohana_vision.runtime import ObservationProcessor
+from ohana_vision.web.app import create_app
+from ohana_vision.web.dependencies import get_observation_processor
 
 
 @dataclass(frozen=True)
@@ -78,7 +78,7 @@ def test_post_observation_is_received_by_websocket_client() -> None:
 
     assert connected_message == {
         "type": "connected",
-        "message": "Ohanna Vision WebSocket connected",
+        "message": "Ohana Vision WebSocket connected",
     }
 
     assert message == {

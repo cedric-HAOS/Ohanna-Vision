@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.web.observation_mapper import ObservationMapper
-from ohanna_vision.web.observation_request import ObservationRequest
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.domain.observation import Observation
+from ohana_vision.web.observation_mapper import ObservationMapper
+from ohana_vision.web.observation_request import ObservationRequest
 
 
 def make_request() -> ObservationRequest:

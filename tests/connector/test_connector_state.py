@@ -1,6 +1,6 @@
 """Tests for ConnectorState."""
 
-from ohanna_vision.connector import ConnectorState
+from ohana_vision.connector import ConnectorState
 
 
 def test_connector_state_contains_expected_values() -> None:

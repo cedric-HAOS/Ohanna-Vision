@@ -1,0 +1,208 @@
+/*
+ * Ohana Design System
+ *
+ * This file contains the official visual tokens shared by the
+ * Ohana-Vision interface.
+ *
+ * It must not contain component-specific selectors.
+ */
+
+:root {
+    /*
+     * Typography
+     */
+
+    --ohana-font-family-sans:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    --ohana-font-family-mono:
+        "Cascadia Code",
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+    --ohana-font-size-xs: 0.75rem;
+    --ohana-font-size-sm: 0.875rem;
+    --ohana-font-size-md: 1rem;
+    --ohana-font-size-lg: 1.125rem;
+    --ohana-font-size-xl: 1.25rem;
+    --ohana-font-size-2xl: 1.5rem;
+    --ohana-font-size-3xl: 2rem;
+
+    --ohana-font-weight-regular: 400;
+    --ohana-font-weight-medium: 500;
+    --ohana-font-weight-semibold: 600;
+    --ohana-font-weight-bold: 700;
+
+    --ohana-line-height-tight: 1.2;
+    --ohana-line-height-normal: 1.5;
+    --ohana-line-height-relaxed: 1.7;
+
+    /*
+     * Spacing
+     */
+
+    --ohana-space-0: 0;
+    --ohana-space-1: 0.25rem;
+    --ohana-space-2: 0.5rem;
+    --ohana-space-3: 0.75rem;
+    --ohana-space-4: 1rem;
+    --ohana-space-5: 1.25rem;
+    --ohana-space-6: 1.5rem;
+    --ohana-space-8: 2rem;
+    --ohana-space-10: 2.5rem;
+    --ohana-space-12: 3rem;
+    --ohana-space-16: 4rem;
+
+    /*
+     * Shape
+     */
+
+    --ohana-radius-xs: 0.25rem;
+    --ohana-radius-sm: 0.5rem;
+    --ohana-radius-md: 0.75rem;
+    --ohana-radius-lg: 1rem;
+    --ohana-radius-xl: 1.5rem;
+    --ohana-radius-round: 9999px;
+
+    /*
+     * Borders
+     */
+
+    --ohana-border-width-thin: 1px;
+    --ohana-border-width-medium: 2px;
+
+    /*
+     * Motion
+     */
+
+    --ohana-duration-fast: 120ms;
+    --ohana-duration-normal: 200ms;
+    --ohana-duration-slow: 320ms;
+
+    --ohana-easing-standard: ease;
+    --ohana-easing-emphasized:
+        cubic-bezier(0.2, 0, 0, 1);
+
+    /*
+     * Layout
+     */
+
+    --ohana-sidebar-width: 17rem;
+    --ohana-header-height: 5rem;
+    --ohana-content-max-width: 120rem;
+
+    /*
+     * Brand colors
+     *
+     * These aliases isolate components from the raw color palette.
+     */
+
+    --ohana-brand-primary: #28d7c0;
+    --ohana-brand-primary-hover: #4de0cd;
+    --ohana-brand-primary-active: #20bda9;
+    --ohana-brand-primary-soft: rgb(40 215 192 / 12%);
+
+    /*
+     * Dark theme surfaces
+     */
+
+    --ohana-background-canvas: #071014;
+    --ohana-background-sidebar: #091419;
+    --ohana-background-surface: #0d1a20;
+    --ohana-background-surface-raised: #112229;
+    --ohana-background-overlay: rgb(3 10 13 / 80%);
+
+    /*
+     * Text
+     */
+
+    --ohana-text-primary: #f1f7f7;
+    --ohana-text-secondary: #a9b9bc;
+    --ohana-text-muted: #718489;
+    --ohana-text-disabled: #526267;
+    --ohana-text-on-accent: #04100e;
+
+    /*
+     * Borders
+     */
+
+    --ohana-border-subtle: #1b3037;
+    --ohana-border-default: #294149;
+    --ohana-border-strong: #3b5962;
+    --ohana-border-focus: var(--ohana-brand-primary);
+
+    /*
+     * Health states
+     */
+
+    --ohana-health-healthy: #28d7c0;
+    --ohana-health-degraded: #f2b84b;
+    --ohana-health-critical: #ef6464;
+    --ohana-health-unknown: #718489;
+
+    --ohana-health-healthy-soft: rgb(40 215 192 / 14%);
+    --ohana-health-degraded-soft: rgb(242 184 75 / 14%);
+    --ohana-health-critical-soft: rgb(239 100 100 / 14%);
+    --ohana-health-unknown-soft: rgb(113 132 137 / 14%);
+
+    /*
+     * Feedback states
+     */
+
+    --ohana-feedback-info: #5ba8ff;
+    --ohana-feedback-success: var(--ohana-health-healthy);
+    --ohana-feedback-warning: var(--ohana-health-degraded);
+    --ohana-feedback-error: var(--ohana-health-critical);
+
+    /*
+     * Shadows
+     */
+
+    --ohana-shadow-sm:
+        0 1px 2px rgb(0 0 0 / 20%);
+
+    --ohana-shadow-md:
+        0 8px 24px rgb(0 0 0 / 20%);
+
+    --ohana-shadow-lg:
+        0 16px 48px rgb(0 0 0 / 28%);
+
+    /*
+     * Semantic aliases
+     */
+
+    --color-background: var(--ohana-background-canvas);
+    --color-sidebar: var(--ohana-background-sidebar);
+    --color-surface: var(--ohana-background-surface);
+    --color-surface-raised:
+        var(--ohana-background-surface-raised);
+
+    --color-text: var(--ohana-text-primary);
+    --color-text-secondary: var(--ohana-text-secondary);
+    --color-text-muted: var(--ohana-text-muted);
+
+    --color-border: var(--ohana-border-default);
+    --color-border-subtle: var(--ohana-border-subtle);
+    --color-accent: var(--ohana-brand-primary);
+
+    --color-healthy: var(--ohana-health-healthy);
+    --color-degraded: var(--ohana-health-degraded);
+    --color-critical: var(--ohana-health-critical);
+    --color-unknown: var(--ohana-health-unknown);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --ohana-duration-fast: 0ms;
+        --ohana-duration-normal: 0ms;
+        --ohana-duration-slow: 0ms;
+    }
+}

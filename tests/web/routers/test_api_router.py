@@ -1,9 +1,9 @@
-"""Tests for the Ohanna-Vision API router."""
+"""Tests for the Ohana-Vision API router."""
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web.routers import api_router
+from ohana_vision.web.routers import api_router
 
 
 def make_client() -> TestClient:
@@ -22,7 +22,7 @@ def test_api_router_uses_api_prefix() -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-        "name": "Ohanna Vision API",
+        "name": "Ohana Vision API",
         "status": "running",
     }
 

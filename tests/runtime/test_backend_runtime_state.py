@@ -1,6 +1,6 @@
 """Tests for backend runtime states."""
 
-from ohanna_vision.runtime import BackendRuntimeState
+from ohana_vision.runtime import BackendRuntimeState
 
 
 def test_backend_runtime_state_values() -> None:

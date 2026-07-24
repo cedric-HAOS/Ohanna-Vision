@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 
-from ohanna_vision.connector import ConnectorStatistics
+from ohana_vision.connector import ConnectorStatistics
 
 
 def make_instant() -> datetime:

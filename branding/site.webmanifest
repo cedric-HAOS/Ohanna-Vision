@@ -1,7 +1,7 @@
 {
-  "name": "Ohanna Vision",
-  "short_name": "Ohanna",
-  "description": "Visualisation temps réel de l’infrastructure Ohanna.",
+  "name": "Ohana Vision",
+  "short_name": "Ohana",
+  "description": "Visualisation temps réel de l’infrastructure Ohana.",
   "start_url": "/ui/",
   "scope": "/ui/",
   "display": "standalone",

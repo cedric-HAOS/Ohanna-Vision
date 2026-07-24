@@ -1,8 +1,8 @@
-# Intégration Ohanna-Agent ↔ Ohanna-Vision
+# Intégration Ohana-Agent ↔ Ohana-Vision
 
 ## Responsabilités
 
-Ohanna-Agent est la source de vérité de l'infrastructure.
+Ohana-Agent est la source de vérité de l'infrastructure.
 
 Il charge et valide :
 
@@ -13,7 +13,7 @@ Il charge et valide :
 - les layouts ;
 - les positions logiques sur grille.
 
-Ohanna-Vision ne lit aucun fichier de configuration de l'Agent. Il reçoit un contrat JSON normalisé, le valide puis le projette dans ses modèles de topologie.
+Ohana-Vision ne lit aucun fichier de configuration de l'Agent. Il reçoit un contrat JSON normalisé, le valide puis le projette dans ses modèles de topologie.
 
 ---
 
@@ -22,7 +22,7 @@ Ohanna-Vision ne lit aucun fichier de configuration de l'Agent. Il reçoit un co
 ```text
 infrastructure.yaml
         ↓
-Ohanna-Agent
+Ohana-Agent
         ↓
 VisionInfrastructureMapper
         ↓
@@ -74,7 +74,7 @@ Exemple de réponse :
 ```json
 {
   "accepted": true,
-  "infrastructure_id": "ohanna-house",
+  "infrastructure_id": "ohana-house",
   "node_count": 2,
   "service_count": 2
 }
@@ -89,8 +89,8 @@ Le snapshot reçu remplace atomiquement le précédent.
 ```json
 {
   "schema_version": 1,
-  "infrastructure_id": "ohanna-house",
-  "name": "Ohanna House",
+  "infrastructure_id": "ohana-house",
+  "name": "Ohana House",
   "environment": "production",
   "metadata": {
     "version": "1.0",
@@ -180,7 +180,7 @@ retourne une topologie vide identifiée `unconfigured`.
 L'interface affiche :
 
 ```text
-En attente de la configuration transmise par Ohanna-Agent.
+En attente de la configuration transmise par Ohana-Agent.
 ```
 
 ---
@@ -190,13 +190,13 @@ En attente de la configuration transmise par Ohanna-Agent.
 Démarrer Vision :
 
 ```powershell
-ohanna-vision --config .\config\vision.yaml
+ohana-vision --config .\config\vision.yaml
 ```
 
 Puis démarrer Agent :
 
 ```powershell
-ohanna-agent `
+ohana-agent `
   --config .\config\shikamaru.yaml `
   --infrastructure .\config\infrastructure.yaml `
   --dns-config .\config\plugins\dns.yaml `
@@ -217,10 +217,10 @@ $topology = Invoke-RestMethod `
 }
 ```
 
-Pour la configuration Ohanna-House validée :
+Pour la configuration Ohana-House validée :
 
 ```text
-Topology : ohanna-house
+Topology : ohana-house
 Devices  : 9
 Links    : 8
 Layouts  : 1

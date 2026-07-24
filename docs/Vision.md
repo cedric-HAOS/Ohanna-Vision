@@ -1,6 +1,6 @@
 # Vision
 
-## Pourquoi Ohanna-Vision existe
+## Pourquoi Ohana-Vision existe
 
 Une infrastructure fiable ne se résume pas à une succession de services en fonctionnement.
 
@@ -20,9 +20,9 @@ Ces informations sont indispensables, mais elles ne répondent pas à la questio
 
 > L'infrastructure est-elle capable de fournir les services attendus ?
 
-Ohanna-Agent répond à cette question en observant les capacités de l'infrastructure.
+Ohana-Agent répond à cette question en observant les capacités de l'infrastructure.
 
-Ohanna-Vision existe pour rendre cette réponse visible.
+Ohana-Vision existe pour rendre cette réponse visible.
 
 Son objectif n'est pas de produire davantage d'informations techniques.
 
@@ -36,7 +36,7 @@ Nous considérons qu'un système de supervision ne doit pas seulement afficher d
 
 Il doit raconter l'état de l'infrastructure.
 
-Une personne doit pouvoir ouvrir Ohanna-Vision et comprendre immédiatement :
+Une personne doit pouvoir ouvrir Ohana-Vision et comprendre immédiatement :
 
 - quelles capacités sont disponibles ;
 - lesquelles sont dégradées ;
@@ -48,17 +48,17 @@ L'information doit rester simple même lorsque l'infrastructure devient complexe
 
 ---
 
-# La place d'Ohanna-Vision
+# La place d'Ohana-Vision
 
-Ohanna-Vision n'observe jamais directement l'infrastructure.
+Ohana-Vision n'observe jamais directement l'infrastructure.
 
-Il ne remplace pas Ohanna-Agent.
+Il ne remplace pas Ohana-Agent.
 
 Il ne dialogue pas avec les équipements.
 
 Il ne réalise aucun diagnostic réseau.
 
-Il reçoit d'Ohanna-Agent la définition complète de l'infrastructure ainsi que les observations produites dans le temps.
+Il reçoit d'Ohana-Agent la définition complète de l'infrastructure ainsi que les observations produites dans le temps.
 
 La définition décrit les nœuds, services, équipements, liaisons et positions logiques. Les observations décrivent leur état réel.
 
@@ -72,7 +72,7 @@ Cette séparation garantit que les responsabilités de chaque projet restent par
 
 ## La configuration et les observations ont des rôles distincts
 
-Le snapshot d'infrastructure décrit ce qui existe. Il est possédé par Ohanna-Agent et remplace atomiquement la définition précédente dans Vision.
+Le snapshot d'infrastructure décrit ce qui existe. Il est possédé par Ohana-Agent et remplace atomiquement la définition précédente dans Vision.
 
 Une observation décrit un fait mesuré à un instant donné. Elle n'est ni interprétée ni modifiée lors de son ingestion.
 
@@ -96,7 +96,7 @@ Une machine peut tomber en panne sans que la capacité disparaisse.
 
 Inversement, plusieurs machines peuvent fonctionner alors que la capacité n'est plus disponible.
 
-Ohanna-Vision présente les capacités de l'infrastructure avant les équipements qui les composent.
+Ohana-Vision présente les capacités de l'infrastructure avant les équipements qui les composent.
 
 ---
 
@@ -104,13 +104,13 @@ Ohanna-Vision présente les capacités de l'infrastructure avant les équipement
 
 Comprendre un incident nécessite de connaître son évolution.
 
-Ohanna-Vision conserve l'historique des observations afin de permettre l'analyse des changements d'état dans le temps.
+Ohana-Vision conserve l'historique des observations afin de permettre l'analyse des changements d'état dans le temps.
 
 ---
 
 ## L'interface doit rester lisible
 
-Le rôle d'Ohanna-Vision n'est pas d'afficher toutes les données disponibles.
+Le rôle d'Ohana-Vision n'est pas d'afficher toutes les données disponibles.
 
 Il est de présenter les informations réellement utiles à la compréhension de l'état de l'infrastructure.
 
@@ -122,7 +122,7 @@ Chaque écran doit privilégier la simplicité, la cohérence et la rapidité de
 
 # La topologie pilotée par Agent
 
-Ohanna-Agent transmet les équipements, les liaisons et les positions logiques de la topologie.
+Ohana-Agent transmet les équipements, les liaisons et les positions logiques de la topologie.
 
 Les positions sont exprimées sur une grille avec `column` et `row`. Vision reste responsable de la conversion en coordonnées graphiques, du canvas et du responsive.
 
@@ -130,9 +130,9 @@ Avant la première synchronisation, Vision présente un état vide. Les observat
 
 En cas de redémarrage de Vision, l'Agent retransmet périodiquement la configuration et suspend temporairement ses observations jusqu'à la resynchronisation.
 
-# Ce qu'Ohanna-Vision n'est pas
+# Ce qu'Ohana-Vision n'est pas
 
-Ohanna-Vision n'est pas un logiciel de supervision classique.
+Ohana-Vision n'est pas un logiciel de supervision classique.
 
 Il n'est pas un moteur de collecte.
 
@@ -144,13 +144,13 @@ Il n'interroge pas directement les services.
 
 Il ne remplace pas Home Assistant.
 
-Il ne remplace pas Ohanna-Agent.
+Il ne remplace pas Ohana-Agent.
 
 ---
 
 # Les objectifs du projet
 
-À terme, Ohanna-Vision devra permettre de :
+À terme, Ohana-Vision devra permettre de :
 
 - visualiser l'état global de l'infrastructure ;
 - afficher la santé de chaque capacité ;
@@ -163,9 +163,9 @@ Il ne remplace pas Ohanna-Agent.
 
 # Notre ambition
 
-Ohanna-Agent garantit les capacités de l'infrastructure.
+Ohana-Agent garantit les capacités de l'infrastructure.
 
-Ohanna-Vision les rend visibles.
+Ohana-Vision les rend visibles.
 
 Ensemble, ils constituent une plateforme capable de mesurer, comprendre et expliquer l'état réel d'une infrastructure domestique.
 
@@ -177,9 +177,9 @@ Comprendre l'infrastructure est une première étape.
 
 Pouvoir l'administrer depuis la même interface constitue son prolongement naturel.
 
-À terme, Ohanna-Vision deviendra également le point d'entrée de l'administration des composants de l'écosystème Ohanna.
+À terme, Ohana-Vision deviendra également le point d'entrée de l'administration des composants de l'écosystème Ohana.
 
-Selon les capacités exposées par Ohanna-Agent et ses plugins, Ohanna-Vision pourra notamment permettre :
+Selon les capacités exposées par Ohana-Agent et ses plugins, Ohana-Vision pourra notamment permettre :
 
 - consulter les baux DHCP actifs ;
 - gérer les réservations DHCP statiques ;
@@ -190,8 +190,8 @@ Selon les capacités exposées par Ohanna-Agent et ses plugins, Ohanna-Vision po
 - lancer des observations ou des diagnostics à la demande ;
 - déclencher certaines actions d'administration.
 
-Ohanna-Vision ne réalise pas directement ces opérations.
+Ohana-Vision ne réalise pas directement ces opérations.
 
-Il s'appuie sur les API exposées par Ohanna-Agent, qui reste le seul responsable de l'exécution des actions sur l'infrastructure.
+Il s'appuie sur les API exposées par Ohana-Agent, qui reste le seul responsable de l'exécution des actions sur l'infrastructure.
 
 Cette architecture garantit qu'une même logique métier peut être utilisée aussi bien par l'interface web que par une interface en ligne de commande ou toute autre application.

@@ -2,8 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from ohanna_vision.domain import HealthStatus, Observation
-from ohanna_vision.timeline import (
+from ohana_vision.domain import HealthStatus, Observation
+from ohana_vision.timeline import (
     ConflictingTimelineObservationsError,
     MixedTimelineObservationsError,
     TimelineEngine,

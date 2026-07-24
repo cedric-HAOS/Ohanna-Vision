@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.runtime import (
+from ohana_vision.runtime import (
     BackendRuntimeState,
     RuntimeSnapshot,
     RuntimeStatistics,

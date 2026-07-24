@@ -8,7 +8,7 @@
 
 # Contexte
 
-Ohanna-Vision reçoit un flux continu d'observations provenant d'Ohanna-Agent.
+Ohana-Vision reçoit un flux continu d'observations provenant d'Ohana-Agent.
 
 Ces observations permettent de reconstruire l'état courant de l'infrastructure grâce au `ProjectionEngine`.
 
@@ -32,7 +32,7 @@ Un moteur dédié est donc nécessaire.
 
 # Décision
 
-Ohanna-Vision introduit un moteur indépendant nommé **TimelineEngine**.
+Ohana-Vision introduit un moteur indépendant nommé **TimelineEngine**.
 
 Sa responsabilité est unique :
 
@@ -331,7 +331,7 @@ Inversement, les timelines pourront évoluer sans impacter les moteurs de projec
 
 # Décision retenue
 
-Le TimelineEngine devient le troisième moteur métier fondamental d'Ohanna-Vision.
+Le TimelineEngine devient le troisième moteur métier fondamental d'Ohana-Vision.
 
 Le domaine repose désormais sur quatre briques indépendantes :
 

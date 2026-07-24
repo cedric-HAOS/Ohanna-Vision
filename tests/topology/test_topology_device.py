@@ -2,7 +2,7 @@
 
 import pytest
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     TopologyDevice,
     TopologyDeviceKind,
 )

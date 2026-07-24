@@ -1,8 +1,8 @@
-"""Tests for the Ohanna-Vision WebSocket router."""
+"""Tests for the Ohana-Vision WebSocket router."""
 
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web import WebSocketHub, create_app
+from ohana_vision.web import WebSocketHub, create_app
 
 
 def test_websocket_router_accepts_connection() -> None:
@@ -17,7 +17,7 @@ def test_websocket_router_accepts_connection() -> None:
 
         assert message == {
             "type": "connected",
-            "message": "Ohanna Vision WebSocket connected",
+            "message": "Ohana Vision WebSocket connected",
         }
         assert hub.connection_count == 1
 

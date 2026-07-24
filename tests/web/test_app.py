@@ -1,20 +1,20 @@
-"""Tests for the Ohanna-Vision FastAPI application."""
+"""Tests for the Ohana-Vision FastAPI application."""
 
 from typing import cast
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision import __version__
-from ohanna_vision.configuration import (
+from ohana_vision import __version__
+from ohana_vision.configuration import (
     ApplicationConfiguration,
     Environment,
     WebConfiguration,
 )
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web import ApplicationContext, WebSocketHub, create_app
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import BackendRuntime
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web import ApplicationContext, WebSocketHub, create_app
 
 
 def test_application_exposes_package_version() -> None:
@@ -23,7 +23,7 @@ def test_application_exposes_package_version() -> None:
     assert app.version == __version__
 
 def make_client() -> TestClient:
-    """Create an Ohanna-Vision application client."""
+    """Create an Ohana-Vision application client."""
     return TestClient(create_app())
 
 
@@ -42,7 +42,7 @@ def test_root_endpoint_returns_application_status() -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-        "name": "Ohanna Vision",
+        "name": "Ohana Vision",
         "status": "running",
     }
 
@@ -55,7 +55,7 @@ def test_api_endpoint_returns_api_status() -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-        "name": "Ohanna Vision API",
+        "name": "Ohana Vision API",
         "status": "running",
     }
 
@@ -68,7 +68,7 @@ def test_openapi_schema_is_available() -> None:
 
     assert response.status_code == 200
     assert response.json()["info"] == {
-        "title": "Ohanna Vision",
+        "title": "Ohana Vision",
         "version": "1.1.0",
     }
 

@@ -2,21 +2,21 @@
 
 ## Objectif
 
-L'objectif d'Ohanna-Vision n'est pas uniquement d'afficher des observations.
+L'objectif d'Ohana-Vision n'est pas uniquement d'afficher des observations.
 
 Son rôle est de fournir une représentation claire de l'état réel de l'infrastructure.
 
-Pour cela, les observations produites par Ohanna-Agent sont transformées en un modèle de santé compréhensible par l'utilisateur.
+Pour cela, les observations produites par Ohana-Agent sont transformées en un modèle de santé compréhensible par l'utilisateur.
 
 ---
 
 # Les trois niveaux d'information
 
-Ohanna-Vision distingue trois niveaux complémentaires.
+Ohana-Vision distingue trois niveaux complémentaires.
 
 ## 1. Les observations
 
-Les observations sont les faits produits par Ohanna-Agent.
+Les observations sont les faits produits par Ohana-Agent.
 
 Exemples :
 
@@ -165,7 +165,7 @@ Ces transitions permettent de reconstruire l'historique des incidents.
 
 # Historique
 
-Ohanna-Vision conserve :
+Ohana-Vision conserve :
 
 * les observations ;
 * les changements d'état ;
@@ -186,7 +186,7 @@ Le modèle de santé doit permettre :
 * une compréhension immédiate de l'état de l'infrastructure ;
 * une représentation cohérente des capacités ;
 * une navigation simple entre l'état courant et l'historique ;
-* une évolution indépendante des plugins d'Ohanna-Agent.
+* une évolution indépendante des plugins d'Ohana-Agent.
 
 La santé constitue la représentation métier de l'infrastructure.
 

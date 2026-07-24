@@ -1,5 +1,5 @@
-from ohanna_vision.domain import NodeState
-from ohanna_vision.projection import InfrastructureReducer
+from ohana_vision.domain import NodeState
+from ohana_vision.projection import InfrastructureReducer
 
 
 def test_infrastructure_reducer_accepts_empty_collection() -> None:

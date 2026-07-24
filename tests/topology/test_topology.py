@@ -2,7 +2,7 @@
 
 import pytest
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     Topology,
     TopologyDevice,
     TopologyDeviceKind,
@@ -42,7 +42,7 @@ def make_link(
 
 
 def make_topology() -> Topology:
-    """Create a representative Ohanna-House topology."""
+    """Create a representative Ohana-House topology."""
     internet = make_device(
         "internet",
         kind=TopologyDeviceKind.INTERNET,
@@ -61,8 +61,8 @@ def make_topology() -> Topology:
     )
 
     return Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         devices=(
             internet,
             freebox,
@@ -117,23 +117,23 @@ def make_topology() -> Topology:
 def test_topology_stores_identity() -> None:
     """A topology must expose its architectural identity."""
     topology = Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
     )
 
-    assert topology.topology_id == "ohanna-house"
-    assert topology.label == "Ohanna-House"
+    assert topology.topology_id == "ohana-house"
+    assert topology.label == "Ohana-House"
 
 
 def test_topology_normalizes_identity() -> None:
     """Topology identity values must be normalized."""
     topology = Topology(
-        topology_id="  ohanna-house  ",
-        label="  Ohanna-House  ",
+        topology_id="  ohana-house  ",
+        label="  Ohana-House  ",
     )
 
-    assert topology.topology_id == "ohanna-house"
-    assert topology.label == "Ohanna-House"
+    assert topology.topology_id == "ohana-house"
+    assert topology.label == "Ohana-House"
 
 
 def test_topology_stores_devices_links_and_layouts() -> None:
@@ -285,7 +285,7 @@ def test_topology_rejects_empty_topology_id() -> None:
     ):
         Topology(
             topology_id="   ",
-            label="Ohanna-House",
+            label="Ohana-House",
         )
 
 
@@ -296,7 +296,7 @@ def test_topology_rejects_empty_label() -> None:
         match="label must not be empty",
     ):
         Topology(
-            topology_id="ohanna-house",
+            topology_id="ohana-house",
             label="   ",
         )
 
@@ -469,27 +469,27 @@ def test_topology_collections_are_tuples() -> None:
 def test_topology_copies_metadata() -> None:
     """External metadata changes must not mutate a topology."""
     metadata: dict[str, object] = {
-        "description": "Ohanna-House topology",
+        "description": "Ohana-House topology",
     }
 
     topology = Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         metadata=metadata,
     )
 
     metadata["description"] = "Changed"
 
-    assert topology.metadata["description"] == "Ohanna-House topology"
+    assert topology.metadata["description"] == "Ohana-House topology"
 
 
 def test_topology_metadata_is_immutable() -> None:
     """Topology metadata must not be mutable."""
     topology = Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         metadata={
-            "description": "Ohanna-House topology",
+            "description": "Ohana-House topology",
         },
     )
 
@@ -509,7 +509,7 @@ def test_topology_metadata_is_deeply_immutable() -> None:
     """Nested topology metadata must remain immutable."""
     metadata = {
         "owners": [
-            "Ohanna-House",
+            "Ohana-House",
         ],
         "configuration": {
             "version": 1,
@@ -517,15 +517,15 @@ def test_topology_metadata_is_deeply_immutable() -> None:
     }
 
     topology = Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         metadata=metadata,
     )
 
     metadata["owners"].append("Other")
     metadata["configuration"]["version"] = 2
 
-    assert topology.metadata["owners"] == ("Ohanna-House",)
+    assert topology.metadata["owners"] == ("Ohana-House",)
 
     configuration = topology.metadata["configuration"]
 

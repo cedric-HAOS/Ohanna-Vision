@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web.routers import root_router
+from ohana_vision.web.routers import root_router
 
 
 def make_client() -> TestClient:
@@ -22,6 +22,6 @@ def test_root_router_exposes_application_status() -> None:
 
     assert response.status_code == 200
     assert response.json() == {
-        "name": "Ohanna Vision",
+        "name": "Ohana Vision",
         "status": "running",
     }

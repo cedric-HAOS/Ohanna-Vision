@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from ohanna_vision.web.infrastructure_request import (
+from ohana_vision.web.infrastructure_request import (
     InfrastructureRequest,
 )
 
@@ -12,8 +12,8 @@ def make_payload() -> dict[str, object]:
     """Build a valid infrastructure payload."""
     return {
         "schema_version": 1,
-        "infrastructure_id": "ohanna-house",
-        "name": "Ohanna House",
+        "infrastructure_id": "ohana-house",
+        "name": "Ohana House",
         "environment": "production",
         "metadata": {
             "version": "1.0",
@@ -51,7 +51,7 @@ def test_infrastructure_request_accepts_valid_payload() -> None:
     )
 
     assert request.schema_version == 1
-    assert request.infrastructure_id == "ohanna-house"
+    assert request.infrastructure_id == "ohana-house"
     assert request.nodes[0].node_id == "infra-01"
     assert (
         request.services[0].service_id

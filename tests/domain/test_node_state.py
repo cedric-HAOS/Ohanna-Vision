@@ -2,7 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.domain import (
+from ohana_vision.domain import (
     CapabilityState,
     Health,
     HealthStatus,

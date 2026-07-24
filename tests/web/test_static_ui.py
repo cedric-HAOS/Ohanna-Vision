@@ -1,13 +1,13 @@
-"""Tests for the Ohanna-Vision static web interface."""
+"""Tests for the Ohana-Vision static web interface."""
 
 import pytest
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web import create_app
+from ohana_vision.web import create_app
 
 
 def make_client() -> TestClient:
-    """Create an Ohanna-Vision application client."""
+    """Create an Ohana-Vision application client."""
     return TestClient(create_app())
 
 
@@ -19,7 +19,7 @@ def test_static_ui_is_available() -> None:
 
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
-    assert "<title>Ohanna Vision</title>" in response.text
+    assert "<title>Ohana Vision</title>" in response.text
 
 
 def test_static_ui_contains_dashboard_sections() -> None:
@@ -185,7 +185,7 @@ def test_static_ui_marks_topology_as_primary_content() -> None:
     assert "dashboard-primary--topology" in response.text
     assert 'id="topology-health-indicator"' in response.text
     assert 'id="topology-health-label"' in response.text
-    assert "Topologie Ohanna-House" in response.text
+    assert "Topologie Ohana-House" in response.text
 
 
 def test_static_ui_contains_realtime_side_panel() -> None:
@@ -295,7 +295,7 @@ def test_static_ui_exposes_navigation_controller() -> None:
 
     assert response.status_code == 200
     assert "export class NavigationController" in response.text
-    assert "ohanna:navigation-changed" in response.text
+    assert "ohana:navigation-changed" in response.text
     assert "hashchange" in response.text
 
 
@@ -308,7 +308,7 @@ def test_application_script_connects_navigation() -> None:
     assert response.status_code == 200
     assert "NavigationController" in response.text
     assert 'from "./navigation.js"' in response.text
-    assert '"ohanna:navigation-changed"' in response.text
+    assert '"ohana:navigation-changed"' in response.text
     assert "this.navigation.initialize()" in response.text
 
 
@@ -1546,17 +1546,17 @@ def test_application_routes_timeline_errors_to_the_ui() -> None:
     assert "console.error(" not in response.text
 
 def test_design_system_styles_are_available() -> None:
-    """The official Ohanna design tokens must be served."""
+    """The official Ohana design tokens must be served."""
     client = make_client()
 
     response = client.get("/ui/design-system.css")
 
     assert response.status_code == 200
     assert "text/css" in response.headers["content-type"]
-    assert "--ohanna-brand-primary" in response.text
-    assert "--ohanna-background-canvas" in response.text
-    assert "--ohanna-health-healthy" in response.text
-    assert "--ohanna-space-4" in response.text
+    assert "--ohana-brand-primary" in response.text
+    assert "--ohana-background-canvas" in response.text
+    assert "--ohana-health-healthy" in response.text
+    assert "--ohana-space-4" in response.text
 
 def test_static_styles_import_design_system() -> None:
     """The application stylesheet must load the design system."""
@@ -1574,13 +1574,13 @@ def test_foundation_styles_use_design_system_tokens() -> None:
     response = client.get("/ui/styles/foundations.css")
 
     assert response.status_code == 200
-    assert "var(--ohanna-font-family-sans)" in response.text
-    assert "var(--ohanna-background-canvas)" in response.text
-    assert "var(--ohanna-text-primary)" in response.text
-    assert "var(--ohanna-border-focus)" in response.text
+    assert "var(--ohana-font-family-sans)" in response.text
+    assert "var(--ohana-background-canvas)" in response.text
+    assert "var(--ohana-text-primary)" in response.text
+    assert "var(--ohana-border-focus)" in response.text
 
 def test_health_states_are_supported_by_ui_styles() -> None:
-    """The UI must support every official Ohanna-Vision health state."""
+    """The UI must support every official Ohana-Vision health state."""
     client = make_client()
 
     response = client.get("/ui/styles/observations.css")
@@ -1592,7 +1592,7 @@ def test_health_states_are_supported_by_ui_styles() -> None:
     assert ".recent-observation--unknown" in response.text
 
 def test_official_navigation_icon_is_available() -> None:
-    """Official Ohanna navigation icons must be served."""
+    """Official Ohana navigation icons must be served."""
     client = make_client()
 
     response = client.get(
@@ -1603,7 +1603,7 @@ def test_official_navigation_icon_is_available() -> None:
     assert "image/svg+xml" in response.headers["content-type"]
 
 def test_sidebar_uses_official_navigation_icons() -> None:
-    """Sidebar navigation must use official Ohanna icons."""
+    """Sidebar navigation must use official Ohana icons."""
     client = make_client()
 
     html_response = client.get("/ui/")
@@ -1635,7 +1635,7 @@ def test_sidebar_uses_official_navigation_icons() -> None:
     )
 
 def test_dashboard_kpis_use_official_icons() -> None:
-    """Dashboard KPIs must use official Ohanna icons."""
+    """Dashboard KPIs must use official Ohana icons."""
     client = make_client()
 
     html_response = client.get("/ui/")
@@ -1669,7 +1669,7 @@ def test_dashboard_kpis_use_official_icons() -> None:
         assert icon_path in css_response.text
 
 def test_topology_zoom_in_uses_official_icon() -> None:
-    """Topology zoom-in action must use the official Ohanna icon."""
+    """Topology zoom-in action must use the official Ohana icon."""
     client = make_client()
 
     html_response = client.get("/ui/")
@@ -1687,7 +1687,7 @@ def test_topology_zoom_in_uses_official_icon() -> None:
     )
 
 def test_dashboard_header_uses_official_refresh_icon() -> None:
-    """Dashboard header refresh action must use the official Ohanna icon."""
+    """Dashboard header refresh action must use the official Ohana icon."""
     client = make_client()
 
     html_response = client.get("/ui/")
@@ -1705,7 +1705,7 @@ def test_dashboard_header_uses_official_refresh_icon() -> None:
     )
 
 def test_sidebar_uses_official_brand_asset() -> None:
-    """Sidebar brand must use the official Ohanna symbol."""
+    """Sidebar brand must use the official Ohana symbol."""
     response = make_client().get("/ui/")
 
     assert response.status_code == 200
@@ -1730,7 +1730,7 @@ def test_sidebar_styles_define_modern_navigation_states() -> None:
         in response.text
     )
     assert ".sidebar-navigation__item:focus-visible {" in response.text
-    assert "var(--ohanna-border-focus)" in response.text
+    assert "var(--ohana-border-focus)" in response.text
 
 def test_connection_status_uses_official_health_states() -> None:
     """Realtime connection states must use official health tokens."""
@@ -1744,9 +1744,9 @@ def test_connection_status_uses_official_health_states() -> None:
     assert ".connection-status--connecting {" in response.text
     assert ".connection-status--offline {" in response.text
 
-    assert "var(--ohanna-health-healthy)" in response.text
-    assert "var(--ohanna-health-degraded)" in response.text
-    assert "var(--ohanna-health-critical)" in response.text
+    assert "var(--ohana-health-healthy)" in response.text
+    assert "var(--ohana-health-degraded)" in response.text
+    assert "var(--ohana-health-critical)" in response.text
     assert "@keyframes connection-status-pulse" in response.text
 
 def test_sidebar_exposes_product_version() -> None:
@@ -1756,7 +1756,7 @@ def test_sidebar_exposes_product_version() -> None:
     assert response.status_code == 200
     assert "sidebar-version__product" in response.text
     assert "sidebar-version__number" in response.text
-    assert "Ohanna-Vision" in response.text
+    assert "Ohana-Vision" in response.text
     assert "v0.1.0" in response.text
 
 
@@ -1770,10 +1770,10 @@ def test_sidebar_version_uses_discrete_footer_styles() -> None:
     assert ".sidebar-version {" in response.text
     assert ".sidebar-version__product {" in response.text
     assert ".sidebar-version__number {" in response.text
-    assert "var(--ohanna-font-family-mono)" in response.text
+    assert "var(--ohana-font-family-mono)" in response.text
 
 def test_official_sidebar_symbol_is_available() -> None:
-    """The official Ohanna symbol must be served."""
+    """The official Ohana symbol must be served."""
     response = make_client().get(
         "/ui/assets/logos/symbol.svg",
     )
@@ -1792,12 +1792,12 @@ def test_dashboard_cards_use_design_system_surfaces() -> None:
     assert dashboard_response.status_code == 200
     assert components_response.status_code == 200
 
-    assert "var(--ohanna-background-surface)" in dashboard_response.text
-    assert "var(--ohanna-border-subtle)" in dashboard_response.text
-    assert "var(--ohanna-radius-md)" in dashboard_response.text
-    assert "var(--ohanna-shadow-sm)" in dashboard_response.text
+    assert "var(--ohana-background-surface)" in dashboard_response.text
+    assert "var(--ohana-border-subtle)" in dashboard_response.text
+    assert "var(--ohana-radius-md)" in dashboard_response.text
+    assert "var(--ohana-shadow-sm)" in dashboard_response.text
 
-    assert "var(--ohanna-health-critical-soft)" in components_response.text
+    assert "var(--ohana-health-critical-soft)" in components_response.text
 
 
 def test_dashboard_kpis_use_design_system_tokens() -> None:
@@ -1809,12 +1809,12 @@ def test_dashboard_kpis_use_design_system_tokens() -> None:
     assert response.status_code == 200
 
     assert ".dashboard-kpi {" in response.text
-    assert "var(--ohanna-background-surface-raised)" in response.text
-    assert "var(--ohanna-border-subtle)" in response.text
-    assert "var(--ohanna-shadow-sm)" in response.text
-    assert "var(--ohanna-health-healthy)" in response.text
-    assert "var(--ohanna-health-degraded)" in response.text
-    assert "var(--ohanna-health-critical)" in response.text
+    assert "var(--ohana-background-surface-raised)" in response.text
+    assert "var(--ohana-border-subtle)" in response.text
+    assert "var(--ohana-shadow-sm)" in response.text
+    assert "var(--ohana-health-healthy)" in response.text
+    assert "var(--ohana-health-degraded)" in response.text
+    assert "var(--ohana-health-critical)" in response.text
     assert "font-variant-numeric: tabular-nums;" in response.text
 
 
@@ -1830,10 +1830,10 @@ def test_side_panel_cards_use_design_system_tokens() -> None:
     assert ".active-alert {" in response.text
     assert ".processing-indicator {" in response.text
 
-    assert "var(--ohanna-background-surface-raised)" in response.text
-    assert "var(--ohanna-health-healthy-soft)" in response.text
-    assert "var(--ohanna-health-degraded)" in response.text
-    assert "var(--ohanna-health-critical)" in response.text
+    assert "var(--ohana-background-surface-raised)" in response.text
+    assert "var(--ohana-health-healthy-soft)" in response.text
+    assert "var(--ohana-health-degraded)" in response.text
+    assert "var(--ohana-health-critical)" in response.text
     assert "font-variant-numeric: tabular-nums;" in response.text
 
 def test_dashboard_cards_define_interactive_states() -> None:
@@ -1859,7 +1859,7 @@ def test_dashboard_cards_define_interactive_states() -> None:
     assert ".active-alert:active {" in dashboard_response.text
 
     assert ".processing-indicator--error {" in dashboard_response.text
-    assert "var(--ohanna-health-critical-soft)" in dashboard_response.text
+    assert "var(--ohana-health-critical-soft)" in dashboard_response.text
 
     assert (
         ".dashboard-kpi--updating"
@@ -1882,11 +1882,11 @@ def test_timeline_header_uses_design_system_tokens() -> None:
     assert ".timeline-range__button:focus-visible {" in response.text
     assert ".timeline-legend {" in response.text
 
-    assert "var(--ohanna-brand-primary-soft)" in response.text
-    assert "var(--ohanna-health-healthy-soft)" in response.text
-    assert "var(--ohanna-health-degraded-soft)" in response.text
-    assert "var(--ohanna-health-critical-soft)" in response.text
-    assert "var(--ohanna-health-unknown-soft)" in response.text
+    assert "var(--ohana-brand-primary-soft)" in response.text
+    assert "var(--ohana-health-healthy-soft)" in response.text
+    assert "var(--ohana-health-degraded-soft)" in response.text
+    assert "var(--ohana-health-critical-soft)" in response.text
+    assert "var(--ohana-health-unknown-soft)" in response.text
 
 def test_timeline_axis_and_rows_use_design_system() -> None:
     """Timeline axis and rows must use the Design System."""
@@ -1903,13 +1903,13 @@ def test_timeline_axis_and_rows_use_design_system() -> None:
     assert ".timeline-row__track {" in response.text
     assert "#timeline-content {" in response.text
 
-    assert "var(--ohanna-font-family-mono)" in response.text
-    assert "var(--ohanna-background-canvas)" in response.text
-    assert "var(--ohanna-border-subtle)" in response.text
-    assert "var(--ohanna-health-healthy-soft)" in response.text
-    assert "var(--ohanna-health-degraded-soft)" in response.text
-    assert "var(--ohanna-health-critical-soft)" in response.text
-    assert "var(--ohanna-health-unknown-soft)" in response.text
+    assert "var(--ohana-font-family-mono)" in response.text
+    assert "var(--ohana-background-canvas)" in response.text
+    assert "var(--ohana-border-subtle)" in response.text
+    assert "var(--ohana-health-healthy-soft)" in response.text
+    assert "var(--ohana-health-degraded-soft)" in response.text
+    assert "var(--ohana-health-critical-soft)" in response.text
+    assert "var(--ohana-health-unknown-soft)" in response.text
 
 def test_timeline_renders_period_durations() -> None:
     """Timeline periods must render as duration segments."""
@@ -2038,8 +2038,8 @@ def test_timeline_empty_and_error_states_use_design_system() -> None:
     assert ".timeline-empty__content {" in response.text
     assert ".timeline-empty--error {" in response.text
 
-    assert "var(--ohanna-health-unknown)" in response.text
-    assert "var(--ohanna-health-critical)" in response.text
+    assert "var(--ohana-health-unknown)" in response.text
+    assert "var(--ohana-health-critical)" in response.text
     assert (
         "../assets/icons/navigation/clock-3.svg"
         in response.text

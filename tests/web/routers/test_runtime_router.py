@@ -1,4 +1,4 @@
-"""Tests for the Ohanna-Vision runtime API router."""
+"""Tests for the Ohana-Vision runtime API router."""
 
 from datetime import UTC, datetime
 from typing import cast
@@ -6,20 +6,20 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.domain import ObservationStore
-from ohanna_vision.runtime import (
+from ohana_vision.domain import ObservationStore
+from ohana_vision.runtime import (
     BackendRuntime,
     BackendRuntimeState,
     RuntimeSnapshot,
     RuntimeStatistics,
 )
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web.dependencies import (
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web.dependencies import (
     get_observation_store,
     get_runtime,
     get_timeline_engine,
 )
-from ohanna_vision.web.routers import runtime_router
+from ohana_vision.web.routers import runtime_router
 
 
 class FakeBackendRuntime:

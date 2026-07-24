@@ -1,11 +1,11 @@
-"""Tests for the Ohanna-Vision WebSocket hub."""
+"""Tests for the Ohana-Vision WebSocket hub."""
 
 import asyncio
 from typing import cast
 
 from fastapi import WebSocket
 
-from ohanna_vision.web.websocket_hub import WebSocketHub
+from ohana_vision.web.websocket_hub import WebSocketHub
 
 
 class FakeWebSocket:

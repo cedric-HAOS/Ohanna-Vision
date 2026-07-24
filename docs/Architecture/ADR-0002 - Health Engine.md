@@ -47,7 +47,7 @@ Il est donc nécessaire d'introduire un moteur spécialisé chargé d'évaluer l
 
 # Décision
 
-Ohanna-Vision introduit un composant indépendant appelé **Health Engine**.
+Ohana-Vision introduit un composant indépendant appelé **Health Engine**.
 
 Le Health Engine reçoit une projection de l'infrastructure.
 
@@ -67,7 +67,7 @@ La projection décrit ce qui est.
 
 La santé décrit ce que cela signifie.
 
-Cette distinction constitue l'un des principes fondamentaux de Ohanna-Vision.
+Cette distinction constitue l'un des principes fondamentaux de Ohana-Vision.
 
 ---
 
@@ -481,4 +481,4 @@ La santé n'est jamais une propriété intrinsèque de l'infrastructure.
 
 Elle est le résultat d'une interprétation métier appliquée à une projection.
 
-Cette distinction garantit la simplicité, la modularité et l'évolutivité de l'architecture de Ohanna-Vision.
+Cette distinction garantit la simplicité, la modularité et l'évolutivité de l'architecture de Ohana-Vision.

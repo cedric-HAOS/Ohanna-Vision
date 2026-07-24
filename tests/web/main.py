@@ -1,13 +1,13 @@
-"""Executable FastAPI application for Ohanna-Vision."""
+"""Executable FastAPI application for Ohana-Vision."""
 
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web import create_app
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import BackendRuntime
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web import create_app
 
 
 def build_runtime() -> BackendRuntime:
-    """Build the default Ohanna-Vision backend runtime."""
+    """Build the default Ohana-Vision backend runtime."""
     return BackendRuntime(
         observation_store=ObservationStore(),
         timeline_engine=TimelineEngine(),

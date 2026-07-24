@@ -1,6 +1,6 @@
 {
-  "topology_id": "ohanna-house",
-  "label": "Ohanna-House",
+  "topology_id": "ohana-house",
+  "label": "Ohana-House",
   "devices": [
     {
       "device_id": "internet",
@@ -197,8 +197,8 @@
   ],
   "layouts": [
     {
-      "layout_id": "ohanna-house-physical",
-      "label": "Carte physique Ohanna-House",
+      "layout_id": "ohana-house-physical",
+      "label": "Carte physique Ohana-House",
       "kind": "physical",
       "canvas_width": 1800.0,
       "canvas_height": 820.0,
@@ -264,7 +264,7 @@
     }
   ],
   "metadata": {
-    "description": "Physical infrastructure topology of Ohanna-House.",
+    "description": "Physical infrastructure topology of Ohana-House.",
     "version": 1
   }
 }

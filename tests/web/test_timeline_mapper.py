@@ -2,15 +2,15 @@
 
 from datetime import UTC, datetime
 
-from ohanna_vision.domain import HealthStatus
-from ohanna_vision.timeline import (
+from ohana_vision.domain import HealthStatus
+from ohana_vision.timeline import (
     CapabilityTimeline,
     InfrastructureTimeline,
     NodeTimeline,
     ServiceTimeline,
     StatePeriod,
 )
-from ohanna_vision.web.api.timeline_mapper import (
+from ohana_vision.web.api.timeline_mapper import (
     map_capability_timeline,
     map_infrastructure_timeline,
     map_timeline_period,

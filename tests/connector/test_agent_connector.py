@@ -4,12 +4,12 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.connector import (
+from ohana_vision.connector import (
     AgentConnector,
     ConnectorRuntime,
     ConnectorState,
 )
-from ohanna_vision.domain import HealthStatus, Observation
+from ohana_vision.domain import HealthStatus, Observation
 
 
 class FakeObservationProcessor:

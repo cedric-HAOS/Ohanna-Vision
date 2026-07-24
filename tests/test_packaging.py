@@ -1,16 +1,16 @@
-"""Tests for the Ohanna-Vision package configuration."""
+"""Tests for the Ohana-Vision package configuration."""
 
 from pathlib import Path
 
 
 def test_pyproject_declares_console_entry_point() -> None:
-    """The package must install the ohanna-vision command."""
+    """The package must install the ohana-vision command."""
     pyproject = Path("pyproject.toml").read_text(
         encoding="utf-8",
     )
 
     assert "[project.scripts]" in pyproject
-    assert 'ohanna-vision = "ohanna_vision.main:main"' in pyproject
+    assert 'ohana-vision = "ohana_vision.main:main"' in pyproject
 
 
 def test_pyproject_packages_root_static_resources() -> None:
@@ -57,7 +57,7 @@ def test_pyproject_packages_branding_assets() -> None:
 def test_static_branding_assets_exist() -> None:
     """Required branding assets must exist."""
     static_directory = Path(
-        "src/ohanna_vision/web/static/assets/favicons"
+        "src/ohana_vision/web/static/assets/favicons"
     )
 
     required_files = [
@@ -74,7 +74,7 @@ def test_static_branding_assets_exist() -> None:
 
 def test_index_declares_branding_assets() -> None:
     """The web interface must declare its branding assets."""
-    index = Path("src/ohanna_vision/web/static/index.html").read_text(
+    index = Path("src/ohana_vision/web/static/index.html").read_text(
         encoding="utf-8",
     )
 

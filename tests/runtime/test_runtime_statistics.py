@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.runtime import RuntimeStatistics
+from ohana_vision.runtime import RuntimeStatistics
 
 
 def test_runtime_statistics_have_empty_defaults() -> None:

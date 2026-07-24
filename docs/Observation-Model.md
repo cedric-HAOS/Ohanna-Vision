@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Les observations constituent le langage commun entre Ohanna-Agent et Ohanna-Vision.
+Les observations constituent le langage commun entre Ohana-Agent et Ohana-Vision.
 
 Elles représentent des faits mesurés sur l'infrastructure.
 
@@ -26,7 +26,7 @@ En revanche :
 
 Ceci est une interprétation.
 
-Ohanna-Vision construit ses représentations à partir des observations, mais ne modifie jamais leur signification.
+Ohana-Vision construit ses représentations à partir des observations, mais ne modifie jamais leur signification.
 
 ---
 
@@ -36,7 +36,7 @@ Ohanna-Vision construit ses représentations à partir des observations, mais ne
 Infrastructure
       │
       ▼
-Plugin Ohanna-Agent
+Plugin Ohana-Agent
       │
       ▼
 Observation
@@ -45,7 +45,7 @@ Observation
 Transport
       │
       ▼
-Ohanna-Vision
+Ohana-Vision
       │
       ├── Historique
       ├── Etat courant
@@ -150,7 +150,7 @@ Exemples :
 * nombre de baux DHCP ;
 * taille d'une sauvegarde.
 
-Ohanna-Vision ne doit pas imposer une structure fixe aux métadonnées.
+Ohana-Vision ne doit pas imposer une structure fixe aux métadonnées.
 
 ---
 
@@ -165,7 +165,7 @@ Par exemple :
 * Unavailable
 * Unknown
 
-Les statuts exacts sont définis par les contrats communs avec Ohanna-Agent.
+Les statuts exacts sont définis par les contrats communs avec Ohana-Agent.
 
 ---
 
@@ -185,7 +185,7 @@ Cette règle garantit :
 
 # Agrégation
 
-Ohanna-Vision peut agréger les observations pour produire :
+Ohana-Vision peut agréger les observations pour produire :
 
 * un état courant ;
 * des graphiques ;
@@ -200,8 +200,8 @@ Ces agrégations ne remplacent jamais les observations originales.
 
 # Compatibilité
 
-Le format des observations constitue un contrat partagé entre Ohanna-Agent et Ohanna-Vision.
+Le format des observations constitue un contrat partagé entre Ohana-Agent et Ohana-Vision.
 
 Toute évolution incompatible devra être versionnée.
 
-L'objectif est de permettre à plusieurs versions de Ohanna-Agent et Ohanna-Vision de coexister pendant une période de transition, sans compromettre la stabilité de l'écosystème.
+L'objectif est de permettre à plusieurs versions de Ohana-Agent et Ohana-Vision de coexister pendant une période de transition, sans compromettre la stabilité de l'écosystème.

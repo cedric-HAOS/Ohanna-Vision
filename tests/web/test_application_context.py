@@ -1,11 +1,11 @@
-"""Tests for the Ohanna-Vision application context."""
+"""Tests for the Ohana-Vision application context."""
 
 from typing import cast
 
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import BackendRuntime
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web import ApplicationContext
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import BackendRuntime
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web import ApplicationContext
 
 
 def test_application_context_exposes_services() -> None:

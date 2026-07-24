@@ -2,11 +2,11 @@
 
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web import create_app
+from ohana_vision.web import create_app
 
 
 def make_client() -> TestClient:
-    """Create an Ohanna-Vision application client."""
+    """Create an Ohana-Vision application client."""
     return TestClient(create_app())
 
 
@@ -64,7 +64,7 @@ def test_topology_canvas_waits_for_agent_configuration() -> None:
 
     assert response.status_code == 200
     assert (
-        "En attente de la configuration transmise par Ohanna-Agent."
+        "En attente de la configuration transmise par Ohana-Agent."
         in response.text
     )
 

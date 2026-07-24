@@ -2,7 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.domain import HealthStatus, Observation
+from ohana_vision.domain import HealthStatus, Observation
 
 
 def test_observation_is_created() -> None:

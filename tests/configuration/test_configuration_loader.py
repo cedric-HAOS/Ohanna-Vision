@@ -1,10 +1,10 @@
-"""Tests for the Ohanna-Vision configuration loader."""
+"""Tests for the Ohana-Vision configuration loader."""
 
 from pathlib import Path
 
 import pytest
 
-from ohanna_vision.configuration import (
+from ohana_vision.configuration import (
     ConfigurationError,
     ConfigurationLoader,
     Environment,
@@ -66,7 +66,7 @@ def test_loader_accepts_empty_configuration(
 
     configuration = ConfigurationLoader.load(path)
 
-    assert configuration.name == "Ohanna Vision"
+    assert configuration.name == "Ohana Vision"
     assert configuration.environment is Environment.DEVELOPMENT
 
 

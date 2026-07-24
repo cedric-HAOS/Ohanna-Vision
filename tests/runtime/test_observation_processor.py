@@ -6,14 +6,14 @@ from uuid import UUID
 
 import pytest
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.runtime import (
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.domain.observation import Observation
+from ohana_vision.runtime import (
     BackendRuntime,
     BackendRuntimeState,
     ObservationProcessor,
 )
-from ohanna_vision.timeline import (
+from ohana_vision.timeline import (
     InfrastructureTimeline,
     TimelineEngine,
 )

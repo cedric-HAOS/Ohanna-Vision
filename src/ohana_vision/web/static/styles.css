@@ -1,0 +1,396 @@
+@import url("./design-system.css");
+@import url("./styles/foundations.css");
+@import url("./styles/layout.css");
+@import url("./styles/components.css");
+@import url("./styles/navigation.css");
+@import url("./styles/dashboard.css");
+@import url("./styles/observations.css");
+@import url("./styles/topology.css");
+@import url("./styles/device-details.css");
+@import url("./styles/timeline.css");
+@import url("./styles/responsive.css");
+
+.connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ohana-space-2);
+
+    padding:
+        var(--ohana-space-3)
+        var(--ohana-space-4);
+
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-round);
+
+    color: var(--ohana-text-muted);
+    background: var(--ohana-background-surface);
+
+    font-weight: var(--ohana-font-weight-medium);
+    white-space: nowrap;
+
+    transition:
+        color var(--ohana-duration-fast)
+            var(--ohana-easing-standard);
+}
+
+.connection-status__indicator {
+    width: 0.65rem;
+    height: 0.65rem;
+    flex: 0 0 0.65rem;
+
+    border-radius: var(--ohana-radius-round);
+
+    background: var(--ohana-health-unknown);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohana-health-unknown-soft);
+
+    transition:
+        background-color var(--ohana-duration-fast)
+            var(--ohana-easing-standard),
+        box-shadow var(--ohana-duration-fast)
+            var(--ohana-easing-standard);
+}
+
+.connection-status--online {
+    color: var(--ohana-health-healthy);
+}
+
+.connection-status--online
+.connection-status__indicator {
+    background: var(--ohana-health-healthy);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohana-health-healthy-soft);
+}
+
+.connection-status--connecting {
+    color: var(--ohana-health-degraded);
+}
+
+.connection-status--connecting
+.connection-status__indicator {
+    background: var(--ohana-health-degraded);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohana-health-degraded-soft);
+
+    animation:
+        connection-status-pulse
+        1.2s
+        var(--ohana-easing-standard)
+        infinite;
+}
+
+.connection-status--offline {
+    color: var(--ohana-health-critical);
+}
+
+.connection-status--offline
+.connection-status__indicator {
+    background: var(--ohana-health-critical);
+    box-shadow:
+        0 0 0 0.25rem
+        var(--ohana-health-critical-soft);
+}
+
+@keyframes connection-status-pulse {
+    50% {
+        opacity: 0.45;
+        transform: scale(0.82);
+    }
+}
+
+.node-card {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-elevated);
+}
+
+.node-card__header,
+.service-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.node-card__header {
+    margin-bottom: 0.8rem;
+}
+
+.node-card h3,
+.service-card h4 {
+    margin: 0;
+}
+
+.service-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.service-card {
+    padding: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+.capability-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.capability-item {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    background: var(--surface-elevated);
+    font-size: 0.82rem;
+}
+
+.dashboard-primary,
+.dashboard-timeline,
+.side-panel-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgb(18 26 46 / 76%);
+    box-shadow: 0 14px 40px rgb(0 0 0 / 14%);
+}
+
+.application-sidebar,
+.dashboard-kpis,
+.dashboard-primary,
+.dashboard-right-panel,
+
+.dashboard-kpis {
+    animation-delay: 80ms;
+}
+
+.dashboard-primary {
+    animation-delay: 120ms;
+}
+
+.dashboard-right-panel {
+    animation-delay: 160ms;
+}
+
+@keyframes dashboard-enter {
+    from {
+        opacity: 0;
+        transform: translateY(0.45rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-kpi {
+    transition:
+        border-color var(--transition-normal)
+            var(--easing-standard),
+        background var(--transition-normal)
+            var(--easing-standard),
+        transform var(--transition-fast)
+            var(--easing-standard),
+        box-shadow var(--transition-normal)
+            var(--easing-standard);
+}
+
+.dashboard-kpi:hover {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--kpi-accent) 38%,
+            var(--ohana-border-default)
+        );
+
+    box-shadow: var(--ohana-shadow-md);
+
+    transform: translateY(-1px);
+}
+
+.dashboard-kpi__value {
+    transition:
+        color var(--ohana-duration-normal)
+            var(--ohana-easing-standard),
+        transform var(--ohana-duration-fast)
+            var(--ohana-easing-standard);
+}
+
+.dashboard-kpi--warning {
+    --kpi-accent: var(--ohana-health-degraded);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--ohana-health-degraded) 30%,
+            var(--ohana-border-subtle)
+        );
+
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            var(--ohana-health-degraded-soft),
+            transparent 8rem
+        ),
+        var(--ohana-background-surface-raised);
+}
+
+.dashboard-kpi--critical {
+    --kpi-accent: var(--ohana-health-critical);
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--ohana-health-critical) 35%,
+            var(--ohana-border-subtle)
+        );
+
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            var(--ohana-health-critical-soft),
+            transparent 8rem
+        ),
+        var(--ohana-background-surface-raised);
+}
+
+@keyframes realtime-item-enter {
+    from {
+        opacity: 0;
+        transform: translateX(0.4rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.topology-device__card,
+.topology-device__accent,
+.topology-device__health-indicator,
+.topology-link__path,
+.topology-link__connector {
+    transition:
+        fill var(--transition-normal)
+            var(--easing-standard),
+        stroke var(--transition-normal)
+            var(--easing-standard),
+        filter var(--transition-normal)
+            var(--easing-standard);
+}
+
+.topology-device--health-degraded
+.topology-device__health-indicator,
+.topology-device--health-unhealthy
+.topology-device__health-indicator {
+    animation:
+        health-pulse
+        1.8s ease-in-out
+        infinite;
+}
+
+@keyframes health-pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.55;
+        transform: scale(1.25);
+    }
+}
+
+.topology-device__health-indicator {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+@keyframes timeline-period-enter {
+    from {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0.35);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+}
+
+@keyframes timeline-latest-pulse {
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 0.18rem
+            color-mix(
+                in srgb,
+                var(--timeline-color) 12%,
+                transparent
+            );
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 0.4rem
+            color-mix(
+                in srgb,
+                var(--timeline-color) 5%,
+                transparent
+            );
+    }
+}
+
+.device-details__hero,
+.device-details__summary,
+.device-details__section {
+    animation:
+        device-section-enter
+        var(--transition-normal)
+        var(--easing-standard)
+        both;
+}
+
+.device-details__summary {
+    animation-delay: 50ms;
+}
+
+.device-details__section {
+    animation-delay: 90ms;
+}
+
+.device-details__section
++ .device-details__section {
+    animation-delay: 130ms;
+}
+
+@keyframes device-section-enter {
+    from {
+        opacity: 0;
+        transform: translateY(0.35rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -3,9 +3,9 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ohanna-vision"
+name = "ohana-vision"
 version = "1.1.0"
-description = "Interface web et portail d'administration de l'écosystème Ohanna"
+description = "Interface web et portail d'administration de l'écosystème Ohana"
 readme = "README.md"
 requires-python = ">=3.13"
 license = { text = "MIT" }
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-ohanna-vision = "ohanna_vision.main:main"
+ohana-vision = "ohana_vision.main:main"
 
 [project.optional-dependencies]
 dev = [
@@ -31,7 +31,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-ohanna_vision = [
+ohana_vision = [
     "web/static/*.html",
     "web/static/*.css",
     "web/static/*.js",

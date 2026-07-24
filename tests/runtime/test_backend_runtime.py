@@ -1,10 +1,10 @@
-"""Tests for the Ohanna-Vision backend runtime."""
+"""Tests for the Ohana-Vision backend runtime."""
 
 from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.runtime import (
+from ohana_vision.runtime import (
     BackendRuntime,
     BackendRuntimeError,
     BackendRuntimeState,

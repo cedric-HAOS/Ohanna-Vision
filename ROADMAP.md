@@ -2,9 +2,9 @@
 
 ## Vision
 
-Ohanna-Vision transforme les données produites par Ohanna-Agent en une représentation lisible, temps réel et historique de l'infrastructure.
+Ohana-Vision transforme les données produites par Ohana-Agent en une représentation lisible, temps réel et historique de l'infrastructure.
 
-Ohanna-Agent reste propriétaire de la configuration et de l'exécution des observations. Vision valide, projette et présente les snapshots et observations reçus.
+Ohana-Agent reste propriétaire de la configuration et de l'exécution des observations. Vision valide, projette et présente les snapshots et observations reçus.
 
 ---
 
@@ -122,7 +122,7 @@ Ohanna-Agent reste propriétaire de la configuration et de l'exécution des obse
 
 # Phase 4 — Administration contrôlée
 
-L'administration reste exécutée par Ohanna-Agent. Vision ne fera qu'exposer les commandes et résultats à travers des contrats publics.
+L'administration reste exécutée par Ohana-Agent. Vision ne fera qu'exposer les commandes et résultats à travers des contrats publics.
 
 ## 4.1 Infrastructure
 
@@ -192,7 +192,7 @@ L'administration reste exécutée par Ohanna-Agent. Vision ne fera qu'exposer le
 
 ---
 
-# Phase 7 — Écosystème Ohanna
+# Phase 7 — Écosystème Ohana
 
 ## 7.1 Multi-agents
 

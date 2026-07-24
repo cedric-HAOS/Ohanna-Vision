@@ -1,6 +1,6 @@
 """Tests for infrastructure-to-topology projection."""
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     Topology,
     TopologyDevice,
     TopologyDeviceKind,
@@ -10,10 +10,10 @@ from ohanna_vision.topology import (
     TopologyLinkKind,
     TopologyPosition,
 )
-from ohanna_vision.web.infrastructure_mapper import (
+from ohana_vision.web.infrastructure_mapper import (
     InfrastructureMapper,
 )
-from ohanna_vision.web.infrastructure_request import (
+from ohana_vision.web.infrastructure_request import (
     InfrastructureRequest,
 )
 
@@ -59,8 +59,8 @@ def make_request(
     return InfrastructureRequest.model_validate(
         {
             "schema_version": 1,
-            "infrastructure_id": "ohanna-house",
-            "name": "Ohanna House",
+            "infrastructure_id": "ohana-house",
+            "name": "Ohana House",
             "environment": "production",
             "metadata": {
                 "version": "1.0",
@@ -78,8 +78,8 @@ def make_request(
 def make_base_topology() -> Topology:
     """Build a physical presentation topology."""
     return Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         devices=(
             TopologyDevice(
                 device_id="infra-01",
@@ -137,8 +137,8 @@ def test_mapper_builds_topology_without_base() -> None:
         make_request()
     )
 
-    assert topology.topology_id == "ohanna-house"
-    assert topology.label == "Ohanna House"
+    assert topology.topology_id == "ohana-house"
+    assert topology.label == "Ohana House"
     assert topology.device_count == 1
     assert topology.link_count == 0
     assert topology.layout_count == 1
@@ -182,7 +182,7 @@ def test_mapper_enriches_existing_device() -> None:
     )
     assert (
         device.metadata["source"]
-        == "ohanna-agent"
+        == "ohana-agent"
     )
 
     assert topology.link_count == 1
@@ -294,7 +294,7 @@ def test_mapper_exposes_snapshot_metadata() -> None:
 
     assert (
         topology.metadata["source"]
-        == "ohanna-agent"
+        == "ohana-agent"
     )
     assert topology.metadata["schema_version"] == 1
     assert (
@@ -318,8 +318,8 @@ def make_request_with_topology() -> InfrastructureRequest:
     return InfrastructureRequest.model_validate(
         {
             "schema_version": 1,
-            "infrastructure_id": "ohanna-house",
-            "name": "Ohanna House",
+            "infrastructure_id": "ohana-house",
+            "name": "Ohana House",
             "environment": "production",
             "metadata": {
                 "version": "1.0",
@@ -436,7 +436,7 @@ def test_mapper_enriches_declared_device_from_node() -> None:
     assert device.node_id == "infra-01"
     assert device.address == "192.168.1.10"
     assert device.metadata["role"] == "infrastructure_server"
-    assert device.metadata["source"] == "ohanna-agent"
+    assert device.metadata["source"] == "ohana-agent"
     assert device.metadata["services"] == (
         {
             "service_id": "dns-primary",
@@ -492,5 +492,5 @@ def test_mapper_preserves_declared_topology_metadata() -> None:
     )
 
     assert topology.metadata["version"] == 1
-    assert topology.metadata["source"] == "ohanna-agent"
+    assert topology.metadata["source"] == "ohana-agent"
     assert topology.metadata["configuration_version"] == "1.0"

@@ -1,4 +1,4 @@
-"""Tests for Ohanna-Vision FastAPI dependencies."""
+"""Tests for Ohana-Vision FastAPI dependencies."""
 
 from datetime import UTC, datetime
 from typing import cast
@@ -6,13 +6,13 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import (
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import (
     BackendRuntime,
     ObservationProcessor,
 )
-from ohanna_vision.timeline import TimelineEngine
-from ohanna_vision.web import (
+from ohana_vision.timeline import TimelineEngine
+from ohana_vision.web import (
     ApplicationContext,
     ApplicationContextDependency,
     ObservationStoreDependency,
@@ -20,7 +20,7 @@ from ohanna_vision.web import (
     TimelineEngineDependency,
     get_application_context,
 )
-from ohanna_vision.web.dependencies import (
+from ohana_vision.web.dependencies import (
     ObservationProcessorDependency,
     get_observation_processor,
     get_timer,

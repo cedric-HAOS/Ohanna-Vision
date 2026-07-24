@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.runtime.timeline_runtime import TimelineRuntime
-from ohanna_vision.timeline.infrastructure_timeline import (
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.domain.observation import Observation
+from ohana_vision.runtime.timeline_runtime import TimelineRuntime
+from ohana_vision.timeline.infrastructure_timeline import (
     InfrastructureTimeline,
 )
-from ohanna_vision.timeline.timeline_engine import TimelineEngine
+from ohana_vision.timeline.timeline_engine import TimelineEngine
 
 
 def make_observation(

@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     TopologyLink,
     TopologyLinkDirection,
     TopologyLinkKind,

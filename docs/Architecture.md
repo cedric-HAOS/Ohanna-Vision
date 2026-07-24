@@ -1,14 +1,14 @@
-# Architecture d'Ohanna-Vision
+# Architecture d'Ohana-Vision
 
 ## Objectif
 
-Ohanna-Vision est l'interface d'observation et d'administration de l'écosystème **Ohanna**.
+Ohana-Vision est l'interface d'observation et d'administration de l'écosystème **Ohana**.
 
-Sa mission est de transformer les observations produites par **Ohanna-Agent** en une représentation compréhensible, exploitable et durable de l'infrastructure.
+Sa mission est de transformer les observations produites par **Ohana-Agent** en une représentation compréhensible, exploitable et durable de l'infrastructure.
 
-Contrairement à un outil de supervision classique, Ohanna-Vision ne collecte aucune donnée directement.
+Contrairement à un outil de supervision classique, Ohana-Vision ne collecte aucune donnée directement.
 
-Il reçoit d'Ohanna-Agent un snapshot complet de l'infrastructure ainsi que les observations qui décrivent son fonctionnement.
+Il reçoit d'Ohana-Agent un snapshot complet de l'infrastructure ainsi que les observations qui décrivent son fonctionnement.
 
 Le snapshot fournit la structure de référence ; les observations alimentent l'état courant, la santé et l'historique.
 
@@ -18,7 +18,7 @@ Le snapshot fournit la structure de référence ; les observations alimentent l'
 
 L'architecture repose sur cinq principes fondamentaux :
 
-* Ohanna-Agent possède la définition de l'infrastructure ;
+* Ohana-Agent possède la définition de l'infrastructure ;
 * les observations constituent la source de vérité de l'état mesuré ;
 * chaque moteur possède une responsabilité unique ;
 * les objets métier sont immuables ;
@@ -171,7 +171,7 @@ Le domaine s'articule autour de plusieurs objets fondamentaux.
 
 ## Infrastructure Snapshot
 
-Le snapshot représente la structure déclarée par Ohanna-Agent : nœuds, services, équipements, liaisons et layouts.
+Le snapshot représente la structure déclarée par Ohana-Agent : nœuds, services, équipements, liaisons et layouts.
 
 Il constitue la source de vérité de la topologie affichée.
 
@@ -294,13 +294,13 @@ Elle propose actuellement :
 * les observations ;
 * la timeline des périodes métier.
 
-Les fonctions d'administration, de gestion des plugins et d'actions contrôlées restent des évolutions futures. La logique métier demeure dans le backend et, pour les opérations sur l'infrastructure, dans Ohanna-Agent.
+Les fonctions d'administration, de gestion des plugins et d'actions contrôlées restent des évolutions futures. La logique métier demeure dans le backend et, pour les opérations sur l'infrastructure, dans Ohana-Agent.
 
 ---
 
-# Relation avec Ohanna-Agent
+# Relation avec Ohana-Agent
 
-Ohanna-Agent et Ohanna-Vision sont découplés par des contrats HTTP versionnés.
+Ohana-Agent et Ohana-Vision sont découplés par des contrats HTTP versionnés.
 
 L'Agent :
 

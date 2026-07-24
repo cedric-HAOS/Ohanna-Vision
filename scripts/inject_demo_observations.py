@@ -1,4 +1,4 @@
-"""Inject demonstration observations into Ohanna-Vision."""
+"""Inject demonstration observations into Ohana-Vision."""
 
 from __future__ import annotations
 
@@ -242,13 +242,13 @@ def inject_observations(
 def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
-        description=("Injecter des observations de démonstration dans Ohanna-Vision."),
+        description=("Injecter des observations de démonstration dans Ohana-Vision."),
     )
 
     parser.add_argument(
         "--base-url",
         default=DEFAULT_BASE_URL,
-        help=(f"Adresse d’Ohanna-Vision (défaut : {DEFAULT_BASE_URL})."),
+        help=(f"Adresse d’Ohana-Vision (défaut : {DEFAULT_BASE_URL})."),
     )
 
     parser.add_argument(
@@ -301,7 +301,7 @@ def main() -> None:
         ) from error
     except URLError as error:
         raise SystemExit(
-            f"Impossible de joindre Ohanna-Vision : {error.reason}",
+            f"Impossible de joindre Ohana-Vision : {error.reason}",
         ) from error
 
 

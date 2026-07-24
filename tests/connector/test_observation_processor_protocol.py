@@ -1,6 +1,6 @@
 """Tests for ObservationProcessorProtocol."""
 
-from ohanna_vision.connector import ObservationProcessorProtocol
+from ohana_vision.connector import ObservationProcessorProtocol
 
 
 def test_observation_processor_protocol_is_defined() -> None:

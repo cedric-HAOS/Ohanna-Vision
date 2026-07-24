@@ -6,7 +6,7 @@ from uuid import UUID
 
 import pytest
 
-from ohanna_vision.runtime import (
+from ohana_vision.runtime import (
     BackendRuntimeState,
     ProcessingResult,
     RuntimeSnapshot,

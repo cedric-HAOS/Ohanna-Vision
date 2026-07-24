@@ -3,14 +3,14 @@
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import (
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.domain.observation import Observation
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import (
     BackendRuntime,
     ObservationProcessor,
 )
-from ohanna_vision.timeline.timeline_engine import TimelineEngine
+from ohana_vision.timeline.timeline_engine import TimelineEngine
 
 RUNTIME_AT = datetime(
     2026,

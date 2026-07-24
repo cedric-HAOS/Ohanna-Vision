@@ -2,18 +2,18 @@
 
 from fastapi.testclient import TestClient
 
-from ohanna_vision.web import create_app
+from ohana_vision.web import create_app
 
 
 def make_payload(
     *,
-    infrastructure_id: str = "ohanna-house",
+    infrastructure_id: str = "ohana-house",
 ) -> dict[str, object]:
     """Build a valid infrastructure payload."""
     return {
         "schema_version": 1,
         "infrastructure_id": infrastructure_id,
-        "name": "Ohanna House",
+        "name": "Ohana House",
         "environment": "production",
         "metadata": {
             "version": "1.0",
@@ -57,7 +57,7 @@ def test_infrastructure_api_accepts_snapshot() -> None:
     assert response.status_code == 200
     assert response.json() == {
         "accepted": True,
-        "infrastructure_id": "ohanna-house",
+        "infrastructure_id": "ohana-house",
         "node_count": 1,
         "service_count": 1,
     }
@@ -75,7 +75,7 @@ def test_infrastructure_api_stores_snapshot() -> None:
     snapshot = app.state.infrastructure_snapshot
 
     assert snapshot is not None
-    assert snapshot.infrastructure_id == "ohanna-house"
+    assert snapshot.infrastructure_id == "ohana-house"
     assert snapshot.nodes[0].node_id == "infra-01"
 
 
@@ -159,7 +159,7 @@ def test_infrastructure_api_projects_snapshot_to_topology(
 
     topology = topology_response.json()
 
-    assert topology["topology_id"] == "ohanna-house"
+    assert topology["topology_id"] == "ohana-house"
     assert len(topology["devices"]) == 1
     assert len(topology["layouts"]) == 1
 

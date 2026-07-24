@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from ohanna_vision.domain import (
+from ohana_vision.domain import (
     CapabilityState,
     Criticality,
     Health,
@@ -11,7 +11,7 @@ from ohanna_vision.domain import (
     NodeState,
     ServiceState,
 )
-from ohanna_vision.health import (
+from ohana_vision.health import (
     CapabilityHealthPolicy,
     DuplicateHealthPolicyError,
     HealthEngine,

@@ -2,8 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from ohanna_vision.domain import HealthStatus, Observation
-from ohanna_vision.projection import ProjectionEngine
+from ohana_vision.domain import HealthStatus, Observation
+from ohana_vision.projection import ProjectionEngine
 
 
 def make_observation(

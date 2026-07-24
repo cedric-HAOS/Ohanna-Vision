@@ -1,0 +1,168 @@
+.application-header,
+.dashboard,
+.application-footer {
+    width: min(1440px, calc(100% - 2rem));
+    margin-inline: auto;
+}
+
+.application-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 3rem 2rem;
+}
+
+.application-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.5rem 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.application-shell {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.application-sidebar {
+    position: sticky;
+    overflow: hidden;
+    top: 0;
+    z-index: 20;
+
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+
+    border-right:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+
+    background:
+        linear-gradient(
+            180deg,
+            var(--ohana-background-sidebar),
+            var(--ohana-background-canvas)
+        );
+}
+
+.application-content {
+    min-width: 0;
+}
+
+.application-views {
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-view[hidden] {
+    display: none;
+}
+
+.application-view.is-active {
+    display: block;
+}
+
+.application-views[
+    data-active-view="overview"
+] {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(18rem, 20rem);
+    grid-template-rows:
+        auto
+        minmax(24rem, 1fr)
+        minmax(12rem, auto);
+    grid-template-areas:
+        "summary summary"
+        "topology side-panel"
+        "timeline side-panel";
+    gap: 0.8rem;
+    min-height: 0;
+    padding: 0.8rem;
+    overflow: hidden;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="overview"] {
+    display: contents;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-layout--overview {
+    display: contents;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-kpis {
+    grid-area: summary;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-right-panel {
+    grid-area: side-panel;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 0.8rem;
+    overflow-y: auto;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="infrastructure"] {
+    grid-area: topology;
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] > [data-view="timeline"] {
+    grid-area: timeline;
+    min-width: 0;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-primary--topology {
+    height: 100%;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .topology-workspace,
+.application-views[
+    data-active-view="overview"
+] .topology-container,
+.application-views[
+    data-active-view="overview"
+] .topology-canvas {
+    height: 100%;
+    min-height: 0;
+}
+
+.application-views[
+    data-active-view="overview"
+] .dashboard-timeline {
+    min-height: 12rem;
+    overflow: visible;
+}
+
+.application-views[
+    data-active-view="overview"
+] #runtime-error {
+    grid-column: 1 / -1;
+}

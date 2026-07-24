@@ -1,6 +1,6 @@
 """Tests for global topology graph invariants."""
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     Topology,
     TopologyDevice,
     TopologyDeviceKind,

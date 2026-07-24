@@ -7,8 +7,8 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.web import ObservationRequest
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.web import ObservationRequest
 
 
 def make_payload() -> dict:

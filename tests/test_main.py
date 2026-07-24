@@ -1,17 +1,17 @@
-"""Tests for the Ohanna-Vision command-line entry point."""
+"""Tests for the Ohana-Vision command-line entry point."""
 
 from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
 
-from ohanna_vision import __version__
-from ohanna_vision.configuration import (
+from ohana_vision import __version__
+from ohana_vision.configuration import (
     ApplicationConfiguration,
     Environment,
     ServerConfiguration,
 )
-from ohanna_vision.main import (
+from ohana_vision.main import (
     APPLICATION_VERSION,
     DEFAULT_CONFIGURATION_PATH,
     configure_logging,
@@ -87,11 +87,11 @@ web:
     uvicorn_run_mock = Mock()
 
     monkeypatch.setattr(
-        "ohanna_vision.main.build_application",
+        "ohana_vision.main.build_application",
         build_application_mock,
     )
     monkeypatch.setattr(
-        "ohanna_vision.main.uvicorn.run",
+        "ohana_vision.main.uvicorn.run",
         uvicorn_run_mock,
     )
 
@@ -125,11 +125,11 @@ def test_run_returns_error_for_missing_configuration(
     uvicorn_run_mock = Mock()
 
     monkeypatch.setattr(
-        "ohanna_vision.main.build_application",
+        "ohana_vision.main.build_application",
         build_application_mock,
     )
     monkeypatch.setattr(
-        "ohanna_vision.main.uvicorn.run",
+        "ohana_vision.main.uvicorn.run",
         uvicorn_run_mock,
     )
 
@@ -151,7 +151,7 @@ def test_main_forwards_configuration_path(
     )
 
     monkeypatch.setattr(
-        "ohanna_vision.main.run",
+        "ohana_vision.main.run",
         run_mock,
     )
 
@@ -197,11 +197,11 @@ server:
         return object()
 
     monkeypatch.setattr(
-        "ohanna_vision.main.build_application",
+        "ohana_vision.main.build_application",
         capture_application,
     )
     monkeypatch.setattr(
-        "ohanna_vision.main.uvicorn.run",
+        "ohana_vision.main.uvicorn.run",
         Mock(),
     )
 
@@ -218,10 +218,10 @@ server:
 
 
 def test_pyproject_declares_console_entry_point() -> None:
-    """The package must install the ohanna-vision command."""
+    """The package must install the ohana-vision command."""
     pyproject = Path("pyproject.toml").read_text(
         encoding="utf-8",
     )
 
     assert "[project.scripts]" in pyproject
-    assert 'ohanna-vision = "ohanna_vision.main:main"' in pyproject
+    assert 'ohana-vision = "ohana_vision.main:main"' in pyproject

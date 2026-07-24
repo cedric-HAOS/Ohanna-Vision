@@ -1,1 +1,1 @@
-"""Tests for the Ohanna-Vision web application."""
+"""Tests for the Ohana-Vision web application."""

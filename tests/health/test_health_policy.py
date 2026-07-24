@@ -2,8 +2,8 @@ from datetime import timedelta
 
 import pytest
 
-from ohanna_vision.domain import Criticality
-from ohanna_vision.health import CapabilityHealthPolicy
+from ohana_vision.domain import Criticality
+from ohana_vision.health import CapabilityHealthPolicy
 
 
 def test_policy_is_created() -> None:

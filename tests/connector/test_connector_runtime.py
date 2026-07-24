@@ -1,6 +1,6 @@
 """Tests for ConnectorRuntime."""
 
-from ohanna_vision.connector import (
+from ohana_vision.connector import (
     ConnectorRuntime,
     ConnectorState,
     ConnectorStatistics,

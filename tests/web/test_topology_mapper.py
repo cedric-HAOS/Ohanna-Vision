@@ -1,6 +1,6 @@
 """Tests for topology API mapping."""
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     Topology,
     TopologyDevice,
     TopologyDeviceKind,
@@ -11,7 +11,7 @@ from ohanna_vision.topology import (
     TopologyLinkKind,
     TopologyPosition,
 )
-from ohanna_vision.web.api.topology_mapper import (
+from ohana_vision.web.api.topology_mapper import (
     topology_to_response,
 )
 
@@ -19,8 +19,8 @@ from ohanna_vision.web.api.topology_mapper import (
 def make_topology() -> Topology:
     """Create a complete topology for mapper tests."""
     return Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         devices=(
             TopologyDevice(
                 device_id="sw-01",
@@ -88,8 +88,8 @@ def test_topology_mapper_maps_identity() -> None:
     """The mapper must preserve topology identity."""
     response = topology_to_response(make_topology())
 
-    assert response.topology_id == "ohanna-house"
-    assert response.label == "Ohanna-House"
+    assert response.topology_id == "ohana-house"
+    assert response.label == "Ohana-House"
 
 
 def test_topology_mapper_maps_devices() -> None:

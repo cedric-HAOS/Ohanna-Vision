@@ -1,9 +1,9 @@
-"""Tests for the Ohanna-Vision application configuration."""
+"""Tests for the Ohana-Vision application configuration."""
 
 import pytest
 from pydantic import ValidationError
 
-from ohanna_vision.configuration import (
+from ohana_vision.configuration import (
     ApplicationConfiguration,
     Environment,
 )
@@ -13,7 +13,7 @@ def test_application_configuration_has_safe_defaults() -> None:
     """Default configuration must be suitable for development."""
     configuration = ApplicationConfiguration()
 
-    assert configuration.name == "Ohanna Vision"
+    assert configuration.name == "Ohana Vision"
     assert configuration.environment is Environment.DEVELOPMENT
     assert configuration.debug is False
     assert configuration.server.host == "127.0.0.1"

@@ -1,4 +1,4 @@
-"""Tests for the Ohanna-Vision observation API router."""
+"""Tests for the Ohana-Vision observation API router."""
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -7,15 +7,15 @@ from typing import cast
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from ohanna_vision.domain.health import HealthStatus
-from ohanna_vision.domain.observation import Observation
-from ohanna_vision.domain.observation_store import ObservationStore
-from ohanna_vision.runtime import ObservationProcessor
-from ohanna_vision.web.dependencies import (
+from ohana_vision.domain.health import HealthStatus
+from ohana_vision.domain.observation import Observation
+from ohana_vision.domain.observation_store import ObservationStore
+from ohana_vision.runtime import ObservationProcessor
+from ohana_vision.web.dependencies import (
     get_observation_processor,
     get_observation_store,
 )
-from ohanna_vision.web.routers import observations_router
+from ohana_vision.web.routers import observations_router
 
 
 @dataclass(frozen=True)

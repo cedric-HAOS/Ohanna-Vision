@@ -1,4 +1,4 @@
-from ohanna_vision.domain import (
+from ohana_vision.domain import (
     Health,
     HealthStatus,
     aggregate_health,

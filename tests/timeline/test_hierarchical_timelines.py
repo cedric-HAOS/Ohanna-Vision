@@ -2,8 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from ohanna_vision.domain import HealthStatus
-from ohanna_vision.timeline import (
+from ohana_vision.domain import HealthStatus
+from ohana_vision.timeline import (
     CapabilityTimeline,
     InfrastructureTimeline,
     NodeTimeline,

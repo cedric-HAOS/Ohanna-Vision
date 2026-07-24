@@ -6,7 +6,7 @@ Le projet suit les principes de Semantic Versioning.
 
 ---
 
-# v1.1.0 — Infrastructure dynamique pilotée par Ohanna-Agent
+# v1.1.0 — Infrastructure dynamique pilotée par Ohana-Agent
 
 ## Ajouté
 
@@ -44,13 +44,13 @@ Le projet suit les principes de Semantic Versioning.
 
 ### Source de vérité
 
-- Ohanna-Agent devient propriétaire de la définition de l'infrastructure et de la topologie.
+- Ohana-Agent devient propriétaire de la définition de l'infrastructure et de la topologie.
 - Vision ne lit aucune copie de `infrastructure.yaml`.
 - Le snapshot reçu remplace atomiquement la définition précédente.
 
 ### Bootstrap
 
-- Suppression du chargement de la topologie Ohanna-House codée en dur en production.
+- Suppression du chargement de la topologie Ohana-House codée en dur en production.
 - Conservation du constructeur historique uniquement pour les tests ciblés.
 
 ### Interface
@@ -66,7 +66,7 @@ Le projet suit les principes de Semantic Versioning.
 
 ## Intégration
 
-Les scénarios suivants ont été validés de bout en bout avec Ohanna-Agent :
+Les scénarios suivants ont été validés de bout en bout avec Ohana-Agent :
 
 1. Vision démarre avant Agent ;
 2. Agent démarre avant Vision ;

@@ -1,14 +1,14 @@
-# Charte graphique Ohanna
+# Charte graphique Ohana
 
 ## 1. Positionnement
 
-Ohanna représente une infrastructure observable, résiliente et pilotée par capacités.
+Ohana représente une infrastructure observable, résiliente et pilotée par capacités.
 L’identité visuelle associe un cercle continu, des circuits et des nœuds interconnectés.
 
 ## 2. Logo
 
 Le symbole principal est un cercle réseau composé de pistes électroniques et de trois nœuds.
-Le mot-symbole « Ohanna » utilise une typographie sans serif moderne et sobre.
+Le mot-symbole « Ohana » utilise une typographie sans serif moderne et sobre.
 
 ### Variantes
 
@@ -29,8 +29,8 @@ Ne pas étirer, incliner, recolorer ou ajouter d’effets au logo.
 
 | Usage | Nom | Hex |
 |---|---|---|
-| Primaire | Cyan Ohanna | `#18C5E8` |
-| Secondaire | Bleu Ohanna | `#1479D1` |
+| Primaire | Cyan Ohana | `#18C5E8` |
+| Secondaire | Bleu Ohana | `#1479D1` |
 | Accent | Turquoise | `#4DE6C8` |
 | Fond principal | Nuit | `#0F172A` |
 | Surface | Ardoise | `#1E293B` |
@@ -75,7 +75,7 @@ Ajouter les motifs suivants à `pyproject.toml` :
 
 ```toml
 [tool.setuptools.package-data]
-ohanna_vision = [
+ohana_vision = [
     "web/static/*.html",
     "web/static/*.css",
     "web/static/*.js",

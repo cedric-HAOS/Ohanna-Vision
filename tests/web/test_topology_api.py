@@ -4,7 +4,7 @@ from typing import cast
 
 from fastapi.testclient import TestClient
 
-from ohanna_vision.topology import (
+from ohana_vision.topology import (
     Topology,
     TopologyDevice,
     TopologyDeviceKind,
@@ -14,15 +14,15 @@ from ohanna_vision.topology import (
     TopologyLinkKind,
     TopologyPosition,
 )
-from ohanna_vision.web import create_app
-from ohanna_vision.web.dependencies import get_topology
+from ohana_vision.web import create_app
+from ohana_vision.web.dependencies import get_topology
 
 
 def make_topology() -> Topology:
-    """Create an Ohanna-House topology for API tests."""
+    """Create an Ohana-House topology for API tests."""
     return Topology(
-        topology_id="ohanna-house",
-        label="Ohanna-House",
+        topology_id="ohana-house",
+        label="Ohana-House",
         devices=(
             TopologyDevice(
                 device_id="internet",
@@ -100,8 +100,8 @@ def test_topology_api_returns_identity() -> None:
 
     payload = response.json()
 
-    assert payload["topology_id"] == "ohanna-house"
-    assert payload["label"] == "Ohanna-House"
+    assert payload["topology_id"] == "ohana-house"
+    assert payload["label"] == "Ohana-House"
 
 
 def test_topology_api_returns_devices() -> None:

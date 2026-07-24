@@ -2,12 +2,12 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ohanna_vision.domain import (
+from ohana_vision.domain import (
     CapabilityState,
     Health,
     HealthStatus,
 )
-from ohanna_vision.projection import (
+from ohana_vision.projection import (
     EmptyServiceProjectionError,
     MixedServiceCapabilitiesError,
     ServiceReducer,

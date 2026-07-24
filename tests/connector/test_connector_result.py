@@ -2,7 +2,7 @@
 
 import pytest
 
-from ohanna_vision.connector import ConnectorResult
+from ohana_vision.connector import ConnectorResult
 
 
 def test_connector_result_stores_values() -> None:

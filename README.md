@@ -1,23 +1,23 @@
-# Ohanna-Vision
+# Ohana-Vision
 
 > Visualiser l'état réel d'une infrastructure pilotée par capacités.
 
-Ohanna-Vision est l'interface web de l'écosystème Ohanna.
+Ohana-Vision est l'interface web de l'écosystème Ohana.
 
-Il reçoit d'Ohanna-Agent deux flux complémentaires :
+Il reçoit d'Ohana-Agent deux flux complémentaires :
 
 - un **snapshot complet d'infrastructure** décrivant les nœuds, services, équipements, liaisons et positions logiques ;
 - les **observations dynamiques** décrivant l'état réel des capacités dans le temps.
 
-Ohanna-Agent reste la source de vérité de la configuration. Ohanna-Vision valide, projette, historise et affiche les données reçues.
+Ohana-Agent reste la source de vérité de la configuration. Ohana-Vision valide, projette, historise et affiche les données reçues.
 
 ---
 
 ## Principes
 
-Ohanna-Vision ne collecte aucune donnée directement sur l'infrastructure.
+Ohana-Vision ne collecte aucune donnée directement sur l'infrastructure.
 
-Il ne dialogue ni avec les équipements ni avec les services supervisés. Il s'appuie exclusivement sur les contrats publics d'Ohanna-Agent afin de présenter :
+Il ne dialogue ni avec les équipements ni avec les services supervisés. Il s'appuie exclusivement sur les contrats publics d'Ohana-Agent afin de présenter :
 
 - l'état courant des capacités ;
 - la santé des services et des nœuds ;
@@ -88,16 +88,16 @@ La réception d'un nouveau snapshot émet également l'événement `infrastructu
 
 ---
 
-## Intégration avec Ohanna-Agent
+## Intégration avec Ohana-Agent
 
 Le contrat principal est :
 
 ```text
-Ohanna-Agent
+Ohana-Agent
     ├── PUT  /api/infrastructure
     └── POST /api/observations
              ↓
-Ohanna-Vision
+Ohana-Vision
     ├── validation stricte
     ├── projection de topologie
     ├── stockage des observations
@@ -185,7 +185,7 @@ La documentation OpenAPI est disponible sur `/docs` lorsque son exposition est a
 
 ```text
 src/
-    ohanna_vision/
+    ohana_vision/
         topology/
         web/
             api/
@@ -212,13 +212,13 @@ pip install -e ".[dev]"
 Lancer le serveur :
 
 ```bash
-uvicorn ohanna_vision.web.bootstrap:build_application --factory --reload
+uvicorn ohana_vision.web.bootstrap:build_application --factory --reload
 ```
 
 Ou utiliser la CLI :
 
 ```bash
-ohanna-vision --config config/vision.yaml
+ohana-vision --config config/vision.yaml
 ```
 
 Accéder au tableau de bord :
@@ -253,7 +253,7 @@ Les scénarios d'intégration réels ont également été validés :
 
 ## État actuel
 
-La version **1.1.0** introduit la synchronisation complète de l'infrastructure avec Ohanna-Agent.
+La version **1.1.0** introduit la synchronisation complète de l'infrastructure avec Ohana-Agent.
 
 Vision démarre sans topologie métier locale, reçoit la définition officielle de l'Agent, la valide, la projette sur sa grille horizontale puis commence à afficher les observations associées.
 

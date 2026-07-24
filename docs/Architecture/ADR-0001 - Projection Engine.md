@@ -12,7 +12,7 @@ Accepté
 
 # Contexte
 
-Ohanna-Agent produit des observations décrivant l'état de l'infrastructure.
+Ohana-Agent produit des observations décrivant l'état de l'infrastructure.
 
 Une observation représente un fait mesuré à un instant donné.
 
@@ -51,11 +51,11 @@ Il est donc nécessaire de transformer une succession d'observations en une repr
 
 # Décision
 
-Ohanna-Vision introduit un composant central appelé **Projection Engine**.
+Ohana-Vision introduit un composant central appelé **Projection Engine**.
 
 Le Projection Engine est responsable de transformer une collection d'observations en une représentation métier de l'infrastructure.
 
-Il constitue le cœur fonctionnel de Ohanna-Vision.
+Il constitue le cœur fonctionnel de Ohana-Vision.
 
 ---
 
@@ -287,7 +287,7 @@ Cette séparation permet de faire évoluer indépendamment :
 
 Cette décision implique que :
 
-* toutes les vues de Ohanna-Vision sont construites par le Projection Engine ;
+* toutes les vues de Ohana-Vision sont construites par le Projection Engine ;
 * les observations restent la seule source de vérité ;
 * les états courants ne sont jamais modifiés directement ;
 * toute projection peut être recalculée à partir des observations.
@@ -340,10 +340,10 @@ Tous ces composants s'appuieront sur le Projection Engine.
 
 # Règle fondamentale
 
-Toute représentation affichée par Ohanna-Vision doit être le résultat d'une projection calculée à partir des observations.
+Toute représentation affichée par Ohana-Vision doit être le résultat d'une projection calculée à partir des observations.
 
 Les observations constituent la vérité.
 
 Les projections constituent leur représentation.
 
-Cette distinction est l'un des principes fondateurs de l'architecture de Ohanna-Vision.
+Cette distinction est l'un des principes fondateurs de l'architecture de Ohana-Vision.
