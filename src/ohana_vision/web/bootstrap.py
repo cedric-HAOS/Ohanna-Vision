@@ -54,13 +54,9 @@ def build_application(
 
     if resolved_configuration.agent.administration_enabled:
         administration_client = AgentAdministrationClient(
-            base_url=str(
-                resolved_configuration.agent.administration_url
-            ),
+            base_url=str(resolved_configuration.agent.administration_url),
             token_file=resolved_configuration.agent.token_file,
-            timeout_seconds=(
-                resolved_configuration.agent.timeout_seconds
-            ),
+            timeout_seconds=(resolved_configuration.agent.timeout_seconds),
         )
 
     return create_app(

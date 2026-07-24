@@ -1160,10 +1160,10 @@ def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
         '@import url("./styles/dashboard.css");',
         '@import url("./styles/observations.css");',
         '@import url("./styles/topology.css");',
-            '@import url("./styles/device-details.css");',
-            '@import url("./styles/timeline.css");',
-            '@import url("./styles/configuration.css");',
-            '@import url("./styles/responsive.css");',
+        '@import url("./styles/device-details.css");',
+        '@import url("./styles/timeline.css");',
+        '@import url("./styles/configuration.css");',
+        '@import url("./styles/responsive.css");',
     ]
 
     imports = [

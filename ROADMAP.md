@@ -120,41 +120,69 @@ Ohana-Agent reste propriétaire de la configuration et de l'exécution des obser
 
 ---
 
-# Phase 4 — Administration contrôlée
+# Version 1.2.0 — Administration graphique
 
-L'administration reste exécutée par Ohana-Agent. Vision ne fera qu'exposer les commandes et résultats à travers des contrats publics.
+L'administration reste exécutée par Ohana-Agent. Vision expose les
+formulaires, les commandes et les résultats à travers les contrats publics
+de l'Agent.
 
-## 4.1 Infrastructure
+## 4.1 — Configuration DHCP
 
-- consultation détaillée de la configuration reçue
+- consultation des paramètres du serveur DHCP
+- gestion des réservations
+- consultation des baux actifs
+- validation explicite avant application
+
+**Statut :** ✅ Terminé
+
+## 4.2 — Architecture
+
+- déplacement des équipements sur la grille
+- création et modification des liaisons
+- édition des équipements
+- persistance des positions logiques
+
+**Statut :** ✅ Terminé
+
+## 4.3 — Services
+
+- association de services aux équipements
+- édition de l'implémentation et de l'activation
+- gestion de la criticité
+- métadonnées spécifiques aux services
+- services personnalisés
+
+**Statut :** ✅ Terminé
+
+## 4.4 — Sécurité de l'administration
+
+- proxy backend authentifié
+- jeton Agent absent du navigateur
+- découverte des capacités administrables
+- confirmations avant application
+
+**Statut :** ✅ Terminé
+
+## 4.5 — Validation de la version
+
+- cohérence des versions CLI, package, OpenAPI et interface
+- validation des contrats Agent
+- tests du proxy d'administration
+- tests de l'interface graphique
+- validation des ressources installables
+- 754 tests
+
+**Statut :** ✅ Terminé
+
+---
+
+# Prochaines évolutions
+
+- historique avancé
 - comparaison entre snapshots
-- validation avant application
-- affichage des changements
-
-## 4.2 Capacités
-
-- vue détaillée
-- dépendances
-- statistiques
-- historique complet
-
-## 4.3 Observations
-
-- recherche
-- filtrage
-- export
-
-## 4.4 Plugins
-
-- liste et état des plugins
-- configuration exposée par Agent
-- diagnostics
-
-## 4.5 Runtime
-
-- santé des composants
-- informations système
-- journaux et diagnostics
+- statistiques détaillées par capacité
+- supervision multi-agents
+- enrichissement progressif des opérations administrables
 
 ---
 

@@ -53,16 +53,13 @@ def make_client(
 ) -> TestClient:
     return TestClient(
         create_app(
-            administration_client=(
-                administration_client
-            ),
+            administration_client=(administration_client),
         )
     )
 
+
 def test_administration_routes_require_configured_agent() -> None:
-    response = make_client().get(
-        "/api/administration/capabilities"
-    )
+    response = make_client().get("/api/administration/capabilities")
 
     assert response.status_code == 503
 
@@ -70,21 +67,14 @@ def test_administration_routes_require_configured_agent() -> None:
 def test_administration_routes_proxy_agent_documents() -> None:
     client = make_client(FakeAdministrationClient())
 
-    capabilities = client.get(
-        "/api/administration/capabilities"
-    )
+    capabilities = client.get("/api/administration/capabilities")
     dhcp = client.get("/api/administration/dhcp")
-    infrastructure = client.get(
-        "/api/administration/infrastructure"
-    )
+    infrastructure = client.get("/api/administration/infrastructure")
 
     assert capabilities.status_code == 200
     assert "dhcp.read" in capabilities.json()["operations"]
     assert dhcp.json()["server_node_id"] == "infra-01"
-    assert (
-        infrastructure.json()["infrastructure"]["id"]
-        == "ohana-house"
-    )
+    assert infrastructure.json()["infrastructure"]["id"] == "ohana-house"
 
 
 def test_administration_routes_proxy_writes() -> None:
@@ -111,11 +101,7 @@ def test_administration_routes_translate_agent_errors() -> None:
                 status_code=422,
             )
 
-    response = make_client(
-        FailingClient()
-    ).get("/api/administration/dhcp")
+    response = make_client(FailingClient()).get("/api/administration/dhcp")
 
     assert response.status_code == 422
-    assert response.json()["detail"] == (
-        "invalid DHCP configuration"
-    )
+    assert response.json()["detail"] == ("invalid DHCP configuration")

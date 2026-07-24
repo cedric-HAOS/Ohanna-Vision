@@ -140,9 +140,7 @@ class AgentAdministrationClient:
             ) from error
 
         if not token:
-            raise AgentAdministrationError(
-                "The Ohana administration token is empty"
-            )
+            raise AgentAdministrationError("The Ohana administration token is empty")
 
         return token
 

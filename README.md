@@ -262,10 +262,10 @@ python -m pytest
 python -m ruff check .
 ```
 
-État validé pour la v1.1.0 :
+État validé pour la v1.2.0 :
 
 ```text
-745 tests passent
+754 tests passent
 ```
 
 Les scénarios d'intégration réels ont également été validés :
@@ -279,8 +279,16 @@ Les scénarios d'intégration réels ont également été validés :
 
 ## État actuel
 
-La version **1.1.0** introduit la synchronisation complète de l'infrastructure avec Ohana-Agent.
+La version **1.2.0** introduit l'administration graphique de
+l'infrastructure portée par Ohana-Agent.
 
-Vision démarre sans topologie métier locale, reçoit la définition officielle de l'Agent, la valide, la projette sur sa grille horizontale puis commence à afficher les observations associées.
+Vision permet désormais de consulter et modifier la configuration DHCP,
+les réservations, les équipements, les liaisons et les services associés.
+Les modifications sont envoyées à l'API d'administration de l'Agent, qui
+reste propriétaire de la configuration et de son application.
 
-Les prochaines évolutions concernent principalement l'administration contrôlée de l'infrastructure, l'historique avancé et la supervision multi-agents.
+Le jeton d'administration de l'Agent reste exclusivement utilisé par le
+backend de Vision et n'est jamais exposé au navigateur.
+
+Les prochaines évolutions concerneront principalement l'historique avancé,
+l'amélioration des capacités administrables et la supervision multi-agents.

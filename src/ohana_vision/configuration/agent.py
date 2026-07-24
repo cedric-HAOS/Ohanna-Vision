@@ -11,10 +11,6 @@ class AgentConfiguration(ConfigurationModel):
     """Authenticated administration connection to Ohana-Agent."""
 
     administration_enabled: bool = False
-    administration_url: AnyHttpUrl = Field(
-        default=AnyHttpUrl("http://127.0.0.1:8765")
-    )
-    token_file: Path = Path(
-        "/etc/ohana-vision/management.token"
-    )
+    administration_url: AnyHttpUrl = Field(default=AnyHttpUrl("http://127.0.0.1:8765"))
+    token_file: Path = Path("/etc/ohana-vision/management.token")
     timeout_seconds: PositiveFloat = 5.0

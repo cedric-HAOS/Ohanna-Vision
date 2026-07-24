@@ -72,9 +72,7 @@ def test_static_branding_assets_exist() -> None:
         assert (static_directory / filename).is_file()
 
     assert Path("src/ohana_vision/web/static/site.webmanifest").is_file()
-    assert Path(
-        "src/ohana_vision/web/static/assets/logos/symbol.svg"
-    ).is_file()
+    assert Path("src/ohana_vision/web/static/assets/logos/symbol.svg").is_file()
     assert Path(
         "src/ohana_vision/web/static/assets/icons/navigation/layout-dashboard.svg"
     ).is_file()
