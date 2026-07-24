@@ -274,6 +274,38 @@ def test_static_ui_declares_all_navigation_views() -> None:
     assert 'data-view="observations"' in content
 
 
+def test_static_ui_exposes_graphical_configuration_views() -> None:
+    """DHCP and architecture must be editable without YAML."""
+    response = make_client().get("/ui/")
+
+    assert response.status_code == 200
+    assert 'data-navigation-target="configuration"' in response.text
+    assert 'data-view="configuration"' in response.text
+    assert 'id="dhcp-settings-form"' in response.text
+    assert 'id="dhcp-reservations-table"' in response.text
+    assert 'id="architecture-board"' in response.text
+    assert 'id="architecture-mode-move"' in response.text
+    assert 'id="architecture-mode-link"' in response.text
+    assert 'id="architecture-add-service-to-device"' in response.text
+
+
+def test_static_ui_exposes_configuration_controller() -> None:
+    """The configuration controller must be packaged and served."""
+    response = make_client().get("/ui/configuration.js")
+
+    assert response.status_code == 200
+    assert "ConfigurationController" in response.text
+    assert "administrationDHCP" in response.text
+    assert "administrationInfrastructure" in response.text
+    assert "async reload()" in response.text
+    assert "structuredClone(this.dhcp)" in response.text
+    assert "handleArchitectureDrop" in response.text
+    assert "selectLinkEndpoint" in response.text
+    assert "layout.positions[deviceId]" in response.text
+    assert "Enregistrer la " in response.text
+    assert "DHCP de ${reservation.hostname} ?" in response.text
+
+
 def test_static_ui_loads_navigation_as_javascript_module() -> None:
     """The frontend must load the modular navigation controller."""
     client = make_client()
@@ -1128,9 +1160,10 @@ def test_stylesheet_entrypoint_imports_all_responsibility_modules() -> None:
         '@import url("./styles/dashboard.css");',
         '@import url("./styles/observations.css");',
         '@import url("./styles/topology.css");',
-        '@import url("./styles/device-details.css");',
-        '@import url("./styles/timeline.css");',
-        '@import url("./styles/responsive.css");',
+            '@import url("./styles/device-details.css");',
+            '@import url("./styles/timeline.css");',
+            '@import url("./styles/configuration.css");',
+            '@import url("./styles/responsive.css");',
     ]
 
     imports = [

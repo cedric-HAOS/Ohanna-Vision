@@ -5,6 +5,12 @@ export const API = Object.freeze({
     observations: "/api/observations",
     timeline: "/api/timeline",
     topology: "/api/topology",
+    administrationCapabilities:
+        "/api/administration/capabilities",
+    administrationDHCP:
+        "/api/administration/dhcp",
+    administrationInfrastructure:
+        "/api/administration/infrastructure",
 });
 
 /**
@@ -14,9 +20,38 @@ export const API = Object.freeze({
  * @returns {Promise<unknown>}
  */
 export async function fetchJson(url) {
+    return requestJson(
+        url,
+        {
+            method: "GET",
+        },
+    );
+}
+
+/**
+ * Send and receive a JSON document.
+ *
+ * @param {string} url
+ * @param {RequestInit} options
+ * @returns {Promise<unknown>}
+ */
+export async function requestJson(
+    url,
+    options = {},
+) {
     const response = await fetch(url, {
+        ...options,
         headers: {
             Accept: "application/json",
+            ...(
+                options.body
+                    ? {
+                        "Content-Type":
+                            "application/json",
+                    }
+                    : {}
+            ),
+            ...(options.headers ?? {}),
         },
     });
 

@@ -6,6 +6,32 @@ Le projet suit les principes de Semantic Versioning.
 
 ---
 
+# v1.2.0 — Administration graphique — 2026-07-24
+
+## Ajouté
+
+- Nouvelle section **Configuration** cohérente avec l'interface Vision.
+- Écran **Baux DHCP** pour les paramètres du serveur, les réservations et les
+  baux actifs.
+- Cartographie **Architecture** sur grille avec déplacement des équipements
+  par glisser-déposer et persistance des positions `row` / `column`.
+- Mode **Relier** en deux clics, sélection et édition graphique des liaisons.
+- Édition de la source, de la destination, de la technologie, du sens et du
+  débit d'une liaison existante.
+- Association et édition des services directement depuis leur équipement.
+- Gestion graphique des services DNS, DHCP, MQTT, NTP, Home Assistant,
+  Z-Wave, téléinformation et services personnalisés.
+- Découverte des capacités réellement proposées par Ohana-Agent.
+- Proxy backend authentifié : le jeton Agent n'est jamais exposé au navigateur.
+- Confirmations explicites avant l'application d'une configuration.
+
+## Modifié
+
+- Le contrat d'infrastructure transporte désormais l'implémentation,
+  l'activation, la criticité et les métadonnées de chaque service.
+
+---
+
 # v1.1.2 — Ressources graphiques installables
 
 ## Corrigé

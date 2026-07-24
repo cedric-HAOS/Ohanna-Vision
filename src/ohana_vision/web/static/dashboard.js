@@ -24,6 +24,10 @@ const VIEW_HEADERS = Object.freeze({
         kicker: "Activité",
         title: "Observations",
     },
+    configuration: {
+        kicker: "Configuration",
+        title: "Réseau & architecture",
+    },
 });
 
 /**

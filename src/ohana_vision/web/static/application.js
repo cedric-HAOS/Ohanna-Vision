@@ -11,6 +11,10 @@ import {
 } from "./application_state.js";
 
 import {
+    ConfigurationController,
+} from "./configuration.js";
+
+import {
     DashboardController,
 } from "./dashboard.js";
 
@@ -50,6 +54,7 @@ export class ApplicationController {
         this.state = applicationState();
 
         this.dashboard = null;
+        this.configuration = null;
         this.deviceDetails = null;
         this.navigation = null;
         this.observations = null;
@@ -90,6 +95,9 @@ export class ApplicationController {
      * Create the frontend controllers and connect them.
      */
     createControllers() {
+        this.configuration =
+            new ConfigurationController();
+
         this.dashboard =
             new DashboardController({
                 state: this.state,
@@ -195,6 +203,7 @@ export class ApplicationController {
      */
     initializeControllers() {
         this.deviceDetails.initialize();
+        this.configuration.initialize();
         this.topology.initialize();
         this.timeline.initialize();
 
@@ -228,6 +237,10 @@ export class ApplicationController {
         ) {
             this.topology.reflow();
         }
+
+        if (viewName === "configuration") {
+            void this.configuration.load();
+        }
     }
 
     /**
@@ -237,12 +250,26 @@ export class ApplicationController {
         this.setRefreshing(true);
 
         try {
-            await Promise.allSettled([
+            const refreshOperations = [
                 this.loadRuntime(),
                 this.loadObservations(),
                 this.loadTimeline(),
                 this.topology.load(),
-            ]);
+            ];
+
+            if (
+                this.navigation.activeView
+                    === "configuration"
+                && this.configuration.loaded
+            ) {
+                refreshOperations.push(
+                    this.configuration.reload(),
+                );
+            }
+
+            await Promise.allSettled(
+                refreshOperations,
+            );
 
             this.renderLastRefresh();
         } finally {

@@ -1,0 +1,625 @@
+.configuration-view {
+    display: grid;
+    gap: var(--ohana-space-4);
+    padding: var(--ohana-space-4);
+}
+
+.configuration-tabs,
+.configuration-toolbar,
+.configuration-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ohana-space-2);
+}
+
+.configuration-tab,
+.configuration-secondary-button,
+.configuration-danger-button,
+.configuration-dialog__close {
+    min-height: 2.5rem;
+    padding: 0.6rem var(--ohana-space-4);
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-md);
+    color: var(--ohana-text-secondary);
+    background: var(--ohana-background-surface);
+    cursor: pointer;
+}
+
+.configuration-tab:hover,
+.configuration-secondary-button:hover {
+    border-color: var(--ohana-border-strong);
+    color: var(--ohana-text-primary);
+    background: var(--ohana-background-surface-raised);
+}
+
+.configuration-tab.is-active {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--ohana-brand-primary) 45%,
+            var(--ohana-border-default)
+        );
+    color: var(--ohana-brand-primary);
+    background:
+        color-mix(
+            in srgb,
+            var(--ohana-brand-primary) 12%,
+            transparent
+        );
+}
+
+.configuration-panel {
+    display: grid;
+    gap: var(--ohana-space-4);
+}
+
+.configuration-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--ohana-space-3);
+}
+
+.configuration-summary-card,
+.configuration-card {
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-lg);
+    background:
+        color-mix(
+            in srgb,
+            var(--ohana-background-surface-raised) 88%,
+            transparent
+        );
+    box-shadow: var(--ohana-shadow-sm);
+}
+
+.configuration-summary-card {
+    display: grid;
+    gap: var(--ohana-space-1);
+    padding: var(--ohana-space-4);
+}
+
+.configuration-summary-card span,
+.configuration-summary-card small {
+    color: var(--ohana-text-muted);
+}
+
+.configuration-summary-card strong {
+    font-size: var(--ohana-font-size-xl);
+}
+
+.configuration-grid {
+    display: grid;
+    gap: var(--ohana-space-4);
+    align-items: start;
+}
+
+.configuration-grid--dhcp {
+    grid-template-columns: minmax(0, 1.8fr) minmax(20rem, 0.8fr);
+}
+
+.configuration-grid--architecture {
+    grid-template-columns: minmax(0, 1.8fr) minmax(19rem, 0.72fr);
+}
+
+.configuration-card {
+    min-width: 0;
+    padding: var(--ohana-space-4);
+}
+
+.configuration-card__heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--ohana-space-3);
+    margin-bottom: var(--ohana-space-4);
+}
+
+.configuration-card__heading h2,
+.configuration-card__heading p {
+    margin-bottom: 0;
+}
+
+.configuration-card__heading p:not(.panel-heading__kicker) {
+    margin-top: var(--ohana-space-1);
+}
+
+.configuration-button {
+    white-space: nowrap;
+}
+
+.configuration-table-wrapper {
+    overflow-x: auto;
+}
+
+.configuration-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.configuration-table th,
+.configuration-table td {
+    padding: 0.8rem 0.65rem;
+    border-bottom:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.configuration-table th {
+    color: var(--ohana-text-muted);
+    font-size: var(--ohana-font-size-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.configuration-table__device {
+    display: grid;
+    gap: 0.1rem;
+}
+
+.configuration-table__device small {
+    color: var(--ohana-text-muted);
+}
+
+.configuration-table__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ohana-space-2);
+}
+
+.configuration-icon-button {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-sm);
+    color: var(--ohana-text-secondary);
+    background: transparent;
+    cursor: pointer;
+}
+
+.configuration-editor {
+    position: sticky;
+    top: calc(var(--ohana-header-height) + var(--ohana-space-4));
+}
+
+.configuration-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ohana-space-3);
+}
+
+.configuration-form-grid label {
+    display: grid;
+    min-width: 0;
+    gap: var(--ohana-space-2);
+    color: var(--ohana-text-secondary);
+    font-size: var(--ohana-font-size-sm);
+}
+
+.configuration-form-grid input,
+.configuration-form-grid select {
+    width: 100%;
+    min-height: 2.6rem;
+    padding: 0.6rem 0.7rem;
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-sm);
+    color: var(--ohana-text-primary);
+    background: var(--ohana-background-canvas);
+}
+
+.configuration-form-grid small {
+    color: var(--ohana-text-muted);
+}
+
+.configuration-form-grid
+.configuration-check {
+    display: flex;
+    align-items: center;
+    grid-template-columns: none;
+}
+
+.configuration-form-grid
+.configuration-check input {
+    width: 1rem;
+    min-height: auto;
+}
+
+.configuration-span-2 {
+    grid-column: 1 / -1;
+}
+
+.configuration-form-actions {
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: var(--ohana-space-4);
+}
+
+.configuration-danger-button {
+    margin-right: auto;
+    border-color:
+        color-mix(
+            in srgb,
+            var(--ohana-health-critical) 45%,
+            var(--ohana-border-default)
+        );
+    color: var(--ohana-health-critical);
+}
+
+.configuration-notice {
+    padding: var(--ohana-space-3) var(--ohana-space-4);
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        color-mix(
+            in srgb,
+            var(--ohana-health-healthy) 38%,
+            transparent
+        );
+    border-radius: var(--ohana-radius-sm);
+    color: var(--ohana-health-healthy);
+    background: var(--ohana-health-healthy-soft);
+}
+
+.configuration-dialog {
+    width: min(34rem, calc(100vw - 2rem));
+    padding: var(--ohana-space-5);
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-lg);
+    color: var(--ohana-text-primary);
+    background: var(--ohana-background-surface-raised);
+    box-shadow: var(--ohana-shadow-lg);
+}
+
+.configuration-dialog::backdrop {
+    background: rgb(0 0 0 / 62%);
+    backdrop-filter: blur(3px);
+}
+
+.configuration-dialog__close {
+    min-width: 2.5rem;
+    padding: 0;
+    font-size: var(--ohana-font-size-xl);
+}
+
+.architecture-board {
+    min-height: 26rem;
+    overflow: auto;
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+    border-radius: var(--ohana-radius-md);
+    background: var(--ohana-background-canvas);
+}
+
+.architecture-mode-switch {
+    display: inline-flex;
+    gap: var(--ohana-space-1);
+    padding: 0.2rem;
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+    border-radius: var(--ohana-radius-md);
+    background: var(--ohana-background-canvas);
+}
+
+.architecture-mode-switch .is-active {
+    border-color:
+        color-mix(
+            in srgb,
+            var(--ohana-brand-primary) 55%,
+            var(--ohana-border-default)
+        );
+    color: var(--ohana-text-on-accent);
+}
+
+.architecture-mode-status {
+    min-height: 1.5rem;
+    margin: calc(var(--ohana-space-3) * -1) 0
+        var(--ohana-space-3);
+    color: var(--ohana-text-muted);
+    font-size: var(--ohana-font-size-sm);
+}
+
+.architecture-map {
+    position: relative;
+    min-width:
+        max(
+            48rem,
+            calc(
+                var(--architecture-columns)
+                * 10.5rem
+            )
+        );
+    min-height:
+        max(
+            30rem,
+            calc(
+                var(--architecture-rows)
+                * 8.5rem
+            )
+        );
+    background-image:
+        linear-gradient(
+            rgb(255 255 255 / 4%) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgb(255 255 255 / 4%) 1px,
+            transparent 1px
+        );
+    background-size:
+        calc(100% / var(--architecture-columns))
+        calc(100% / var(--architecture-rows));
+}
+
+.architecture-map__grid {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: grid;
+    grid-template-columns:
+        repeat(
+            var(--architecture-columns),
+            minmax(0, 1fr)
+        );
+    grid-template-rows:
+        repeat(
+            var(--architecture-rows),
+            minmax(0, 1fr)
+        );
+    padding: var(--ohana-space-3);
+    pointer-events: none;
+}
+
+.architecture-map__links {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.architecture-map-link {
+    cursor: pointer;
+    pointer-events: stroke;
+}
+
+.architecture-map-link__hitbox {
+    stroke: transparent;
+    stroke-width: 24;
+}
+
+.architecture-map-link__line {
+    stroke: var(--ohana-text-muted);
+    stroke-width: 4;
+    vector-effect: non-scaling-stroke;
+}
+
+.architecture-map-link__line--wifi {
+    stroke: #a78bfa;
+    stroke-dasharray: 8 7;
+}
+
+.architecture-map-link__line--wireguard,
+.architecture-map-link__line--logical {
+    stroke: var(--ohana-brand-primary);
+    stroke-dasharray: 10 6;
+}
+
+.architecture-map-link:hover
+    .architecture-map-link__line,
+.architecture-map-link.is-selected
+    .architecture-map-link__line {
+    stroke: var(--ohana-brand-primary);
+    stroke-width: 6;
+}
+
+.architecture-map-device {
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    gap: 0.15rem;
+    width: min(9rem, calc(100% - 0.75rem));
+    min-height: 6.8rem;
+    padding: var(--ohana-space-3);
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-default);
+    border-radius: var(--ohana-radius-md);
+    color: var(--ohana-text-secondary);
+    background:
+        color-mix(
+            in srgb,
+            var(--ohana-background-surface-raised)
+            96%,
+            transparent
+        );
+    box-shadow: var(--ohana-shadow-sm);
+    cursor: grab;
+    text-align: left;
+    pointer-events: auto;
+    user-select: none;
+}
+
+.architecture-map-device:hover {
+    border-color: var(--ohana-border-strong);
+    color: var(--ohana-text-primary);
+    transform: translateY(-1px);
+}
+
+.architecture-map-device:active {
+    cursor: grabbing;
+}
+
+.architecture-map-device.is-selected,
+.architecture-map-device.is-link-source {
+    border-color: var(--ohana-brand-primary);
+    box-shadow:
+        0 0 0 0.15rem
+        color-mix(
+            in srgb,
+            var(--ohana-brand-primary) 25%,
+            transparent
+        );
+}
+
+.architecture-map-device.is-dragging {
+    opacity: 0.5;
+}
+
+.architecture-map-device__icon {
+    color: var(--ohana-brand-primary);
+    font-size: var(--ohana-font-size-xl);
+    line-height: 1;
+}
+
+.architecture-map-device strong {
+    color: var(--ohana-text-primary);
+}
+
+.architecture-map-device small,
+.architecture-map-device__services {
+    color: var(--ohana-text-muted);
+    font-size: var(--ohana-font-size-xs);
+}
+
+.architecture-services {
+    display: grid;
+    gap: var(--ohana-space-2);
+}
+
+.architecture-service {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.65rem 0.7rem;
+    border:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+    border-radius: var(--ohana-radius-sm);
+    background: var(--ohana-background-surface-raised);
+}
+
+.architecture-service[data-service-type="dhcp"] {
+    border-left: 0.2rem solid var(--ohana-brand-primary);
+}
+
+.architecture-service[data-service-type="dns"] {
+    border-left: 0.2rem solid var(--ohana-health-healthy);
+}
+
+.architecture-service[data-service-type="mqtt"] {
+    border-left: 0.2rem solid #a78bfa;
+}
+
+.architecture-service small {
+    color: var(--ohana-text-muted);
+}
+
+.architecture-service.is-selected {
+    color: var(--ohana-brand-primary);
+}
+
+.architecture-device-services-panel {
+    display: grid;
+    gap: var(--ohana-space-3);
+    padding-top: var(--ohana-space-2);
+    border-top:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+}
+
+.architecture-device-services-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ohana-space-2);
+}
+
+.architecture-device-services-heading > div {
+    display: grid;
+    gap: var(--ohana-space-1);
+}
+
+.configuration-field-label {
+    color: var(--ohana-text-secondary);
+    font-weight: 600;
+}
+
+.architecture-device-services-list {
+    display: grid;
+    gap: var(--ohana-space-2);
+}
+
+.configuration-apply {
+    display: grid;
+    gap: var(--ohana-space-3);
+    margin-top: var(--ohana-space-5);
+    padding-top: var(--ohana-space-4);
+    border-top:
+        var(--ohana-border-width-thin)
+        solid
+        var(--ohana-border-subtle);
+}
+
+.configuration-apply p {
+    margin: 0;
+    font-size: var(--ohana-font-size-sm);
+}
+
+@media (max-width: 1120px) {
+    .configuration-grid--dhcp,
+    .configuration-grid--architecture {
+        grid-template-columns: 1fr;
+    }
+
+    .configuration-editor {
+        position: static;
+    }
+}
+
+@media (max-width: 720px) {
+    .configuration-view {
+        padding: var(--ohana-space-3);
+    }
+
+    .configuration-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .configuration-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .configuration-span-2 {
+        grid-column: auto;
+    }
+
+    .configuration-card__heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

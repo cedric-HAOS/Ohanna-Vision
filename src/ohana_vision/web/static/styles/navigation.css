@@ -333,3 +333,10 @@
     -webkit-mask-image:
         url("../assets/icons/navigation/eye.svg");
 }
+
+.sidebar-navigation__icon--configuration {
+    mask-image:
+        url("../assets/icons/navigation/settings.svg");
+    -webkit-mask-image:
+        url("../assets/icons/navigation/settings.svg");
+}

@@ -351,6 +351,10 @@ class InfrastructureMapper:
                     "name": service.name,
                     "type": service.type,
                     "port": service.port,
+                    "implementation": service.implementation,
+                    "enabled": service.enabled,
+                    "critical": service.critical,
+                    "metadata": service.metadata,
                 }
                 for service in services
             ),

@@ -8,6 +8,7 @@
 @import url("./styles/topology.css");
 @import url("./styles/device-details.css");
 @import url("./styles/timeline.css");
+@import url("./styles/configuration.css");
 @import url("./styles/responsive.css");
 
 .connection-status {

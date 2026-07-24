@@ -1,0 +1,17 @@
+name: Ohana Vision
+environment: development
+debug: true
+
+server:
+  host: 127.0.0.1
+  port: 8000
+  log_level: debug
+
+web:
+  documentation_enabled: true
+
+agent:
+  administration_enabled: true
+  administration_url: http://127.0.0.1:8765
+  token_file: ../Ohana-Agent/config/management.development.token
+  timeout_seconds: 5.0

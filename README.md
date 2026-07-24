@@ -75,6 +75,28 @@ Les observations reçues en temps réel présentent notamment :
 - la latence ;
 - les métadonnées.
 
+### Configuration graphique
+
+La section **Configuration** permet d'administrer l'infrastructure sans ouvrir
+ni modifier de fichier YAML :
+
+- **Baux DHCP** : plage dynamique, passerelle, DNS, NTP, durée des baux,
+  réservations et consultation des baux actifs ;
+- **Architecture** : cartographie sur grille, déplacement par glisser-déposer,
+  association des services aux équipements et création des liaisons en
+  sélectionnant leur source puis leur destination.
+
+Vision présente et valide les formulaires, puis transmet la demande à l'API
+locale authentifiée d'Ohana-Agent. L'Agent reste seul propriétaire des fichiers
+et applique ses validations métier avant toute écriture.
+
+Le mode **Déplacer** modifie les cellules logiques `row` / `column`. Le mode
+**Relier** permet de créer une liaison entre n'importe quels équipements
+(box, commutateur, point d'accès, serveur ou passerelle). Une liaison existante
+est sélectionnable pour modifier ses extrémités, sa technologie, son sens et
+son débit. Le guide complet se trouve dans
+[`docs/Administration.md`](docs/Administration.md).
+
 ### Temps réel
 
 Le WebSocket actualise automatiquement :
@@ -144,6 +166,7 @@ ApplicationController
         ├── TopologyController
         ├── TimelineController
         ├── ObservationsController
+        ├── ConfigurationController
         ├── DeviceDetailsController
         └── WebSocketController
 ```
@@ -163,6 +186,9 @@ Le frontend reste un moteur de rendu. La validation, les projections, la santé 
 | `GET` | `/api/topology` | Lire la topologie projetée |
 | `GET` | `/api/timeline` | Lire les périodes métier |
 | `GET` | `/api/runtime` | Lire l'état du runtime |
+| `GET` | `/api/administration/capabilities` | Lire les opérations Agent disponibles |
+| `GET/PUT` | `/api/administration/dhcp` | Lire ou modifier le serveur DHCP |
+| `GET/PUT` | `/api/administration/infrastructure` | Lire ou modifier l'architecture |
 | WebSocket | `/ws` | Recevoir les mises à jour temps réel |
 
 La documentation OpenAPI est disponible sur `/docs` lorsque son exposition est activée dans la configuration.

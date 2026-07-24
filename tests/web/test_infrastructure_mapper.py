@@ -182,6 +182,10 @@ def test_mapper_attaches_node_services() -> None:
             "name": "Primary DNS",
             "type": "dns",
             "port": 53,
+            "implementation": None,
+            "enabled": True,
+            "critical": False,
+            "metadata": {},
         },
     )
 
@@ -404,6 +408,10 @@ def test_mapper_enriches_declared_device_from_node() -> None:
             "name": "Primary DNS",
             "type": "dns",
             "port": 53,
+            "implementation": None,
+            "enabled": True,
+            "critical": False,
+            "metadata": {},
         },
     )
 

@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from ohana_vision import __version__
+from ohana_vision.administration import AgentAdministrationClient
 from ohana_vision.configuration import (
     ApplicationConfiguration,
 )
@@ -32,6 +33,7 @@ def create_app(
     configuration: ApplicationConfiguration | None = None,
     websocket_hub: WebSocketHub | None = None,
     topology: Topology | None = None,
+    administration_client: AgentAdministrationClient | None = None,
 ) -> FastAPI:
     """Create and configure the Ohana-Vision application."""
     resolved_configuration = configuration or ApplicationConfiguration()
@@ -56,6 +58,7 @@ def create_app(
     app.state.base_topology = resolved_topology
     app.state.topology = resolved_topology
     app.state.infrastructure_snapshot = None
+    app.state.administration_client = administration_client
 
     if context is not None:
         app.state.context = context

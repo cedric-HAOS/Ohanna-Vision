@@ -91,6 +91,10 @@ class InfrastructureServiceRequest(BaseModel):
         ge=1,
         le=65535,
     )
+    implementation: NonEmptyString | None = None
+    enabled: bool = True
+    critical: bool = False
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class InfrastructureTopologyDeviceRequest(BaseModel):

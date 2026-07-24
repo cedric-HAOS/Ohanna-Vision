@@ -2,6 +2,7 @@
 
 from pydantic import model_validator
 
+from ohana_vision.configuration.agent import AgentConfiguration
 from ohana_vision.configuration.base import ConfigurationModel
 from ohana_vision.configuration.environment import Environment
 from ohana_vision.configuration.server import ServerConfiguration
@@ -16,6 +17,7 @@ class ApplicationConfiguration(ConfigurationModel):
     debug: bool = False
     server: ServerConfiguration = ServerConfiguration()
     web: WebConfiguration = WebConfiguration()
+    agent: AgentConfiguration = AgentConfiguration()
 
     @model_validator(mode="after")
     def validate_production_configuration(

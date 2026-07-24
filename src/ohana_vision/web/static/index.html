@@ -71,6 +71,18 @@
        Observations
       </span>
      </button>
+     <p class="sidebar-navigation__title">
+      Configuration
+     </p>
+     <button class="sidebar-navigation__item" data-navigation-target="configuration" type="button">
+      <span
+    aria-hidden="true"
+    class="sidebar-navigation__icon sidebar-navigation__icon--configuration"
+></span>
+      <span>
+       Réseau &amp; architecture
+      </span>
+     </button>
     </nav>
     <div class="sidebar-footer">
      <section aria-labelledby="connection-title" class="sidebar-connection">
@@ -572,6 +584,361 @@
          <p class="side-panel-placeholder">
           Aucune observation reçue.
          </p>
+        </div>
+       </section>
+      </div>
+     </section>
+     <section aria-labelledby="configuration-heading" class="application-view" data-view="configuration" hidden="">
+      <div class="configuration-view">
+       <div class="configuration-tabs" role="tablist" aria-label="Configuration de l’infrastructure">
+        <button
+         aria-controls="dhcp-configuration-panel"
+         aria-selected="true"
+         class="configuration-tab is-active"
+         data-configuration-tab="dhcp"
+         id="dhcp-configuration-tab"
+         role="tab"
+         type="button"
+        >
+         Baux DHCP
+        </button>
+        <button
+         aria-controls="architecture-configuration-panel"
+         aria-selected="false"
+         class="configuration-tab"
+         data-configuration-tab="architecture"
+         id="architecture-configuration-tab"
+         role="tab"
+         type="button"
+        >
+         Architecture
+        </button>
+       </div>
+       <div class="alert alert--error hidden" id="configuration-error" role="alert">
+       </div>
+       <div class="configuration-notice hidden" id="configuration-notice" role="status">
+       </div>
+       <section
+        aria-labelledby="dhcp-configuration-tab"
+        class="configuration-panel"
+        data-configuration-panel="dhcp"
+        id="dhcp-configuration-panel"
+        role="tabpanel"
+       >
+        <div class="configuration-summary">
+         <article class="configuration-summary-card">
+          <span>Serveur DHCP</span>
+          <strong id="dhcp-server">—</strong>
+          <small>dnsmasq</small>
+         </article>
+         <article class="configuration-summary-card">
+          <span>Plage dynamique</span>
+          <strong id="dhcp-range-summary">—</strong>
+          <small id="dhcp-lease-duration-summary">—</small>
+         </article>
+         <article class="configuration-summary-card">
+          <span>Baux actifs</span>
+          <strong id="dhcp-active-leases-count">—</strong>
+          <small id="dhcp-reservations-count">— réservation</small>
+         </article>
+        </div>
+        <div class="configuration-grid configuration-grid--dhcp">
+         <section class="configuration-card">
+          <div class="configuration-card__heading">
+           <div>
+            <p class="panel-heading__kicker">Attributions</p>
+            <h2>Baux et réservations</h2>
+           </div>
+           <button class="button configuration-button" id="dhcp-add-reservation" type="button">
+            Ajouter une réservation
+           </button>
+          </div>
+          <div class="configuration-table-wrapper">
+           <table class="configuration-table">
+            <thead>
+             <tr>
+              <th>Équipement</th>
+              <th>Adresse IP</th>
+              <th>Adresse MAC</th>
+              <th>Type</th>
+              <th>État</th>
+              <th><span class="visually-hidden">Actions</span></th>
+             </tr>
+            </thead>
+            <tbody id="dhcp-reservations-table">
+             <tr>
+              <td colspan="6">Chargement de la configuration DHCP…</td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+         </section>
+         <aside class="configuration-card configuration-editor">
+          <div class="configuration-card__heading">
+           <div>
+            <p class="panel-heading__kicker">Configuration</p>
+            <h2>Serveur DHCP</h2>
+           </div>
+          </div>
+          <form id="dhcp-settings-form">
+           <div class="configuration-form-grid">
+            <label>
+             Interface
+             <input id="dhcp-interface" name="interface" required type="text">
+            </label>
+            <label>
+             Durée du bail
+             <input id="dhcp-lease-duration" name="lease_duration" pattern="[1-9][0-9]*[mhdw]" required type="text">
+            </label>
+            <label>
+             Début de plage
+             <input id="dhcp-range-start" name="range_start" required type="text">
+            </label>
+            <label>
+             Fin de plage
+             <input id="dhcp-range-end" name="range_end" required type="text">
+            </label>
+            <label>
+             Masque
+             <input id="dhcp-subnet-mask" name="subnet_mask" required type="text">
+            </label>
+            <label>
+             Passerelle
+             <input id="dhcp-gateway" name="gateway" required type="text">
+            </label>
+            <label class="configuration-span-2">
+             Serveurs DNS
+             <input id="dhcp-dns-servers" name="dns_servers" required type="text">
+             <small>Séparer les adresses par une virgule.</small>
+            </label>
+            <label>
+             Serveur NTP
+             <input id="dhcp-ntp-servers" name="ntp_servers" required type="text">
+            </label>
+            <label>
+             Domaine local
+             <input id="dhcp-domain" name="domain" required type="text">
+            </label>
+           </div>
+           <div class="configuration-form-actions">
+            <button class="button" id="dhcp-apply-settings" type="submit">
+             Appliquer la configuration
+            </button>
+           </div>
+          </form>
+         </aside>
+        </div>
+        <dialog class="configuration-dialog" id="dhcp-reservation-dialog">
+         <form id="dhcp-reservation-form" method="dialog">
+          <div class="configuration-card__heading">
+           <div>
+            <p class="panel-heading__kicker">Réservation statique</p>
+            <h2 id="dhcp-reservation-dialog-title">Ajouter une réservation</h2>
+           </div>
+           <button aria-label="Fermer" class="configuration-dialog__close" id="dhcp-reservation-close" type="button">×</button>
+          </div>
+          <input id="dhcp-reservation-original-mac" type="hidden">
+          <div class="configuration-form-grid">
+           <label class="configuration-span-2">
+            Nom de l’équipement
+            <input id="dhcp-reservation-hostname" required type="text">
+           </label>
+           <label>
+            Adresse IP
+            <input id="dhcp-reservation-address" required type="text">
+           </label>
+           <label>
+            Adresse MAC
+            <input id="dhcp-reservation-mac" placeholder="AA:BB:CC:DD:EE:FF" required type="text">
+           </label>
+           <label class="configuration-span-2">
+            Catégorie
+            <select id="dhcp-reservation-category" required>
+             <option value="infrastructure">Infrastructure</option>
+             <option value="servers">Serveurs</option>
+             <option value="network">Infrastructure réseau</option>
+             <option value="home_automation">Passerelles domotiques</option>
+             <option value="critical">Équipements critiques</option>
+            </select>
+           </label>
+          </div>
+          <div class="configuration-form-actions">
+           <button class="configuration-secondary-button" id="dhcp-reservation-cancel" type="button">Annuler</button>
+           <button class="button" type="submit">Enregistrer</button>
+          </div>
+         </form>
+        </dialog>
+       </section>
+       <section
+        aria-labelledby="architecture-configuration-tab"
+        class="configuration-panel"
+        data-configuration-panel="architecture"
+        id="architecture-configuration-panel"
+        role="tabpanel"
+        hidden
+       >
+        <div class="configuration-grid configuration-grid--architecture">
+         <section class="configuration-card">
+          <div class="configuration-card__heading">
+           <div>
+            <p class="panel-heading__kicker">Cartographie interactive</p>
+            <h2>Équipements, services et liaisons</h2>
+            <p>Déplacez les équipements sur la grille ou reliez-les en sélectionnant deux extrémités.</p>
+            </div>
+            <div class="configuration-toolbar">
+             <div aria-label="Mode d’édition de la cartographie" class="architecture-mode-switch" role="group">
+              <button aria-pressed="true" class="button configuration-button is-active" id="architecture-mode-move" type="button">Déplacer</button>
+              <button aria-pressed="false" class="configuration-secondary-button" id="architecture-mode-link" type="button">Relier</button>
+             </div>
+             <button class="configuration-secondary-button" id="architecture-add-device" type="button">Ajouter un équipement</button>
+            </div>
+           </div>
+           <p aria-live="polite" class="architecture-mode-status" id="architecture-mode-status">Mode Déplacer : faites glisser un équipement vers une case libre.</p>
+           <div class="architecture-board" id="architecture-board">
+            <p class="empty-state">Chargement de l’architecture…</p>
+           </div>
+         </section>
+         <aside class="configuration-card configuration-editor">
+          <form id="architecture-editor-form">
+           <div class="configuration-card__heading">
+            <div>
+             <p class="panel-heading__kicker" id="architecture-editor-kind">Sélection</p>
+             <h2 id="architecture-editor-title">Choisissez un élément</h2>
+            </div>
+           </div>
+           <input id="architecture-editor-id" type="hidden">
+           <input id="architecture-editor-mode" type="hidden">
+           <div class="configuration-form-grid" id="architecture-device-fields" hidden>
+            <label class="configuration-span-2">
+             Nom
+             <input id="architecture-device-name" type="text">
+            </label>
+            <label>
+             Type d’équipement
+             <select id="architecture-device-kind">
+              <option value="internet">Internet</option>
+              <option value="server">Serveur</option>
+              <option value="raspberry_pi">Raspberry Pi</option>
+              <option value="router">Routeur</option>
+              <option value="switch">Commutateur</option>
+              <option value="access_point">Point d’accès</option>
+              <option value="home_assistant">Home Assistant</option>
+              <option value="smart_device">Passerelle</option>
+              <option value="camera">Caméra</option>
+              <option value="computer">Ordinateur</option>
+              <option value="storage">Stockage</option>
+              <option value="solar">Énergie solaire</option>
+              <option value="other">Autre</option>
+             </select>
+            </label>
+             <label>
+              Adresse IP
+              <input id="architecture-device-address" type="text">
+             </label>
+             <section class="architecture-device-services-panel configuration-span-2">
+              <div class="architecture-device-services-heading">
+               <div>
+                <span class="configuration-field-label">Services associés</span>
+                <small>Services hébergés par cet équipement.</small>
+               </div>
+               <button class="configuration-secondary-button" id="architecture-add-service-to-device" type="button">Ajouter un service</button>
+              </div>
+              <div class="architecture-device-services-list" id="architecture-device-services">
+               <p class="empty-state">Aucun service associé.</p>
+              </div>
+             </section>
+           </div>
+           <div class="configuration-form-grid" id="architecture-service-fields" hidden>
+            <label class="configuration-span-2">
+             Nom
+             <input id="architecture-service-name" type="text">
+            </label>
+            <label>
+             Type de service
+             <select id="architecture-service-type">
+              <option value="dhcp">DHCP</option>
+              <option value="dns">DNS</option>
+              <option value="mqtt">MQTT</option>
+              <option value="ntp">NTP</option>
+              <option value="home_assistant">Home Assistant</option>
+              <option value="zwave">Z-Wave</option>
+              <option value="teleinformation">Téléinformation</option>
+              <option value="other">Autre</option>
+             </select>
+            </label>
+            <label>
+             Port
+             <input id="architecture-service-port" max="65535" min="1" type="number">
+            </label>
+            <label class="configuration-span-2">
+             Hébergé par
+             <select id="architecture-service-node"></select>
+            </label>
+            <label class="configuration-span-2">
+             Implémentation
+             <input id="architecture-service-implementation" placeholder="dnsmasq, AdGuard Home, Mosquitto…" type="text">
+            </label>
+            <label class="configuration-check">
+             <input id="architecture-service-enabled" type="checkbox">
+             Service activé
+            </label>
+            <label class="configuration-check">
+             <input id="architecture-service-critical" type="checkbox">
+             Capacité critique
+            </label>
+           </div>
+           <div class="configuration-form-grid" id="architecture-link-fields" hidden>
+            <label class="configuration-span-2">
+             Libellé
+             <input id="architecture-link-label" type="text">
+            </label>
+            <label>
+             Source
+             <select id="architecture-link-source"></select>
+            </label>
+            <label>
+             Destination
+             <select id="architecture-link-target"></select>
+            </label>
+            <label>
+             Technologie
+             <select id="architecture-link-kind">
+              <option value="ethernet">Ethernet</option>
+              <option value="wifi">Wi-Fi</option>
+              <option value="wireguard">WireGuard</option>
+              <option value="zigbee">Zigbee</option>
+              <option value="zwave">Z-Wave</option>
+              <option value="mqtt">MQTT</option>
+              <option value="usb">USB</option>
+              <option value="serial">Série</option>
+              <option value="logical">Logique</option>
+              <option value="other">Autre</option>
+             </select>
+            </label>
+            <label>
+             Sens
+             <select id="architecture-link-direction">
+              <option value="bidirectional">Bidirectionnel</option>
+              <option value="source_to_target">Source vers destination</option>
+             </select>
+            </label>
+            <label class="configuration-span-2">
+             Débit en Mbit/s
+             <input id="architecture-link-bandwidth" min="0.1" step="0.1" type="number">
+            </label>
+           </div>
+           <div class="configuration-form-actions" id="architecture-editor-actions" hidden>
+            <button class="configuration-danger-button" id="architecture-delete" type="button">Supprimer</button>
+            <button class="button" type="submit">Enregistrer</button>
+           </div>
+          </form>
+          <div class="configuration-apply">
+           <p>Agent validera l’ensemble des références avant application.</p>
+           <button class="button" id="architecture-apply" type="button">
+            Appliquer l’architecture
+           </button>
+          </div>
+         </aside>
         </div>
        </section>
       </div>

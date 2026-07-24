@@ -55,6 +55,20 @@ web:
     assert configuration.web.documentation_enabled is False
 
 
+def test_loader_reads_development_administration_profile() -> None:
+    configuration = ConfigurationLoader.load(
+        Path("config/vision.development.yaml")
+    )
+
+    assert configuration.agent.administration_enabled is True
+    assert str(configuration.agent.administration_url) == (
+        "http://127.0.0.1:8765/"
+    )
+    assert configuration.agent.token_file == Path(
+        "../Ohana-Agent/config/management.development.token"
+    )
+
+
 def test_loader_accepts_empty_configuration(
     tmp_path: Path,
 ) -> None:

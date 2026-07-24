@@ -4,6 +4,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from ohana_vision.administration import AgentAdministrationClient
 from ohana_vision.configuration import (
     ApplicationConfiguration,
     ConfigurationLoader,
@@ -49,9 +50,23 @@ def build_application(
         resolved_configuration = ApplicationConfiguration()
 
     context = build_application_context()
+    administration_client = None
+
+    if resolved_configuration.agent.administration_enabled:
+        administration_client = AgentAdministrationClient(
+            base_url=str(
+                resolved_configuration.agent.administration_url
+            ),
+            token_file=resolved_configuration.agent.token_file,
+            timeout_seconds=(
+                resolved_configuration.agent.timeout_seconds
+            ),
+        )
+
     return create_app(
         context=context,
         configuration=resolved_configuration,
+        administration_client=administration_client,
     )
 
 
