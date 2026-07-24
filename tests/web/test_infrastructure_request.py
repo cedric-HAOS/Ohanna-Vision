@@ -46,17 +46,12 @@ def make_payload() -> dict[str, object]:
 
 
 def test_infrastructure_request_accepts_valid_payload() -> None:
-    request = InfrastructureRequest.model_validate(
-        make_payload()
-    )
+    request = InfrastructureRequest.model_validate(make_payload())
 
     assert request.schema_version == 1
     assert request.infrastructure_id == "ohana-house"
     assert request.nodes[0].node_id == "infra-01"
-    assert (
-        request.services[0].service_id
-        == "dns-primary"
-    )
+    assert request.services[0].service_id == "dns-primary"
 
 
 def test_infrastructure_request_rejects_unknown_schema() -> None:
@@ -107,9 +102,7 @@ def test_infrastructure_request_rejects_unknown_service_node() -> None:
 
     with pytest.raises(
         ValidationError,
-        match=(
-            "services reference unknown node identifiers"
-        ),
+        match=("services reference unknown node identifiers"),
     ):
         InfrastructureRequest.model_validate(payload)
 
@@ -132,6 +125,7 @@ def test_infrastructure_request_rejects_invalid_port() -> None:
 
     with pytest.raises(ValidationError):
         InfrastructureRequest.model_validate(payload)
+
 
 def make_topology_payload() -> dict[str, object]:
     """Build a complete topology payload."""
@@ -195,17 +189,12 @@ def make_topology_payload() -> dict[str, object]:
 
 
 def test_infrastructure_request_accepts_complete_topology() -> None:
-    request = InfrastructureRequest.model_validate(
-        make_topology_payload()
-    )
+    request = InfrastructureRequest.model_validate(make_topology_payload())
 
     assert request.topology is not None
     assert request.topology.devices[1].node_id == "infra-01"
     assert request.topology.links[0].kind.value == "ethernet"
-    assert (
-        request.topology.layouts[0].positions["infra-device"].column
-        == 1
-    )
+    assert request.topology.layouts[0].positions["infra-device"].column == 1
 
 
 def test_infrastructure_request_rejects_duplicate_topology_devices() -> None:

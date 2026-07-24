@@ -1546,6 +1546,7 @@ def test_application_routes_timeline_errors_to_the_ui() -> None:
     assert "this.timeline.renderError(" in response.text
     assert "console.error(" not in response.text
 
+
 def test_design_system_styles_are_available() -> None:
     """The official Ohana design tokens must be served."""
     client = make_client()
@@ -1559,6 +1560,7 @@ def test_design_system_styles_are_available() -> None:
     assert "--ohana-health-healthy" in response.text
     assert "--ohana-space-4" in response.text
 
+
 def test_static_styles_import_design_system() -> None:
     """The application stylesheet must load the design system."""
     client = make_client()
@@ -1567,6 +1569,7 @@ def test_static_styles_import_design_system() -> None:
 
     assert response.status_code == 200
     assert '@import url("./design-system.css");' in response.text
+
 
 def test_foundation_styles_use_design_system_tokens() -> None:
     """Global foundations must use the official design tokens."""
@@ -1580,6 +1583,7 @@ def test_foundation_styles_use_design_system_tokens() -> None:
     assert "var(--ohana-text-primary)" in response.text
     assert "var(--ohana-border-focus)" in response.text
 
+
 def test_health_states_are_supported_by_ui_styles() -> None:
     """The UI must support every official Ohana-Vision health state."""
     client = make_client()
@@ -1592,6 +1596,7 @@ def test_health_states_are_supported_by_ui_styles() -> None:
     assert ".recent-observation--unhealthy" in response.text
     assert ".recent-observation--unknown" in response.text
 
+
 def test_official_navigation_icon_is_available() -> None:
     """Official Ohana navigation icons must be served."""
     client = make_client()
@@ -1602,6 +1607,7 @@ def test_official_navigation_icon_is_available() -> None:
 
     assert response.status_code == 200
     assert "image/svg+xml" in response.headers["content-type"]
+
 
 def test_sidebar_uses_official_navigation_icons() -> None:
     """Sidebar navigation must use official Ohana icons."""
@@ -1618,22 +1624,11 @@ def test_sidebar_uses_official_navigation_icons() -> None:
     assert "sidebar-navigation__icon--timeline" in html_response.text
     assert "sidebar-navigation__icon--observations" in html_response.text
 
-    assert (
-        "../assets/icons/navigation/layout-dashboard.svg"
-        in css_response.text
-    )
-    assert (
-        "../assets/icons/navigation/network.svg"
-        in css_response.text
-    )
-    assert (
-        "../assets/icons/navigation/clock-3.svg"
-        in css_response.text
-    )
-    assert (
-        "../assets/icons/navigation/eye.svg"
-        in css_response.text
-    )
+    assert "../assets/icons/navigation/layout-dashboard.svg" in css_response.text
+    assert "../assets/icons/navigation/network.svg" in css_response.text
+    assert "../assets/icons/navigation/clock-3.svg" in css_response.text
+    assert "../assets/icons/navigation/eye.svg" in css_response.text
+
 
 def test_dashboard_kpis_use_official_icons() -> None:
     """Dashboard KPIs must use official Ohana icons."""
@@ -1669,6 +1664,7 @@ def test_dashboard_kpis_use_official_icons() -> None:
     for icon_path in expected_icons:
         assert icon_path in css_response.text
 
+
 def test_topology_zoom_in_uses_official_icon() -> None:
     """Topology zoom-in action must use the official Ohana icon."""
     client = make_client()
@@ -1682,10 +1678,8 @@ def test_topology_zoom_in_uses_official_icon() -> None:
     assert "topology-control--zoom-in" in html_response.text
     assert "topology-control__icon" in html_response.text
 
-    assert (
-        "../assets/icons/actions/plus.svg"
-        in css_response.text
-    )
+    assert "../assets/icons/actions/plus.svg" in css_response.text
+
 
 def test_dashboard_header_uses_official_refresh_icon() -> None:
     """Dashboard header refresh action must use the official Ohana icon."""
@@ -1700,20 +1694,15 @@ def test_dashboard_header_uses_official_refresh_icon() -> None:
     assert "dashboard-header__refresh-button" in html_response.text
     assert "dashboard-header__refresh-icon" in html_response.text
 
-    assert (
-        "../assets/icons/administration/refresh-cw.svg"
-        in css_response.text
-    )
+    assert "../assets/icons/administration/refresh-cw.svg" in css_response.text
+
 
 def test_sidebar_uses_official_brand_asset() -> None:
     """Sidebar brand must use the official Ohana symbol."""
     response = make_client().get("/ui/")
 
     assert response.status_code == 200
-    assert (
-        'src="/ui/assets/logos/symbol.svg"'
-        in response.text
-    )
+    assert 'src="/ui/assets/logos/symbol.svg"' in response.text
     assert 'class="sidebar-brand__icon"' in response.text
 
 
@@ -1726,12 +1715,10 @@ def test_sidebar_styles_define_modern_navigation_states() -> None:
     assert response.status_code == 200
     assert ".sidebar-navigation__item:hover {" in response.text
     assert ".sidebar-navigation__item.is-active {" in response.text
-    assert (
-        ".sidebar-navigation__item.is-active::before {"
-        in response.text
-    )
+    assert ".sidebar-navigation__item.is-active::before {" in response.text
     assert ".sidebar-navigation__item:focus-visible {" in response.text
     assert "var(--ohana-border-focus)" in response.text
+
 
 def test_connection_status_uses_official_health_states() -> None:
     """Realtime connection states must use official health tokens."""
@@ -1749,6 +1736,7 @@ def test_connection_status_uses_official_health_states() -> None:
     assert "var(--ohana-health-degraded)" in response.text
     assert "var(--ohana-health-critical)" in response.text
     assert "@keyframes connection-status-pulse" in response.text
+
 
 def test_sidebar_exposes_product_version() -> None:
     """Sidebar footer must expose the product and its version."""
@@ -1772,6 +1760,7 @@ def test_sidebar_version_uses_discrete_footer_styles() -> None:
     assert ".sidebar-version__product {" in response.text
     assert ".sidebar-version__number {" in response.text
     assert "var(--ohana-font-family-mono)" in response.text
+
 
 def test_official_sidebar_symbol_is_available() -> None:
     """The official Ohana symbol must be served."""
@@ -1837,6 +1826,7 @@ def test_side_panel_cards_use_design_system_tokens() -> None:
     assert "var(--ohana-health-critical)" in response.text
     assert "font-variant-numeric: tabular-nums;" in response.text
 
+
 def test_dashboard_cards_define_interactive_states() -> None:
     """Dashboard cards must expose consistent interaction states."""
     client = make_client()
@@ -1862,10 +1852,7 @@ def test_dashboard_cards_define_interactive_states() -> None:
     assert ".processing-indicator--error {" in dashboard_response.text
     assert "var(--ohana-health-critical-soft)" in dashboard_response.text
 
-    assert (
-        ".dashboard-kpi--updating"
-        in responsive_response.text
-    )
+    assert ".dashboard-kpi--updating" in responsive_response.text
     assert "transform: none;" in responsive_response.text
 
 
@@ -1889,6 +1876,7 @@ def test_timeline_header_uses_design_system_tokens() -> None:
     assert "var(--ohana-health-critical-soft)" in response.text
     assert "var(--ohana-health-unknown-soft)" in response.text
 
+
 def test_timeline_axis_and_rows_use_design_system() -> None:
     """Timeline axis and rows must use the Design System."""
     response = make_client().get(
@@ -1911,6 +1899,7 @@ def test_timeline_axis_and_rows_use_design_system() -> None:
     assert "var(--ohana-health-degraded-soft)" in response.text
     assert "var(--ohana-health-critical-soft)" in response.text
     assert "var(--ohana-health-unknown-soft)" in response.text
+
 
 def test_timeline_renders_period_durations() -> None:
     """Timeline periods must render as duration segments."""
@@ -1936,6 +1925,7 @@ def test_timeline_renders_period_durations() -> None:
     assert "min-width: 0.5%;" in stylesheet_response.text
     assert "transform: translateY(-50%);" in stylesheet_response.text
 
+
 def test_overview_reserves_enough_space_for_timeline() -> None:
     """Overview must not clip the complete infrastructure timeline."""
     client = make_client()
@@ -1951,11 +1941,9 @@ def test_overview_reserves_enough_space_for_timeline() -> None:
     assert responsive_response.status_code == 200
 
     assert "minmax(12rem, auto)" in layout_response.text
-    assert (
-        "data-active-view=\"overview\""
-        in layout_response.text
-    )
+    assert 'data-active-view="overview"' in layout_response.text
     assert "min-height: 12rem;" in responsive_response.text
+
 
 def test_timeline_periods_expose_accessible_details() -> None:
     """Timeline periods must expose status, dates and duration."""
@@ -1975,41 +1963,21 @@ def test_timeline_periods_expose_accessible_details() -> None:
     assert stylesheet_response.status_code == 200
     assert responsive_response.status_code == 200
 
-    assert (
-        "function formatTimelineDuration("
-        in javascript_response.text
-    )
+    assert "function formatTimelineDuration(" in javascript_response.text
     assert "`État : ${statusLabel}`" in javascript_response.text
     assert "`Début : ${startedAtLabel}`" in javascript_response.text
     assert "`Fin : ${endedAtLabel}`" in javascript_response.text
     assert "`Durée : ${durationLabel}`" in javascript_response.text
 
-    assert (
-        'data-period-status="${escapeHtml('
-        in javascript_response.text
-    )
-    assert (
-        'data-period-open="${String('
-        in javascript_response.text
-    )
+    assert 'data-period-status="${escapeHtml(' in javascript_response.text
+    assert 'data-period-open="${String(' in javascript_response.text
 
-    assert (
-        ".timeline-period:focus-visible {"
-        in stylesheet_response.text
-    )
-    assert (
-        ".timeline-period:active {"
-        in stylesheet_response.text
-    )
-    assert (
-        ".timeline-period--open::after {"
-        in stylesheet_response.text
-    )
+    assert ".timeline-period:focus-visible {" in stylesheet_response.text
+    assert ".timeline-period:active {" in stylesheet_response.text
+    assert ".timeline-period--open::after {" in stylesheet_response.text
 
-    assert (
-        ".timeline-period:focus-visible,"
-        in responsive_response.text
-    )
+    assert ".timeline-period:focus-visible," in responsive_response.text
+
 
 def test_timeline_controller_renders_empty_state() -> None:
     """Timeline must explain when the selected range has no periods."""
@@ -2041,14 +2009,9 @@ def test_timeline_empty_and_error_states_use_design_system() -> None:
 
     assert "var(--ohana-health-unknown)" in response.text
     assert "var(--ohana-health-critical)" in response.text
-    assert (
-        "../assets/icons/navigation/clock-3.svg"
-        in response.text
-    )
-    assert (
-        "../assets/icons/observability/activity.svg"
-        in response.text
-    )
+    assert "../assets/icons/navigation/clock-3.svg" in response.text
+    assert "../assets/icons/observability/activity.svg" in response.text
+
 
 def test_topology_uses_official_equipment_icons() -> None:
     """Topology cards must map device kinds to local official icons."""

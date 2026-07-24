@@ -63,10 +63,7 @@ def test_topology_canvas_waits_for_agent_configuration() -> None:
     response = client.get("/ui/topology_canvas.js")
 
     assert response.status_code == 200
-    assert (
-        "En attente de la configuration transmise par Ohana-Agent."
-        in response.text
-    )
+    assert "En attente de la configuration transmise par Ohana-Agent." in response.text
 
 
 def test_topology_canvas_skips_unpositioned_elements() -> None:
@@ -280,7 +277,6 @@ def test_topology_canvas_styles_link_kinds() -> None:
     assert ".topology-link--visual-serial" in response.text
 
 
-
 def test_topology_canvas_derives_fiber_and_bandwidth_styles() -> None:
     """Links must expose fibre and negotiated Ethernet capacities."""
     client = make_client()
@@ -294,7 +290,7 @@ def test_topology_canvas_derives_fiber_and_bandwidth_styles() -> None:
     assert 'return "ethernet-1g"' in response.text
     assert 'return "ethernet-2-5g"' in response.text
     assert 'return "ethernet-10g"' in response.text
-    assert '`topology-link--visual-${normalizedVisualKind}`' in response.text
+    assert "`topology-link--visual-${normalizedVisualKind}`" in response.text
     assert "group.dataset.visualKind" in response.text
     assert "group.dataset.bandwidthMbps" in response.text
 
@@ -319,6 +315,7 @@ def test_topology_links_use_capacity_colours() -> None:
     assert ".topology-link--health-healthy {" not in response.text
     assert ".topology-link--health-degraded {" not in response.text
     assert ".topology-link--health-unhealthy {" not in response.text
+
 
 def test_topology_canvas_renders_only_directional_arrows() -> None:
     """Only genuinely directional links must display an arrow."""
@@ -528,7 +525,6 @@ def test_topology_device_title_preserves_complete_information() -> None:
     assert 'details.join(" — ")' in response.text
 
 
-
 def test_topology_canvas_preserves_card_readability_on_compact_screens() -> None:
     """Compact screens must start with a readable, pannable viewport."""
     client = make_client()
@@ -543,6 +539,7 @@ def test_topology_canvas_preserves_card_readability_on_compact_screens() -> None
     assert ": 1800" in response.text
     assert "alignFromNetworkEntry" in response.text
     assert "content.x - padding" in response.text
+
 
 def test_topology_canvas_renders_unified_tools_panel() -> None:
     """The topology must expose one unified controls and help panel."""
@@ -609,4 +606,3 @@ def test_topology_tools_panel_is_fixed_and_responsive() -> None:
     assert ".topology-tools-panel__line--wan" not in response.text
     assert ".topology-tools-panel--collapsed" in response.text
     assert "@media (max-width: 620px)" in response.text
-

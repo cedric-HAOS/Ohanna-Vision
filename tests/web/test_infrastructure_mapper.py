@@ -31,9 +31,7 @@ def make_request(
             {
                 "node_id": "infra-01",
                 "name": "INFRA-01",
-                "description": (
-                    "Infrastructure server"
-                ),
+                "description": ("Infrastructure server"),
                 "endpoint": {
                     "type": "ip",
                     "address": "192.168.1.10",
@@ -84,14 +82,10 @@ def make_base_topology() -> Topology:
             TopologyDevice(
                 device_id="infra-01",
                 label="Old INFRA",
-                kind=(
-                    TopologyDeviceKind.RASPBERRY_PI
-                ),
+                kind=(TopologyDeviceKind.RASPBERRY_PI),
                 node_id="infra-01",
                 metadata={
-                    "role": (
-                        "infrastructure_server"
-                    ),
+                    "role": ("infrastructure_server"),
                     "manufacturer": "Raspberry Pi",
                 },
             ),
@@ -133,9 +127,7 @@ def make_base_topology() -> Topology:
 
 
 def test_mapper_builds_topology_without_base() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request()
-    )
+    topology = InfrastructureMapper.to_topology(make_request())
 
     assert topology.topology_id == "ohana-house"
     assert topology.label == "Ohana House"
@@ -167,32 +159,18 @@ def test_mapper_enriches_existing_device() -> None:
 
     assert device is not None
     assert device.label == "INFRA-01"
-    assert (
-        device.kind
-        is TopologyDeviceKind.RASPBERRY_PI
-    )
+    assert device.kind is TopologyDeviceKind.RASPBERRY_PI
     assert device.address == "192.168.1.10"
-    assert (
-        device.metadata["role"]
-        == "infrastructure_server"
-    )
-    assert (
-        device.metadata["manufacturer"]
-        == "Raspberry Pi"
-    )
-    assert (
-        device.metadata["source"]
-        == "ohana-agent"
-    )
+    assert device.metadata["role"] == "infrastructure_server"
+    assert device.metadata["manufacturer"] == "Raspberry Pi"
+    assert device.metadata["source"] == "ohana-agent"
 
     assert topology.link_count == 1
     assert topology.layout("physical") is not None
 
 
 def test_mapper_attaches_node_services() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request()
-    )
+    topology = InfrastructureMapper.to_topology(make_request())
 
     device = topology.device("infra-01")
 
@@ -235,10 +213,7 @@ def test_mapper_adds_unknown_node_to_layout() -> None:
 
     assert layout is not None
     assert layout.contains_device("ha-green")
-    assert (
-        layout.position_for("ha-green")
-        is not None
-    )
+    assert layout.position_for("ha-green") is not None
 
 
 def test_mapper_rebuilds_from_stable_base() -> None:
@@ -288,30 +263,18 @@ def test_mapper_rebuilds_from_stable_base() -> None:
 
 
 def test_mapper_exposes_snapshot_metadata() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request()
-    )
+    topology = InfrastructureMapper.to_topology(make_request())
 
-    assert (
-        topology.metadata["source"]
-        == "ohana-agent"
-    )
+    assert topology.metadata["source"] == "ohana-agent"
     assert topology.metadata["schema_version"] == 1
-    assert (
-        topology.metadata["environment"]
-        == "production"
-    )
-    assert (
-        topology.metadata[
-            "configuration_version"
-        ]
-        == "1.0"
-    )
+    assert topology.metadata["environment"] == "production"
+    assert topology.metadata["configuration_version"] == "1.0"
     assert topology.metadata["tags"] == (
         "production",
         "home",
     )
     assert topology.metadata["service_count"] == 1
+
 
 def make_request_with_topology() -> InfrastructureRequest:
     """Build a snapshot containing a complete logical-grid topology."""
@@ -425,9 +388,7 @@ def test_mapper_uses_complete_declared_topology() -> None:
 
 
 def test_mapper_enriches_declared_device_from_node() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request_with_topology()
-    )
+    topology = InfrastructureMapper.to_topology(make_request_with_topology())
     device = topology.device("infra-device")
 
     assert device is not None
@@ -448,9 +409,7 @@ def test_mapper_enriches_declared_device_from_node() -> None:
 
 
 def test_mapper_maps_declared_links() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request_with_topology()
-    )
+    topology = InfrastructureMapper.to_topology(make_request_with_topology())
     link = topology.links[0]
 
     assert link.link_id == "internet-infra"
@@ -463,9 +422,7 @@ def test_mapper_maps_declared_links() -> None:
 
 
 def test_mapper_projects_grid_to_horizontal_canvas() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request_with_topology()
-    )
+    topology = InfrastructureMapper.to_topology(make_request_with_topology())
     layout = topology.layouts[0]
     internet = layout.position_for("internet")
     infrastructure = layout.position_for("infra-device")
@@ -487,9 +444,7 @@ def test_mapper_projects_grid_to_horizontal_canvas() -> None:
 
 
 def test_mapper_preserves_declared_topology_metadata() -> None:
-    topology = InfrastructureMapper.to_topology(
-        make_request_with_topology()
-    )
+    topology = InfrastructureMapper.to_topology(make_request_with_topology())
 
     assert topology.metadata["version"] == 1
     assert topology.metadata["source"] == "ohana-agent"

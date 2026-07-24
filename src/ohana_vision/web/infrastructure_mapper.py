@@ -56,10 +56,7 @@ class InfrastructureMapper:
         """Map a complete topology supplied by Ohana-Agent."""
         assert request.topology is not None
 
-        nodes_by_id = {
-            node.node_id: node
-            for node in request.nodes
-        }
+        nodes_by_id = {node.node_id: node for node in request.nodes}
         services_by_node = cls._index_services(request.services)
 
         devices = tuple(
@@ -84,8 +81,7 @@ class InfrastructureMapper:
             for link in request.topology.links
         )
         layouts = tuple(
-            cls._map_declared_layout(layout)
-            for layout in request.topology.layouts
+            cls._map_declared_layout(layout) for layout in request.topology.layouts
         )
 
         metadata = dict(request.topology.metadata)
@@ -154,14 +150,8 @@ class InfrastructureMapper:
                 metadata=layout.metadata,
             )
 
-        maximum_column = max(
-            position.column
-            for position in layout.positions.values()
-        )
-        maximum_row = max(
-            position.row
-            for position in layout.positions.values()
-        )
+        maximum_column = max(position.column for position in layout.positions.values())
+        maximum_row = max(position.row for position in layout.positions.values())
 
         return TopologyLayout(
             layout_id=layout.layout_id,
@@ -169,13 +159,9 @@ class InfrastructureMapper:
             kind=layout.kind,
             positions=positions,
             canvas_width=(
-                2 * _LAYOUT_MARGIN_X
-                + maximum_column * _LAYOUT_COLUMN_SPACING
+                2 * _LAYOUT_MARGIN_X + maximum_column * _LAYOUT_COLUMN_SPACING
             ),
-            canvas_height=(
-                2 * _LAYOUT_MARGIN_Y
-                + maximum_row * _LAYOUT_ROW_SPACING
-            ),
+            canvas_height=(2 * _LAYOUT_MARGIN_Y + maximum_row * _LAYOUT_ROW_SPACING),
             metadata=layout.metadata,
         )
 
@@ -185,14 +171,8 @@ class InfrastructureMapper:
     ) -> TopologyPosition:
         """Convert one logical grid cell into a canvas position."""
         return TopologyPosition(
-            x=(
-                _LAYOUT_MARGIN_X
-                + position.column * _LAYOUT_COLUMN_SPACING
-            ),
-            y=(
-                _LAYOUT_MARGIN_Y
-                + position.row * _LAYOUT_ROW_SPACING
-            ),
+            x=(_LAYOUT_MARGIN_X + position.column * _LAYOUT_COLUMN_SPACING),
+            y=(_LAYOUT_MARGIN_Y + position.row * _LAYOUT_ROW_SPACING),
             layer=position.column,
             pinned=True,
         )
@@ -211,10 +191,7 @@ class InfrastructureMapper:
         )
 
         services_by_node = cls._index_services(request.services)
-        nodes_by_id = {
-            node.node_id: node
-            for node in request.nodes
-        }
+        nodes_by_id = {node.node_id: node for node in request.nodes}
 
         projected_devices: list[TopologyDevice] = []
         matched_node_ids: set[str] = set()
@@ -254,10 +231,7 @@ class InfrastructureMapper:
 
         projected_layouts = cls._project_layouts(
             layouts=resolved_base.layouts,
-            device_ids=tuple(
-                device.device_id
-                for device in projected_devices
-            ),
+            device_ids=tuple(device.device_id for device in projected_devices),
             added_device_ids=tuple(added_device_ids),
             infrastructure_id=request.infrastructure_id,
             infrastructure_name=request.name,
@@ -300,8 +274,7 @@ class InfrastructureMapper:
             indexed.setdefault(service.node_id, []).append(service)
 
         return {
-            node_id: tuple(node_services)
-            for node_id, node_services in indexed.items()
+            node_id: tuple(node_services) for node_id, node_services in indexed.items()
         }
 
     @staticmethod
@@ -464,23 +437,15 @@ class InfrastructureMapper:
             column = index % _LAYOUT_COLUMN_COUNT
             row = index // _LAYOUT_COLUMN_COUNT
             positions[device_id] = TopologyPosition(
-                x=(
-                    _LAYOUT_MARGIN_X
-                    + column * _LAYOUT_COLUMN_SPACING
-                ),
-                y=(
-                    first_row_y
-                    + row * _LAYOUT_ROW_SPACING
-                ),
+                x=(_LAYOUT_MARGIN_X + column * _LAYOUT_COLUMN_SPACING),
+                y=(first_row_y + row * _LAYOUT_ROW_SPACING),
                 layer=row,
                 pinned=True,
             )
 
         added_row_count = cls._row_count(len(added_device_ids))
         required_height = (
-            first_row_y
-            + (added_row_count - 1) * _LAYOUT_ROW_SPACING
-            + _LAYOUT_MARGIN_Y
+            first_row_y + (added_row_count - 1) * _LAYOUT_ROW_SPACING + _LAYOUT_MARGIN_Y
         )
 
         return TopologyLayout(
@@ -503,14 +468,8 @@ class InfrastructureMapper:
         row = index // _LAYOUT_COLUMN_COUNT
 
         return TopologyPosition(
-            x=(
-                _LAYOUT_MARGIN_X
-                + column * _LAYOUT_COLUMN_SPACING
-            ),
-            y=(
-                _LAYOUT_MARGIN_Y
-                + row * _LAYOUT_ROW_SPACING
-            ),
+            x=(_LAYOUT_MARGIN_X + column * _LAYOUT_COLUMN_SPACING),
+            y=(_LAYOUT_MARGIN_Y + row * _LAYOUT_ROW_SPACING),
             layer=column,
             pinned=True,
         )
@@ -520,8 +479,7 @@ class InfrastructureMapper:
         """Return the required row count."""
         return max(
             1,
-            (device_count + _LAYOUT_COLUMN_COUNT - 1)
-            // _LAYOUT_COLUMN_COUNT,
+            (device_count + _LAYOUT_COLUMN_COUNT - 1) // _LAYOUT_COLUMN_COUNT,
         )
 
     @staticmethod
@@ -532,15 +490,9 @@ class InfrastructureMapper:
             _LAYOUT_COLUMN_COUNT,
         )
 
-        return (
-            2 * _LAYOUT_MARGIN_X
-            + (column_count - 1) * _LAYOUT_COLUMN_SPACING
-        )
+        return 2 * _LAYOUT_MARGIN_X + (column_count - 1) * _LAYOUT_COLUMN_SPACING
 
     @staticmethod
     def _canvas_height(row_count: int) -> float:
         """Return the generated canvas height."""
-        return (
-            2 * _LAYOUT_MARGIN_Y
-            + (row_count - 1) * _LAYOUT_ROW_SPACING
-        )
+        return 2 * _LAYOUT_MARGIN_Y + (row_count - 1) * _LAYOUT_ROW_SPACING

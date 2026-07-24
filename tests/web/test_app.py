@@ -22,6 +22,7 @@ def test_application_exposes_package_version() -> None:
 
     assert app.version == __version__
 
+
 def make_client() -> TestClient:
     """Create an Ohana-Vision application client."""
     return TestClient(create_app())

@@ -56,9 +56,7 @@ def test_pyproject_packages_branding_assets() -> None:
 
 def test_static_branding_assets_exist() -> None:
     """Required branding assets must exist."""
-    static_directory = Path(
-        "src/ohana_vision/web/static/assets/favicons"
-    )
+    static_directory = Path("src/ohana_vision/web/static/assets/favicons")
 
     required_files = [
         "favicon.ico",

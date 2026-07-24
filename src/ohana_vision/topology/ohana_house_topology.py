@@ -250,12 +250,10 @@ def _build_physical_layout() -> TopologyLayout:
         label="Carte physique Ohana-House",
         kind=TopologyLayoutKind.PHYSICAL,
         canvas_width=(
-            2 * _LAYOUT_MARGIN_X
-            + (_LAYOUT_COLUMN_COUNT - 1) * _LAYOUT_COLUMN_SPACING
+            2 * _LAYOUT_MARGIN_X + (_LAYOUT_COLUMN_COUNT - 1) * _LAYOUT_COLUMN_SPACING
         ),
         canvas_height=(
-            2 * _LAYOUT_MARGIN_Y
-            + (_LAYOUT_ROW_COUNT - 1) * _LAYOUT_ROW_SPACING
+            2 * _LAYOUT_MARGIN_Y + (_LAYOUT_ROW_COUNT - 1) * _LAYOUT_ROW_SPACING
         ),
         positions={
             "internet": _grid_position(column=0, row=1),

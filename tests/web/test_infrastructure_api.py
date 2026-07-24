@@ -85,25 +85,18 @@ def test_infrastructure_api_replaces_previous_snapshot() -> None:
 
     first_response = client.put(
         "/api/infrastructure",
-        json=make_payload(
-            infrastructure_id="first"
-        ),
+        json=make_payload(infrastructure_id="first"),
     )
 
     second_response = client.put(
         "/api/infrastructure",
-        json=make_payload(
-            infrastructure_id="second"
-        ),
+        json=make_payload(infrastructure_id="second"),
     )
 
     assert first_response.status_code == 200
     assert second_response.status_code == 200
 
-    assert (
-        app.state.infrastructure_snapshot.infrastructure_id
-        == "second"
-    )
+    assert app.state.infrastructure_snapshot.infrastructure_id == "second"
 
 
 def test_infrastructure_api_rejects_invalid_snapshot() -> None:
@@ -119,9 +112,7 @@ def test_infrastructure_api_rejects_invalid_snapshot() -> None:
 
 
 def test_infrastructure_api_is_documented_in_openapi() -> None:
-    response = TestClient(
-        create_app()
-    ).get("/openapi.json")
+    response = TestClient(create_app()).get("/openapi.json")
 
     assert response.status_code == 200
 
@@ -139,8 +130,8 @@ def test_infrastructure_api_rejects_post() -> None:
 
     assert response.status_code == 405
 
-def test_infrastructure_api_projects_snapshot_to_topology(
-) -> None:
+
+def test_infrastructure_api_projects_snapshot_to_topology() -> None:
     app = create_app()
     client = TestClient(app)
 
@@ -151,9 +142,7 @@ def test_infrastructure_api_projects_snapshot_to_topology(
 
     assert response.status_code == 200
 
-    topology_response = client.get(
-        "/api/topology"
-    )
+    topology_response = client.get("/api/topology")
 
     assert topology_response.status_code == 200
 
@@ -169,8 +158,8 @@ def test_infrastructure_api_projects_snapshot_to_topology(
     assert device["node_id"] == "infra-01"
     assert device["address"] == "192.168.1.10"
 
-def test_infrastructure_api_replaces_previous_projection(
-) -> None:
+
+def test_infrastructure_api_replaces_previous_projection() -> None:
     app = create_app()
     client = TestClient(app)
 
@@ -182,20 +171,27 @@ def test_infrastructure_api_replaces_previous_projection(
     second_payload["nodes"][0]["node_id"] = "second"
     second_payload["services"] = []
 
-    assert client.put(
-        "/api/infrastructure",
-        json=first_payload,
-    ).status_code == 200
+    assert (
+        client.put(
+            "/api/infrastructure",
+            json=first_payload,
+        ).status_code
+        == 200
+    )
 
-    assert client.put(
-        "/api/infrastructure",
-        json=second_payload,
-    ).status_code == 200
+    assert (
+        client.put(
+            "/api/infrastructure",
+            json=second_payload,
+        ).status_code
+        == 200
+    )
 
     topology = app.state.topology
 
     assert not topology.contains_device("first")
     assert topology.contains_device("second")
+
 
 def make_complete_topology_payload() -> dict[str, object]:
     """Build an infrastructure payload with a complete topology."""
@@ -267,10 +263,10 @@ def test_infrastructure_api_projects_complete_topology() -> None:
 
     topology = client.get("/api/topology").json()
 
-    assert [
-        device["device_id"]
-        for device in topology["devices"]
-    ] == ["internet", "infra-device"]
+    assert [device["device_id"] for device in topology["devices"]] == [
+        "internet",
+        "infra-device",
+    ]
     assert topology["links"][0]["link_id"] == "internet-infra"
     assert topology["layouts"][0]["positions"]["internet"] == {
         "x": 150.0,

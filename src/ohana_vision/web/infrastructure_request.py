@@ -134,9 +134,7 @@ class InfrastructureTopologyLinkRequest(BaseModel):
     def validate_distinct_devices(self) -> Self:
         """Require links to connect two distinct devices."""
         if self.source_device_id == self.target_device_id:
-            raise ValueError(
-                "source_device_id and target_device_id must differ"
-            )
+            raise ValueError("source_device_id and target_device_id must differ")
 
         return self
 
@@ -173,8 +171,7 @@ class InfrastructureTopologyLayoutRequest(BaseModel):
     def validate_unique_grid_cells(self) -> Self:
         """Require one device at most in each logical grid cell."""
         grid_cells = [
-            (position.column, position.row)
-            for position in self.positions.values()
+            (position.column, position.row) for position in self.positions.values()
         ]
 
         if len(grid_cells) != len(set(grid_cells)):
@@ -194,9 +191,7 @@ class InfrastructureTopologyRequest(BaseModel):
     devices: tuple[InfrastructureTopologyDeviceRequest, ...] = Field(
         default_factory=tuple
     )
-    links: tuple[InfrastructureTopologyLinkRequest, ...] = Field(
-        default_factory=tuple
-    )
+    links: tuple[InfrastructureTopologyLinkRequest, ...] = Field(default_factory=tuple)
     layouts: tuple[InfrastructureTopologyLayoutRequest, ...] = Field(
         default_factory=tuple
     )
@@ -227,9 +222,7 @@ class InfrastructureTopologyRequest(BaseModel):
 
             if unknown_device_ids:
                 unknown = ", ".join(unknown_device_ids)
-                raise ValueError(
-                    f"topology links reference unknown devices: {unknown}"
-                )
+                raise ValueError(f"topology links reference unknown devices: {unknown}")
 
         layout_ids = [layout.layout_id for layout in self.layouts]
 
@@ -237,15 +230,12 @@ class InfrastructureTopologyRequest(BaseModel):
             raise ValueError("topology layout identifiers must be unique")
 
         for layout in self.layouts:
-            unknown_device_ids = sorted(
-                set(layout.positions) - known_device_ids
-            )
+            unknown_device_ids = sorted(set(layout.positions) - known_device_ids)
 
             if unknown_device_ids:
                 unknown = ", ".join(unknown_device_ids)
                 raise ValueError(
-                    "topology layouts reference unknown devices: "
-                    f"{unknown}"
+                    f"topology layouts reference unknown devices: {unknown}"
                 )
 
         return self
@@ -269,9 +259,7 @@ class InfrastructureRequest(BaseModel):
         default_factory=InfrastructureMetadataRequest,
     )
     nodes: tuple[InfrastructureNodeRequest, ...] = Field(default_factory=tuple)
-    services: tuple[InfrastructureServiceRequest, ...] = Field(
-        default_factory=tuple
-    )
+    services: tuple[InfrastructureServiceRequest, ...] = Field(default_factory=tuple)
     topology: InfrastructureTopologyRequest | None = None
 
     @model_validator(mode="after")
@@ -298,10 +286,7 @@ class InfrastructureRequest(BaseModel):
 
         if unknown_node_ids:
             unknown = ", ".join(unknown_node_ids)
-            raise ValueError(
-                "services reference unknown node identifiers: "
-                f"{unknown}"
-            )
+            raise ValueError(f"services reference unknown node identifiers: {unknown}")
 
         if self.topology is None:
             return self
@@ -312,15 +297,12 @@ class InfrastructureRequest(BaseModel):
             if device.node_id is not None
         ]
 
-        unknown_topology_node_ids = sorted(
-            set(topology_node_ids) - known_node_ids
-        )
+        unknown_topology_node_ids = sorted(set(topology_node_ids) - known_node_ids)
 
         if unknown_topology_node_ids:
             unknown = ", ".join(unknown_topology_node_ids)
             raise ValueError(
-                "topology devices reference unknown node identifiers: "
-                f"{unknown}"
+                f"topology devices reference unknown node identifiers: {unknown}"
             )
 
         if len(topology_node_ids) != len(set(topology_node_ids)):

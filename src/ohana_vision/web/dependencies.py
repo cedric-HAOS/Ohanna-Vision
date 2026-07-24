@@ -28,13 +28,8 @@ def get_topology(
 
     if topology is None:
         raise HTTPException(
-            status_code=(
-                status.HTTP_503_SERVICE_UNAVAILABLE
-            ),
-            detail=(
-                "Infrastructure topology "
-                "is not configured"
-            ),
+            status_code=(status.HTTP_503_SERVICE_UNAVAILABLE),
+            detail=("Infrastructure topology is not configured"),
         )
 
     return cast(Topology, topology)

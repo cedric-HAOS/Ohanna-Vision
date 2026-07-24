@@ -30,40 +30,24 @@ async def ingest_infrastructure(
     """Store and project the latest infrastructure snapshot."""
     topology = InfrastructureMapper.to_topology(
         infrastructure_request,
-        base_topology=(
-            request.app.state.base_topology
-        ),
+        base_topology=(request.app.state.base_topology),
     )
 
-    request.app.state.infrastructure_snapshot = (
-        infrastructure_request
-    )
+    request.app.state.infrastructure_snapshot = infrastructure_request
     request.app.state.topology = topology
 
     await request.app.state.websocket_hub.broadcast(
         {
             "type": "infrastructure.updated",
-            "infrastructure_id": (
-                infrastructure_request.infrastructure_id
-            ),
-            "node_count": len(
-                infrastructure_request.nodes
-            ),
-            "service_count": len(
-                infrastructure_request.services
-            ),
+            "infrastructure_id": (infrastructure_request.infrastructure_id),
+            "node_count": len(infrastructure_request.nodes),
+            "service_count": len(infrastructure_request.services),
         }
     )
 
     return InfrastructureIngestionResponse(
         accepted=True,
-        infrastructure_id=(
-            infrastructure_request.infrastructure_id
-        ),
-        node_count=len(
-            infrastructure_request.nodes
-        ),
-        service_count=len(
-            infrastructure_request.services
-        ),
+        infrastructure_id=(infrastructure_request.infrastructure_id),
+        node_count=len(infrastructure_request.nodes),
+        service_count=len(infrastructure_request.services),
     )

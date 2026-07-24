@@ -36,9 +36,7 @@ def create_app(
     """Create and configure the Ohana-Vision application."""
     resolved_configuration = configuration or ApplicationConfiguration()
 
-    documentation_enabled = (
-        resolved_configuration.web.documentation_enabled
-    )
+    documentation_enabled = resolved_configuration.web.documentation_enabled
 
     app = FastAPI(
         title=resolved_configuration.name,
@@ -46,11 +44,7 @@ def create_app(
         debug=resolved_configuration.debug,
         docs_url="/docs" if documentation_enabled else None,
         redoc_url="/redoc" if documentation_enabled else None,
-        openapi_url=(
-            "/openapi.json"
-            if documentation_enabled
-            else None
-        ),
+        openapi_url=("/openapi.json" if documentation_enabled else None),
     )
 
     resolved_topology = topology or Topology(
